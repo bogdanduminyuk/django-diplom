@@ -1,1 +1,15 @@
 /* Here will styles for app */
+.content {
+    position: relative;
+    left: 300px;
+    margin: 0px;
+}
+
+textarea {
+    resize: none;
+}
+
+.input-file  span.btn {
+    display: inline-block;
+    margin: 0 10px;
+}
