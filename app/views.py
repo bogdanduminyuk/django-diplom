@@ -26,9 +26,42 @@ def generate_base_styles(request):
     return render(request, 'app/generate_base_styles.html', {
         'title': 'Генерация шаблонных стилей | ' + base_title,
         'page_header': 'Генерация шаблонных стилей',
-        'panel_heading': 'Заполните даные для генерации основных стилей',
+        'panel_heading': 'Заполните данные для генерации основных стилей',
         'panel_type': 'panel-primary',
         'submit_btn_type': 'btn-primary',
         'form_action': '#',
         'submit_value': 'Генерировать',
+    })
+
+
+def wordpress_adaptation(request):
+    return render(request, 'app/wp_adapt.html', {
+        'title': 'Адаптация под WordPress | ' + base_title,
+        'page_header': 'Адаптация под WordPress',
+        'panel_heading': 'Заполните данные для адаптации под WordPress',
+        'panel_type': 'panel-primary',
+        'submit_btn_type': 'btn-primary',
+        'form_action': '#',
+        'submit_value': 'Адаптировать',
+    })
+
+
+def joomla_adaptation(request):
+    return render(request, 'app/joomla_adapt.html', {
+        'title': 'Адаптация под Joomla | ' + base_title,
+        'page_header': 'Адаптация под Joomla',
+        'panel_heading': 'Заполните данные для адаптации под Joomla',
+        'panel_type': 'panel-primary',
+        'submit_btn_type': 'btn-primary',
+        'form_action': '#',
+        'submit_value': 'Адаптировать',
+    })
+
+
+def common_help(request):
+    return render(request, 'app/common_help.html', {
+        'title': 'Справка по проекту | ' + base_title,
+        'page_header': 'Справка по проекту',
+        'panel_heading': 'Общая справка по данному проекту',
+        'panel_type': 'panel-info',
     })
