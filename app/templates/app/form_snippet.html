@@ -1,0 +1,10 @@
+<div class="col-lg-1"></div>
+<div class="col-lg-7">
+{% for field in form %}
+    <div class="form-group">
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+    </div>
+{% endfor %}
+</div>
+<div class="col-lg-4"></div>
