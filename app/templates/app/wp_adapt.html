@@ -1,5 +1,55 @@
 {% extends 'app/input_form.html' %}
 
 {% block form_content %}
-    <h1>Empty form</h1>
+<div class="row">
+    <div class="col-lg-1"></div>
+    <div class="col-lg-7">
+        <div class="form-group">
+            <div class="input-file">
+                <label>Выберите архив с файлами html<sup>*</sup></label>
+                <label for="zip"><span class="btn btn-default">Выбрать файл</span></label>
+            </div>
+            <input type="file" name="zip" id="zip" class="hidden" required>
+        </div>
+
+        <div class="form-group">
+            <label for="theme_name">Название темы<sup>*</sup></label>
+            <input type="text" name="theme_name" value="my_theme" id="theme_name" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="author">Автор</label>
+            <input type="text" name="author" id="author" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Опиание</label>
+            <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="version">Версия WordPress</label>
+            <select name="version" id="version" class="form-control" required>
+                <option disabled selected style="display: none;">Выберите версию</option>
+                <option value="4.6.1">4.6.1</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="license">Лицензия</label>
+            <textarea name="license" id="license" class="form-control"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="tags">Теги</label>
+            <input type="text" name="tags" id="tags" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="comment">Комментарий</label>
+            <textarea name="comment" id="comment" class="form-control" row="3"></textarea>
+        </div>
+    </div>
+    <div class="col-lg-4"></div>
+</div>
 {% endblock %}
