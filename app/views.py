@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from app.forms import WpAdaptForm
 
 base_title = 'Сервис помощи Веб-разработчику'
 
@@ -43,6 +44,7 @@ def wordpress_adaptation(request):
         'submit_btn_type': 'btn-primary',
         'form_action': '#',
         'submit_value': 'Адаптировать',
+        'form': WpAdaptForm
     })
 
 
