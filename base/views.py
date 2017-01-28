@@ -1,15 +1,19 @@
+import os
+
 from django.shortcuts import render
-
-
-base_title = 'Сервис помощи Веб-разработчику'
+from django.conf import settings
 
 
 def home(request):
     return render(request, 'base/index.html', {
-        'title': base_title,
+        'title': 'Сервис помощи Web-разработчику',
         'header': 'Главная страница'
     })
 
 
 def success(request):
-    return render(request, 'base/success.html')
+    filename = os.path.basename(request.COOKIES['filename'])
+    return render(request, 'base/success.html', {
+        'link': os.path.join(settings.MEDIA_URL, filename)
+    })
+

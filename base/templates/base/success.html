@@ -9,6 +9,9 @@
     <title>Success</title>
 </head>
 <body>
-    <img src="{% static 'img/success.jpg' %}">
+    <img src="{% static 'img/success.jpg' %}" width="20%">
+    {% if link %}
+        <a href="{{ link }}">Скачать</a>
+    {% endif %}
 </body>
 </html>
