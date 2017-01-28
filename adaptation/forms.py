@@ -49,15 +49,14 @@ class WpAdaptForm(forms.Form):
         file = self.files['file']
 
         try:
-            os.mkdir(settings.UPLOAD_DIR)
+            os.mkdir(settings.MEDIA_ROOT)
         except FileExistsError:
             pass
 
-        filename = os.path.join(settings.UPLOAD_DIR, file.name)
+        filename = os.path.join(settings.MEDIA_ROOT, file.name)
 
         with open(filename, "wb+") as destination:
             for chunk in file.chunks():
                 destination.write(chunk)
 
             return filename
-
