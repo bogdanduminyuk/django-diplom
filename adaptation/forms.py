@@ -1,4 +1,7 @@
+import os
+
 from base.widgets import *
+from django.conf import settings
 
 
 class WpAdaptForm(forms.Form):
@@ -18,4 +21,43 @@ class WpAdaptForm(forms.Form):
     theme_license = forms.CharField(label='Лицензия', widget=CustomTextArea((3, 0)))
     tags = forms.CharField(label='Теги', widget=CustomTextInput())
     comments = forms.CharField(label='Комментарии', widget=CustomTextArea((3, 0)))"""
+
+    def is_valid(self):
+        valid = super(WpAdaptForm, self).is_valid()
+
+        if not valid:
+            return valid
+
+        file = self.files['file']
+
+        if file.size > settings.MAX_UPLOAD_FILE_SIZE:
+            self.add_error('file', 'MAX_UPLOAD_FILE_LIMIT')
+            valid = False
+
+        if file.content_type not in settings.CONTENT_TYPES:
+            self.add_error('file', 'Wrong content-type of uploaded file')
+            valid = False
+
+        name, ext = os.path.splitext(file.name)
+        if ext not in settings.FILE_EXTENSIONS:
+            self.add_error('file', '\'.zip\' extension is not found')
+            valid = False
+
+        return valid
+
+    def save_file(self):
+        file = self.files['file']
+
+        try:
+            os.mkdir(settings.UPLOAD_DIR)
+        except FileExistsError:
+            pass
+
+        filename = os.path.join(settings.UPLOAD_DIR, file.name)
+
+        with open(filename, "wb+") as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+
+            return filename
 
