@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'base',
     'generation',
     'adaptation',
+    'help',
     'suit',
     'django.contrib.admin',
     'django.contrib.auth',

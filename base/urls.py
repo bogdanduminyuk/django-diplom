@@ -6,4 +6,5 @@ urlpatterns = [
     url(r'^$', views.home, name='home'),
     url(r'^generation/', include('generation.urls')),
     url(r'^adaptation/', include('adaptation.urls')),
+    url(r'^help/', include('help.urls')),
 ]
