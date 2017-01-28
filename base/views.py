@@ -9,3 +9,7 @@ def home(request):
         'title': base_title,
         'header': 'Главная страница'
     })
+
+
+def success(request):
+    return render(request, 'base/success.html')
