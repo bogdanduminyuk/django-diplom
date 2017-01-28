@@ -3,5 +3,6 @@ from . import views
 
 
 urlpatterns = [
-    url(r'wordpress_adaptation/$', views.wordpress_adaptation, name='wordpress_adaptation')
+    url(r'wordpress_adaptation/$', views.wordpress_adaptation, name='wordpress_adaptation'),
+    url(r'joomla_adaptation/$', views.joomla_adaptation, name='joomla_adaptation'),
 ]
