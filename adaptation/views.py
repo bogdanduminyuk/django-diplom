@@ -3,7 +3,7 @@ from .forms import WpAdaptForm
 
 
 def wordpress_adaptation(request):
-    return render(request, 'adaptation/wp_adapt.html', {
+    return render(request, 'base/form_common.html', {
         'title': 'Адаптация под WordPress',
         'page_header': 'Адаптация под WordPress',
         'panel_heading': 'Заполните данные для адаптации под WordPress',
