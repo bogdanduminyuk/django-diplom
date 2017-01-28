@@ -43,6 +43,7 @@ $(function() {
 
 //custom doc.ready
 //custom input-btn
+/*
 $(document).ready(function() {
     $(".input-file").each(function() {
         $("input[type=file]").change(function ()
@@ -58,3 +59,4 @@ $(document).ready(function() {
         });
     });
 });
+*/
