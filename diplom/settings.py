@@ -25,6 +25,8 @@ USER_CONFIG = './user.ini'
 
 # dir where saved file is places
 UPLOAD_DIR = os.path.join(BASE_DIR, 'uploads')
+MEDIA_ROOT = UPLOAD_DIR
+MEDIA_URL = '/uploads/'
 
 
 # for uploaded filed

@@ -1,5 +1,8 @@
 from django.conf.urls import url, include
+from django.conf.urls.static import static
+
 from base import views
+from django.conf import settings
 
 
 urlpatterns = [
@@ -9,3 +12,5 @@ urlpatterns = [
     url(r'^help/', include('help.urls')),
     url(r'^success$', views.success, name='success'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
