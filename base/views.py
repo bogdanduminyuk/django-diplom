@@ -10,7 +10,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 def home(request):
     return render(request, 'base/index.html', {
         'title': 'Сервис помощи Web-разработчику',
-        'header': 'Главная страница'
+        'page_header': 'Главная страница'
     })
 
 

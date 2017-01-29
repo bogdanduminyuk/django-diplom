@@ -50,7 +50,7 @@
                     $('.page-header').text('Успех');
                 }
                 else {
-                    setLinkBtn('btn-danger', 'На главную', '/');
+                    setLinkBtn('btn-danger', 'На главную', "{% url 'home' %}");
                     $('.page-header').text('Ошибка');
                 }
             }

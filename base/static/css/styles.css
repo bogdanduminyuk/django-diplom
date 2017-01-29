@@ -30,6 +30,15 @@ textarea {
     width: 200px;
 }
 
+#accordion .panel {
+    margin-bottom: 0;
+    background-color: inherit;
+    border: inherit;
+    border-radius: inherit;
+    -webkit-box-shadow: 0;
+    box-shadow: 0;
+}
+
 @media screen and (max-width: 768px) {
     #result-container {
         text-align: center;
