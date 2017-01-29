@@ -31,7 +31,7 @@ def result(request):
         image = 'img/oops.png'
 
         try:
-            filename = request.session['filename']
+            filename = os.path.basename(request.session['filename'])
         except KeyError:
             json['status'] = 'False'
         else:
