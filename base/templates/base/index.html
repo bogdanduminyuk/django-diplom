@@ -199,17 +199,8 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel {{ panel_type }}">
-                <div class="panel-heading">{{ panel_heading }}</div>
-                <div class="panel-body">
-                    {% block page_content %}
-                    {% endblock page_content %}
-                </div>
-            </div>
-        </div>
-    </div>
+    {% block content %}
+    {% endblock content %}
 
 </div>
 

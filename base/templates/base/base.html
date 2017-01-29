@@ -36,6 +36,9 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/metisMenu.min.js' %}"></script>
     <script src="{% static 'js/sb-admin-2.js' %}"></script>
+    {% block script %}
+    {% endblock script %}
+
     {% else %}
      <div class="container">
         <div class="row error-page">
