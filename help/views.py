@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 
-def common(request):
+def common_help(request):
     return render(request, 'help/common_help.html', {
         'title': 'Справка по проекту',
         'page_header': 'Справка по проекту (Наполнить контентом)',
@@ -10,7 +10,7 @@ def common(request):
     })
 
 
-def adaptation(request):
+def adaptation_help(request):
     return render(request, 'help/common_help.html', {
         'title': 'Справка по адаптации',
         'page_header': 'Справка по адаптации (Наполнить контентом)',
@@ -19,7 +19,7 @@ def adaptation(request):
     })
 
 
-def generation(request):
+def generation_help(request):
     return render(request, 'help/common_help.html', {
         'title': 'Справка по генерации',
         'page_header': 'Справка по генерации (Наполнить контентом)',
