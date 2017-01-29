@@ -146,3 +146,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+SESSION_FILE_PATH = os.path.join(BASE_DIR, 'tmp')
+
+try:
+    os.mkdir(SESSION_FILE_PATH)
+except FileExistsError:
+    pass

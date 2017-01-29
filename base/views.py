@@ -1,6 +1,5 @@
 import os
 
-from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.conf import settings
@@ -32,17 +31,17 @@ def result(request):
         image = 'img/oops.png'
 
         try:
-            filename = os.path.basename(request.COOKIES['filename'])
-        except MultiValueDictKeyError:
+            filename = request.session['filename']
+        except KeyError:
             json['status'] = 'False'
         else:
+            del request.session['filename']
             json['status'] = 'True'
             image = 'img/success.jpg'
             json['href'] = os.path.join(settings.MEDIA_URL, filename)
         finally:
             json['image'] = os.path.join(settings.STATIC_URL, image)
             response = JsonResponse(json)
-            response.delete_cookie('filename')
             return response
 
 

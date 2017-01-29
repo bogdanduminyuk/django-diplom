@@ -23,7 +23,7 @@ def wordpress_adaptation(request):
             filename = form.save_file()
             url = reverse('result')
             redirect = HttpResponseRedirect(url)
-            redirect.set_cookie('filename', filename)
+            request.session['filename'] = filename
             return redirect
         else:
             print('form not valid')
