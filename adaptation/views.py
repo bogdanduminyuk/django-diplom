@@ -21,8 +21,7 @@ def wordpress_adaptation(request):
 
         if form.is_valid():
             filename = form.save_file()
-            url = reverse('success')
-            url += '?filename=' + filename
+            url = reverse('result')
             redirect = HttpResponseRedirect(url)
             redirect.set_cookie('filename', filename)
             return redirect

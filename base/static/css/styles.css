@@ -18,8 +18,8 @@ textarea {
     margin-top: 20px;
 }
 
-.result-image .row:nth-child(1){
-    height: 200px;
+#result-container .row:nth-child(1){
+    min-height: 250px;
 }
 
 .result-image img {
