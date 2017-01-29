@@ -13,3 +13,25 @@ textarea {
     display: inline-block;
     margin: 0 10px;
 }
+
+.result-image {
+    margin-top: 20px;
+}
+
+.result-image .row:nth-child(1){
+    height: 200px;
+}
+
+.result-image img {
+    width: 200px;
+}
+
+#result-btn {
+    width: 200px;
+}
+
+@media screen and (max-width: 768px) {
+    #result-container {
+        text-align: center;
+    }
+}

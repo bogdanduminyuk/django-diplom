@@ -1,0 +1,59 @@
+{% extends 'base/index.html' %}
+
+{% block content %}
+<div class="row">
+    <div id="result-container" class="col-lg-12">
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-3"></div>
+            <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12">
+                <div class="result-image"><img src="{{ image }}"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-3"></div>
+            <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12">
+                <a id='result-btn' href="#" class="btn btn-primary" disabled>Ожидайте</a>
+                <!--<a class="btn btn-success btn-circle btn-xl"><i class="fa fa-check"></i></a>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        function ajaxQuery() {
+            $.ajax({
+                url: '/result',
+                type: 'GET',
+                dataType: 'text',
+                async: false,
+                cache: false,
+                data: {loading: 1},
+                success: function (data) {
+                    data = jQuery.parseJSON( data )
+                    console.log(data);
+                    if (data.success === 'True') {
+                        var container = $('#content');
+                        var img = $('<img src="' + data.successImage + '">');
+
+                        //container.empty();
+                        ///container.append();
+
+                    }
+
+                }
+
+            });
+        }
+
+        ajaxQuery();
+
+    })
+</script>
+{% endblock script %}
+
+
