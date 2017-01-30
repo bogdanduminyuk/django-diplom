@@ -49,6 +49,17 @@ def global_adapt(src_dir, form_data):
 
 
 def handle_adapt_request(request, form_class, form_name):
+    """
+    Common method for handling adaptation requests.
+
+    If there is a POST-request it redirect user to 'loading' page.
+    Otherwise it loads custom form.
+
+    :param request: http-request
+    :param form_class: class of requested form. Used for getting data correctly if POST and for creation otherwise.
+    :param form_name: label of page (e.g. 'WordPress', 'Joomla', etc.). Used in otherwise case.
+    :return: if POST HttpResponseRedirect else render-method.
+    """
     result = {
         'title': 'Адаптация под ' + form_name,
         'page_header': 'Адаптация под ' + form_name,
@@ -68,7 +79,10 @@ def handle_adapt_request(request, form_class, form_name):
             cleaned_data['file'] = form.save_file()
 
             redirect = HttpResponseRedirect('/result')
+
+            # TODO: try to send form_class with sessions
             request.session['form_data'] = cleaned_data
+
             return redirect
     else:
         form = form_class()
