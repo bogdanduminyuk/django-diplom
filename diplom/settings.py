@@ -22,16 +22,28 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # relative path to file with user options
 USER_CONFIG = './user.ini'
 
-
-# dir where saved file is places
-MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
-MEDIA_URL = '/uploads/'
-
-
 # for uploaded filed
 CONTENT_TYPES = ['application/octet-stream']
+
+
 FILE_EXTENSIONS = ['.zip']
+
 MAX_UPLOAD_FILE_SIZE = 20971520
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+
+
+TEMP_DIR = os.path.join(BASE_DIR, 'tmp')
+SESSION_FILE_PATH = TEMP_DIR
+
+MEDIA_ROOT = os.path.join(TEMP_DIR, 'uploads')
+MEDIA_URL = '/uploads/'
+
+for dir in [TEMP_DIR, SESSION_FILE_PATH, MEDIA_ROOT]:
+    try:
+        os.mkdir(dir)
+    except FileExistsError:
+        pass
 
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
@@ -146,11 +158,3 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-SESSION_ENGINE = 'django.contrib.sessions.backends.file'
-SESSION_FILE_PATH = os.path.join(BASE_DIR, 'tmp')
-
-try:
-    os.mkdir(SESSION_FILE_PATH)
-except FileExistsError:
-    pass

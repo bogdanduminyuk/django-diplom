@@ -36,12 +36,6 @@ class BaseForm(forms.Form):
 
     def save_file(self):
         file = self.files['file']
-
-        try:
-            os.mkdir(settings.MEDIA_ROOT)
-        except FileExistsError:
-            pass
-
         filename = os.path.join(settings.MEDIA_ROOT, file.name)
 
         with open(filename, "wb+") as destination:
