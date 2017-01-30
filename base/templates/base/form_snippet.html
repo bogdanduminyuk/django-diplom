@@ -1,5 +1,6 @@
 <div class="col-lg-1"></div>
 <div class="col-lg-7">
+<input type="hidden" name="type" value="{{ hidden }}">
 {% for field in form %}
     <div class="form-group">
         {{ field.errors }}

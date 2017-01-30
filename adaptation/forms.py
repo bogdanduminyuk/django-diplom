@@ -21,7 +21,7 @@ class WpAdaptForm(forms.Form):
                                   widget=CustomTextArea((3, 0)),
                                   required=False)
 
-    version = forms.ChoiceField(label='Версия',
+    version = forms.ChoiceField(label='Версия *',
                                 choices=(('1', 'Option 1'), ('2', 'Option 2'),),
                                 widget=forms.Select(attrs={'class': 'form-control'}))
 
