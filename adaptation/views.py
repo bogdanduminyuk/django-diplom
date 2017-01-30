@@ -1,6 +1,5 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
 
 from .forms import WpAdaptForm
 
@@ -14,6 +13,7 @@ def wordpress_adaptation(request):
         'submit_btn_type': 'btn-primary',
         'submit_value': 'Адаптировать',
         'form_action': '#',
+        'hidden': 'wordpress',
     }
 
     if request.method == 'POST':
@@ -21,9 +21,10 @@ def wordpress_adaptation(request):
 
         if form.is_valid():
             filename = form.save_file()
-            url = reverse('result')
-            redirect = HttpResponseRedirect(url)
+            form_data = request.POST.dict()
+            redirect = HttpResponseRedirect('/result')
             request.session['filename'] = filename
+            request.session['form_data'] = form_data
             return redirect
         else:
             print('form not valid')
