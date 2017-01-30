@@ -30,12 +30,11 @@ def result(request):
     image = 'img/oops.png'
 
     try:
-        filename = os.path.basename(request.session['filename'])
         form_data = request.session['form_data']
+        filename = os.path.basename(form_data['file'])
     except KeyError:
         json['status'] = 'False'
     else:
-        del request.session['filename']
         del request.session['form_data']
 
         json['status'] = 'True'
