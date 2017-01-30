@@ -3,9 +3,17 @@
 <input type="hidden" name="type" value="{{ hidden }}">
 {% for field in form %}
     <div class="form-group">
-        {{ field.errors }}
+        {% for error in field.errors %}
+            <div class="alert alert-danger page-alert">
+                <button type="button" class="close"><span aria-hidden="true">x</span><span class="sr-only">Close</span></button>
+                <strong>Oops!</strong> {{ error }}
+            </div>
+
+        {% endfor %}
+
         {{ field.label_tag }} {{ field }}
     </div>
 {% endfor %}
 </div>
 <div class="col-lg-4"></div>
+
