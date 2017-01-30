@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from .forms import WpAdaptForm
+from .forms import WpAdaptForm, JoomlaAdaptForm
 
 
 def wordpress_adaptation(request):
@@ -9,7 +9,7 @@ def wordpress_adaptation(request):
 
 
 def joomla_adaptation(request):
-    return handle_adapt_request(request, WpAdaptForm, 'Joomla')
+    return handle_adapt_request(request, JoomlaAdaptForm, 'Joomla')
 
 
 def handle_adapt_request(request, form_class, form_name):
@@ -39,4 +39,3 @@ def handle_adapt_request(request, form_class, form_name):
 
     result['form'] = form
     return render(request, 'base/form_common.html', result)
-

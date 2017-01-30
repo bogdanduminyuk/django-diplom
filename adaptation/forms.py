@@ -4,41 +4,15 @@ from base.widgets import *
 from django.conf import settings
 
 
-class WpAdaptForm(forms.Form):
+class BaseForm(forms.Form):
     file = forms.FileField(label='Выберите архив с файлами html *',
-                           max_length=60,
-                           required=True)
+                           max_length=60, required=True)
 
     name = forms.CharField(label='Название темы *',
-                           widget=CustomTextInput(),
-                           required=True)
-
-    author = forms.CharField(label='Автор',
-                             widget=CustomTextInput(),
-                             required=False)
-
-    description = forms.CharField(label='Описание',
-                                  widget=CustomTextArea((3, 0)),
-                                  required=False)
-
-    version = forms.ChoiceField(label='Версия *',
-                                choices=(('1', 'Option 1'), ('2', 'Option 2'),),
-                                widget=forms.Select(attrs={'class': 'form-control'}))
-
-    theme_license = forms.CharField(label='Лицензия',
-                                    widget=CustomTextArea((3, 0)),
-                                    required=False)
-
-    tags = forms.CharField(label='Теги',
-                           widget=CustomTextInput(),
-                           required=False)
-
-    comments = forms.CharField(label='Комментарии',
-                               widget=CustomTextArea((3, 0)),
-                               required=False)
+                           widget=CustomTextInput(), required=True)
 
     def is_valid(self):
-        valid = super(WpAdaptForm, self).is_valid()
+        valid = super(BaseForm, self).is_valid()
 
         if not valid:
             return valid
@@ -75,3 +49,29 @@ class WpAdaptForm(forms.Form):
                 destination.write(chunk)
 
             return filename
+
+
+class WpAdaptForm(BaseForm):
+    author = forms.CharField(label='Автор',
+                             widget=CustomTextInput(), required=False)
+
+    description = forms.CharField(label='Описание',
+                                  widget=CustomTextArea((3, 0)), required=False)
+
+    version = forms.ChoiceField(label='Версия *',
+                                choices=(('1', 'Option 1'), ('2', 'Option 2'),),
+                                widget=forms.Select(attrs={'class': 'form-control'}))
+
+    theme_license = forms.CharField(label='Лицензия', required=False,
+                                    widget=CustomTextArea((3, 0)))
+
+    tags = forms.CharField(label='Теги',required=False,
+                           widget=CustomTextInput())
+
+    comments = forms.CharField(label='Комментарии', required=False,
+                               widget=CustomTextArea((3, 0)))
+
+
+class JoomlaAdaptForm(BaseForm):
+    # TODO: realize Joomla adapt form
+    pass
