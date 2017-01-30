@@ -23,55 +23,71 @@ def result(request):
             'image': os.path.join(settings.STATIC_URL, 'img/loading.gif'),
         })
 
-    # TODO: remove sleeping in production
-    import time
-    time.sleep(1)
-
-    json = {}
-    image = 'img/oops.png'
+    json = {'image': 'img/oops.png'}
 
     try:
         form_data = request.session['form_data']
-        file_path = form_data['file']
-        file_name = os.path.basename(file_path)
+
     except KeyError:
         json['status'] = 'False'
+
     else:
         del request.session['form_data']
 
-        result_file_path = handle_adaptation(form_data)
-        result_file = os.path.basename(result_file_path)
+        if 'file' in form_data:
+            result_file_path = handle_adaptation(form_data)
+            result_file = os.path.basename(result_file_path)
+        else:
+            # TODO: handle generation
+            result_file = 'file'
 
         json['href'] = os.path.join(settings.MEDIA_URL, result_file)
-
-        image = 'img/success.jpg'
+        json['image'] = 'img/success.jpg'
         json['status'] = 'True'
+
     finally:
-        json['image'] = os.path.join(settings.STATIC_URL, image)
+        json['image'] = os.path.join(settings.STATIC_URL, json['image'])
         response = JsonResponse(json)
         return response
 
 
 def handle_adaptation(form_data):
+    """
+    Handler of all adaptation events.
+
+    It is used for unpacking and packing archives of input/output data when we adapt something.
+    It calls global adapt method for handle form_data and make adaptation.
+
+    :param form_data: clean data from input form
+    :return: href of archived file
+    """
     src_file_path = form_data['file']
-
-    src_basename = os.path.basename(src_file_path)
-    extract_dir = os.path.join(settings.MEDIA_ROOT, src_basename.split('.')[0])
-
+    extract_dir = os.path.splitext(src_file_path)[0]
     shutil.unpack_archive(src_file_path, extract_dir, 'zip')
 
-    # TODO: here do_stuff places...
-    root_dir, base_dir = do_stuff(extract_dir, form_data)
+    root_dir, base_dir = global_adapt(extract_dir, form_data)  # calling global adapt method.
 
-    return shutil.make_archive(os.path.join(root_dir, form_data['name']),
-                               'zip',
-                               root_dir=root_dir,
-                               base_dir=base_dir)
+    result_filename = os.path.join(root_dir, base_dir)
+    archived_file = shutil.make_archive(result_filename, 'zip', root_dir, base_dir)
+    archived_filename = os.path.basename(archived_file)
+
+    return os.path.join(settings.MEDIA_URL, archived_filename)
 
 
-def do_stuff(src_dir, form_data):
-    root_dir, base_dir = os.path.split(src_dir)
+def global_adapt(src_dir, form_data):
+    """
+    Global adaptation method.
 
-    # TODO: do stuff...
+    Detects under what data must be adapted and calls corresponding method.
 
-    return root_dir, base_dir
+    :param src_dir: source unpacked dir
+    :param form_data: clean data from input form
+    :return: tuple of parent dir and dir_name needed for packing result
+    """
+    parent_dir, src_dir_name = os.path.split(src_dir)
+    dst_dir = os.path.join(parent_dir, form_data['name'])
+
+    # TODO: here will places handling
+    shutil.copytree(src_dir, dst_dir)
+
+    return parent_dir, form_data['name']
