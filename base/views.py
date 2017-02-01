@@ -36,13 +36,12 @@ def result(request):
         del request.session['form_data']
 
         if 'file' in form_data:
-            result_file_path = handle_adaptation(form_data)
-            result_file = os.path.basename(result_file_path)
+            result_href = handle_adaptation(form_data)
         else:
             # TODO: handle generation
-            result_file = 'file'
+            result_href = 'file'
 
-        json['href'] = os.path.join(settings.MEDIA_URL, result_file)
+        json['href'] = result_href
         json['image'] = 'img/success.jpg'
         json['status'] = 'True'
 
