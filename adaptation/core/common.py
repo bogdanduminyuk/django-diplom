@@ -31,7 +31,8 @@ def adaptation_path_layer(form_data):
 
     shutil.unpack_archive(input_file, archive_destination, 'zip')
 
-    adaptation_files_layer(archive_destination, work_dir, form_data)  # Delegation to the files_layer
+    # Delegation to the files_layer
+    adaptation_files_layer(archive_destination, work_dir, form_data)
 
     archived_file_path = shutil.make_archive(work_dir, 'zip', root_dir=settings.MEDIA_ROOT, base_dir=form_data['name'])
 
@@ -44,12 +45,14 @@ def adaptation_path_layer(form_data):
 
 def adaptation_files_layer(src_dir, dst_dir, form_data):
     """
+    Files layer handling.
 
     :param src_dir: path to the dir of unpacked input file
     :param dst_dir: path to the destination dir that have to be created before
     :param form_data: data of input form
     :return: None
     """
+    # TODO: it do something with files.
     shutil.copytree(src_dir, dst_dir)
 
 
