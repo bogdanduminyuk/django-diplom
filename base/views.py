@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.conf import settings
 
-from adaptation.core.common import handle_adaptation
+from adaptation.core.common import adapt
 
 
 def home(request):
@@ -36,7 +36,7 @@ def result(request):
         del request.session['form_data']
 
         if 'file' in form_data:
-            result_href = handle_adaptation(form_data)
+            result_href = adapt(form_data)
         else:
             # TODO: handle generation
             result_href = 'file'

@@ -5,56 +5,52 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
+from adaptation.core.functions import split_path
 
-def handle_adaptation(form_data):
+
+def adapt(form_data):
+    """External adapt function. It delegates path_layer handling"""
+    return adaptation_path_layer(form_data)
+
+
+def adaptation_path_layer(form_data):
     """
-    Handler of all adaptation events.
+    Path layer handling.
 
-    It is used for unpacking and packing archives of input/output data when we adapt something.
-    It calls global adapt method for handle form_data and make adaptation.
+    Realizes working with paths, packing/unpacking archives, cutting and joining paths, creation of dirs.
+    It delegates files_layer handling.
 
-    :param form_data: clean data from input form
-    :return: href of archived file
+    :param form_data: data of input form
+    :return: href to result archive
+    """
+    input_file = form_data['file']
+    folder, filename, ext = split_path(input_file)
+
+    archive_destination = os.path.join(settings.TEMP_DIR, filename)
+    work_dir = os.path.join(settings.MEDIA_ROOT, form_data['name'])
+
+    shutil.unpack_archive(input_file, archive_destination, 'zip')
+
+    adaptation_files_layer(archive_destination, work_dir, form_data)  # Delegation to the files_layer
+
+    archived_file_path = shutil.make_archive(work_dir, 'zip', root_dir=settings.MEDIA_ROOT, base_dir=form_data['name'])
+
+    # clear tmp dir after yourself
+    for directory in [archive_destination, work_dir]:
+        shutil.rmtree(directory)
+
+    return os.path.join(settings.MEDIA_URL, os.path.basename(archived_file_path))
+
+
+def adaptation_files_layer(src_dir, dst_dir, form_data):
     """
 
-    def split_path(path):
-        """Returns tuple of (folder, filename, ext) of given path"""
-        _dir, _file = os.path.split(path)
-        _filename, _ext = os.path.splitext(_file)
-        return _dir, _filename, _file
-
-    src_file_path = form_data['file']
-    folder, filename, ext = split_path(src_file_path)
-    extract_dir = os.path.join(settings.TEMP_DIR, filename)
-
-    shutil.unpack_archive(src_file_path, extract_dir, 'zip')
-
-    root_dir, base_dir = global_adapt(extract_dir, form_data)  # calling global adapt method.
-
-    result_filename = os.path.join(root_dir, base_dir)
-    archived_file = shutil.make_archive(result_filename, 'zip', root_dir, base_dir)
-    archived_filename = os.path.basename(archived_file)
-
-    return os.path.join(settings.MEDIA_URL, archived_filename)
-
-
-def global_adapt(src_dir, form_data):
+    :param src_dir: path to the dir of unpacked input file
+    :param dst_dir: path to the destination dir that have to be created before
+    :param form_data: data of input form
+    :return: None
     """
-    Global adaptation method.
-
-    Detects under what data must be adapted and calls corresponding method.
-
-    :param src_dir: source unpacked dir
-    :param form_data: clean data from input form
-    :return: tuple of parent dir and dir_name needed for packing result
-    """
-    parent_dir, src_dir_name = os.path.split(src_dir)
-    dst_dir = os.path.join(parent_dir, form_data['name'])
-
-    # TODO: here will places handling
     shutil.copytree(src_dir, dst_dir)
-
-    return parent_dir, form_data['name']
 
 
 def handle_adapt_request(request, form_class, form_name):
