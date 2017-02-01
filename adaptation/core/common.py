@@ -16,8 +16,17 @@ def handle_adaptation(form_data):
     :param form_data: clean data from input form
     :return: href of archived file
     """
+
+    def split_path(path):
+        """Returns tuple of (folder, filename, ext) of given path"""
+        _dir, _file = os.path.split(path)
+        _filename, _ext = os.path.splitext(_file)
+        return _dir, _filename, _file
+
     src_file_path = form_data['file']
-    extract_dir = os.path.splitext(src_file_path)[0]
+    folder, filename, ext = split_path(src_file_path)
+    extract_dir = os.path.join(settings.TEMP_DIR, filename)
+
     shutil.unpack_archive(src_file_path, extract_dir, 'zip')
 
     root_dir, base_dir = global_adapt(extract_dir, form_data)  # calling global adapt method.
