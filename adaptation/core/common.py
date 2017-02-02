@@ -6,6 +6,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from adaptation.core.functions import split_path
+from adaptation.core.joomla import adaptation_joomla
+from adaptation.core.wordpress import adaptation_wordpress
 
 
 def adapt(form_data):
@@ -66,7 +68,7 @@ def adaptation_files_layer(src_dir, dst_dir, form_data):
     :param form_data: data of input form
     :return: None
     """
-    files = adaptation_core_level(src_dir, form_data)
+    files = adaptation_core_layer(src_dir, form_data)
 
     if not os.path.exists(dst_dir):
         os.mkdir(dst_dir)
@@ -78,20 +80,25 @@ def adaptation_files_layer(src_dir, dst_dir, form_data):
             file.write(content)
 
 
-def adaptation_core_level(src_dir, form_data):
+def adaptation_core_layer(src_dir, form_data):
     """
     Core adaptation handling.
 
-    Determines for what adaptation type is. It uses hidden input from
+    Determines what adaptation type is. It uses form type.
 
     :param src_dir: path to the dir of unpacked input file
     :param form_data: data of input form
     :return: dict {filename : content}
     """
-    return {
-        "index.html": "<h1>hello world</h1>",
-        "base.html": "<h2>base html</h2>",
-    }
+    form_type = form_data['form']
+    files = {}
+
+    if form_type == 'WordPress':
+        files = adaptation_wordpress(src_dir, form_data)
+    elif form_type == 'Joomla':
+        files = adaptation_joomla(src_dir, form_data)
+
+    return files
 
 
 def handle_adapt_request(request, form_class, form_name):
