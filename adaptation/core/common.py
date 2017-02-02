@@ -73,6 +73,15 @@ def adaptation_files_layer(src_dir, dst_dir, form_data):
 
 
 def adaptation_core_level(src_dir, form_data):
+    """
+    Core adaptation handling.
+
+    Determines for what adaptation type is. It uses hidden input from
+
+    :param src_dir: path to the dir of unpacked input file
+    :param form_data: data of input form
+    :return: dict {filename : content}
+    """
     return {
         "index.html": "<h1>hello world</h1>",
         "base.html": "<h2>base html</h2>",
@@ -108,6 +117,7 @@ def handle_adapt_request(request, form_class, form_name):
         if form.is_valid():
             cleaned_data = form.cleaned_data
             cleaned_data['file'] = form.save_file()
+            cleaned_data['form'] = form_name
 
             redirect = HttpResponseRedirect('/result')
 
