@@ -52,13 +52,31 @@ def adaptation_files_layer(src_dir, dst_dir, form_data):
     """
     Files layer handling.
 
+    Writes dict{filename : content} to files in dst_dir.
+    The dict is result of adaptation_core_level.
+
     :param src_dir: path to the dir of unpacked input file
     :param dst_dir: path to the destination dir that have to be created before
     :param form_data: data of input form
     :return: None
     """
-    # TODO: it do something with files.
-    shutil.copytree(src_dir, dst_dir)
+    files = adaptation_core_level(src_dir, form_data)
+
+    if not os.path.exists(dst_dir):
+        os.mkdir(dst_dir)
+
+    for filename, content in files.items():
+        path = os.path.join(dst_dir, filename)
+
+        with open(path, 'w+', encoding='utf-8') as file:
+            file.write(content)
+
+
+def adaptation_core_level(src_dir, form_data):
+    return {
+        "index.html": "<h1>hello world</h1>",
+        "base.html": "<h2>base html</h2>",
+    }
 
 
 def handle_adapt_request(request, form_class, form_name):
