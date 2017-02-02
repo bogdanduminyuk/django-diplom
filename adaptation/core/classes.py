@@ -15,4 +15,4 @@ class UserFileNotFoundError(CustomException, FileNotFoundError):
 class DescriptionKeyNotFoundError(CustomException, KeyError):
     """Raised when key from description ini does not found."""
     def __init__(self, key):
-        super(DescriptionKeyNotFoundError, self).__init__('Key "' + key + '" not found in description.ini.')
+        super(DescriptionKeyNotFoundError, self).__init__('Key "' + key + '" not found in description.json.')
