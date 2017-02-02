@@ -48,7 +48,8 @@ def adaptation_path_layer(form_data):
 
         # if description.json was found
         description_path = os.path.join(src_dir, 'description.json')
-        description = json.loads(description_path)
+        with open(description_path, 'r', encoding='utf-8') as description_file:
+            description = json.loads(description_file.read())
 
         for key in description.keys():
             if key not in adapt_settings.REQUIRED_DESCRIPTION_KEYS:
@@ -64,7 +65,7 @@ def adaptation_path_layer(form_data):
 
     try:
         shutil.unpack_archive(input_file, archive_destination, 'zip')
-        form_data['description'] = checking_requirements(archive_destination)
+        form_data['description.json'] = checking_requirements(archive_destination)
 
         # Delegation to the files_layer
         adaptation_files_layer(archive_destination, work_dir, form_data)
