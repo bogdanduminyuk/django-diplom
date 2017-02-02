@@ -6,7 +6,7 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from adaptation.core.classes import UserFileNotFoundError, DescriptionKeyNotFoundError
+from adaptation.core.classes import UserFileNotFoundError, DescriptionKeyNotFoundError, AdaptationTypeError
 from adaptation.core.functions import split_path
 from adaptation.core.joomla import adaptation_joomla
 from adaptation.core.wordpress import adaptation_wordpress
@@ -127,7 +127,7 @@ def adaptation_core_layer(src_dir, data):
     elif form_type == 'Joomla':
         call = adaptation_joomla
     else:
-        return '/'
+        raise AdaptationTypeError(form_type)
 
     files = call(src_dir, data)
     return files
