@@ -12,7 +12,7 @@ COMMON_REQUIRES_FILES = [
 
 REQUIRED_DESCRIPTION_KEYS = [
     'css',
-    'index.html',
+    'index',
 ]
 
 
