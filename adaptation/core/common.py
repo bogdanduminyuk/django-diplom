@@ -34,16 +34,22 @@ def adaptation_path_layer(form_data):
     archive_destination = os.path.join(settings.TEMP_DIR, filename)
     work_dir = os.path.join(settings.MEDIA_ROOT, form_data['name'])
 
-    shutil.unpack_archive(input_file, archive_destination, 'zip')
+    try:
+        shutil.unpack_archive(input_file, archive_destination, 'zip')
 
-    # Delegation to the files_layer
-    adaptation_files_layer(archive_destination, work_dir, form_data)
+        # Delegation to the files_layer
+        adaptation_files_layer(archive_destination, work_dir, form_data)
 
-    archived_file_path = shutil.make_archive(work_dir, 'zip', root_dir=settings.MEDIA_ROOT, base_dir=form_data['name'])
+        archived_file_path = shutil.make_archive(work_dir, 'zip',
+                                                 root_dir=settings.MEDIA_ROOT,
+                                                 base_dir=form_data['name'])
+    except Exception as e:
+        raise e
 
-    # clear tmp dir after yourself
-    for directory in [archive_destination, work_dir]:
-        shutil.rmtree(directory)
+    finally:
+        # clear tmp dir after yourself
+        for directory in [archive_destination, work_dir]:
+            shutil.rmtree(directory)
 
     return os.path.join(settings.MEDIA_URL, os.path.basename(archived_file_path))
 
