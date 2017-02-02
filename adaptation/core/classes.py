@@ -16,3 +16,9 @@ class DescriptionKeyNotFoundError(CustomException, KeyError):
     """Raised when key from description ini does not found."""
     def __init__(self, key):
         super(DescriptionKeyNotFoundError, self).__init__('Key "' + key + '" not found in description.json.')
+
+
+class AdaptationVersionError(CustomException, ValueError):
+    """Raised when got wrong version"""
+    def __init__(self, version):
+        super(AdaptationVersionError, self).__init__('Version "' + version + '" not realized.')
