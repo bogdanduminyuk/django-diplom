@@ -1,11 +1,11 @@
 # coding: utf-8
 
 
-def adaptation_wordpress(src_dir, form_data):
+def adaptation_wordpress(src_dir, data):
     """
 
     :param src_dir:
-    :param form_data:
+    :param data:
     :return:
     """
     # TODO: check for versions
