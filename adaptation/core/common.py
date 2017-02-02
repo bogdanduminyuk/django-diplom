@@ -8,6 +8,7 @@ from django.shortcuts import render
 from adaptation.core.functions import split_path
 from adaptation.core.joomla import adaptation_joomla
 from adaptation.core.wordpress import adaptation_wordpress
+from adaptation import settings as adapt_settings
 
 
 def adapt(form_data):
@@ -91,6 +92,8 @@ def adaptation_core_layer(src_dir, form_data):
     :return: dict {filename : content}
     """
     form_type = form_data['form']
+
+    # TODO: append checking settings required files
 
     if form_type == 'WordPress':
         call = adaptation_wordpress
