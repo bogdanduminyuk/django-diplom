@@ -33,30 +33,6 @@ def adaptation_path_layer(form_data):
     :param form_data: data of input form
     :return: href to result archive
     """
-    def checking_requirements(src_dir):
-        """
-        Checks if requirements are complied.
-
-        :param src_dir: path to the dir of unpacked input file
-        :return: description dict
-        """
-        for required_file in adapt_settings.COMMON_REQUIRES_FILES:
-            absolute_path = os.path.join(src_dir, required_file)
-
-            if not os.path.exists(absolute_path):
-                raise UserFileNotFoundError(required_file)
-
-        # if description.json was found
-        description_path = os.path.join(src_dir, 'description.json')
-        with open(description_path, 'r', encoding='utf-8') as description_file:
-            description = json.loads(description_file.read())
-
-        for key in description.keys():
-            if key not in adapt_settings.REQUIRED_DESCRIPTION_KEYS:
-                raise DescriptionKeyNotFoundError(key)
-
-        return description
-
     input_file = form_data['file']
     folder, filename, ext = split_path(input_file)
 
@@ -65,7 +41,6 @@ def adaptation_path_layer(form_data):
 
     try:
         shutil.unpack_archive(input_file, archive_destination, 'zip')
-        form_data['description.json'] = checking_requirements(archive_destination)
 
         # Delegation to the files_layer
         adaptation_files_layer(archive_destination, work_dir, form_data)
@@ -97,6 +72,32 @@ def adaptation_files_layer(src_dir, dst_dir, data):
     :param data: data of input form and additional script data
     :return: None
     """
+    def checking_requirements(src_dir):
+        """
+        Checks if requirements are complied.
+
+        :param src_dir: path to the dir of unpacked input file
+        :return: description dict
+        """
+        for required_file in adapt_settings.COMMON_REQUIRES_FILES:
+            absolute_path = os.path.join(src_dir, required_file)
+
+            if not os.path.exists(absolute_path):
+                raise UserFileNotFoundError(required_file)
+
+        # if description.json was found
+        description_path = os.path.join(src_dir, 'description.json')
+        with open(description_path, 'r', encoding='utf-8') as description_file:
+            description = json.loads(description_file.read())
+
+        for key in description.keys():
+            if key not in adapt_settings.REQUIRED_DESCRIPTION_KEYS:
+                raise DescriptionKeyNotFoundError(key)
+
+        return description
+
+    data['description.json'] = checking_requirements(src_dir)  # it can raise exception
+
     files = adaptation_core_layer(src_dir, data)
 
     if not os.path.exists(dst_dir):
@@ -120,8 +121,6 @@ def adaptation_core_layer(src_dir, data):
     :return: dict {filename : content}
     """
     form_type = data['form']
-
-    # TODO: append checking settings required files
 
     if form_type == 'WordPress':
         call = adaptation_wordpress
