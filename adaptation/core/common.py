@@ -1,10 +1,12 @@
 import os
 import shutil
+import json
 
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
+from adaptation.core.classes import UserFileNotFoundError, DescriptionKeyNotFoundError
 from adaptation.core.functions import split_path
 from adaptation.core.joomla import adaptation_joomla
 from adaptation.core.wordpress import adaptation_wordpress
@@ -31,6 +33,29 @@ def adaptation_path_layer(form_data):
     :param form_data: data of input form
     :return: href to result archive
     """
+    def checking_requirements(src_dir):
+        """
+        Checks if requirements are complied.
+
+        :param src_dir: path to the dir of unpacked input file
+        :return: description dict
+        """
+        for required_file in adapt_settings.COMMON_REQUIRES_FILES:
+            absolute_path = os.path.join(src_dir, required_file)
+
+            if not os.path.exists(absolute_path):
+                raise UserFileNotFoundError(required_file)
+
+        # if description.json was found
+        description_path = os.path.join(src_dir, 'description.json')
+        description = json.loads(description_path)
+
+        for key in description.keys():
+            if key not in adapt_settings.REQUIRED_DESCRIPTION_KEYS:
+                raise DescriptionKeyNotFoundError(key)
+
+        return description
+
     input_file = form_data['file']
     folder, filename, ext = split_path(input_file)
 
@@ -39,6 +64,7 @@ def adaptation_path_layer(form_data):
 
     try:
         shutil.unpack_archive(input_file, archive_destination, 'zip')
+        form_data['description'] = checking_requirements(archive_destination)
 
         # Delegation to the files_layer
         adaptation_files_layer(archive_destination, work_dir, form_data)
@@ -52,12 +78,13 @@ def adaptation_path_layer(form_data):
     finally:
         # clear tmp dir after yourself
         for directory in [archive_destination, work_dir]:
-            shutil.rmtree(directory)
+            if os.path.exists(directory):
+                shutil.rmtree(directory)
 
     return os.path.join(settings.MEDIA_URL, os.path.basename(archived_file_path))
 
 
-def adaptation_files_layer(src_dir, dst_dir, form_data):
+def adaptation_files_layer(src_dir, dst_dir, data):
     """
     Files layer handling.
 
@@ -66,10 +93,10 @@ def adaptation_files_layer(src_dir, dst_dir, form_data):
 
     :param src_dir: path to the dir of unpacked input file
     :param dst_dir: path to the destination dir that have to be created before
-    :param form_data: data of input form
+    :param data: data of input form and additional script data
     :return: None
     """
-    files = adaptation_core_layer(src_dir, form_data)
+    files = adaptation_core_layer(src_dir, data)
 
     if not os.path.exists(dst_dir):
         os.mkdir(dst_dir)
@@ -81,17 +108,17 @@ def adaptation_files_layer(src_dir, dst_dir, form_data):
             file.write(content)
 
 
-def adaptation_core_layer(src_dir, form_data):
+def adaptation_core_layer(src_dir, data):
     """
     Core adaptation handling.
 
     Determines what adaptation type is. It uses form type.
 
     :param src_dir: path to the dir of unpacked input file
-    :param form_data: data of input form
+    :param data: data of input form and additional script data
     :return: dict {filename : content}
     """
-    form_type = form_data['form']
+    form_type = data['form']
 
     # TODO: append checking settings required files
 
@@ -100,9 +127,9 @@ def adaptation_core_layer(src_dir, form_data):
     elif form_type == 'Joomla':
         call = adaptation_joomla
     else:
-        call = lambda: {'None': 'None'}
+        return '/'
 
-    files = call(src_dir, form_data)
+    files = call(src_dir, data)
     return files
 
 

@@ -7,7 +7,7 @@ How we adapt, what to adapt and what to do.
 # Common definitions
 
 COMMON_REQUIRES_FILES = [
-    'description.ini',
+    'description.json',
 ]
 
 REQUIRED_DESCRIPTION_KEYS = [
