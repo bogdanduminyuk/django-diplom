@@ -91,13 +91,15 @@ def adaptation_core_layer(src_dir, form_data):
     :return: dict {filename : content}
     """
     form_type = form_data['form']
-    files = {}
 
     if form_type == 'WordPress':
-        files = adaptation_wordpress(src_dir, form_data)
+        call = adaptation_wordpress
     elif form_type == 'Joomla':
-        files = adaptation_joomla(src_dir, form_data)
+        call = adaptation_joomla
+    else:
+        call = lambda: {'None': 'None'}
 
+    files = call(src_dir, form_data)
     return files
 
 
