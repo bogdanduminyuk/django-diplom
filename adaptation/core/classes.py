@@ -18,7 +18,13 @@ class DescriptionKeyNotFoundError(CustomException, KeyError):
         super(DescriptionKeyNotFoundError, self).__init__('Key "' + key + '" not found in description.json.')
 
 
+class AdaptationTypeError(CustomException, TypeError):
+    """Raised when got wrong type of adaptation."""
+    def __init__(self, v_type):
+        super(AdaptationTypeError, self).__init__('Type "' + v_type + '" not realized.')
+
+
 class AdaptationVersionError(CustomException, ValueError):
-    """Raised when got wrong version"""
+    """Raised when got wrong version."""
     def __init__(self, version):
         super(AdaptationVersionError, self).__init__('Version "' + version + '" not realized.')
