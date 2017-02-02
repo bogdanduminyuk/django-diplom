@@ -9,7 +9,12 @@ from adaptation.core.functions import split_path
 
 
 def adapt(form_data):
-    """External adapt function. It delegates path_layer handling"""
+    """
+    External adapt function. It delegates path_layer handling.
+
+    :param form_data: data of input form
+    :return: href to result archive
+    """
     return adaptation_path_layer(form_data)
 
 
