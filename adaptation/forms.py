@@ -53,13 +53,13 @@ class WpAdaptForm(BaseForm):
                                   widget=CustomTextArea((3, 0)), required=False)
 
     version = forms.ChoiceField(label='Версия *',
-                                choices=(('1', 'Option 1'), ('2', 'Option 2'),),
+                                choices=((461, '4.6.1'), (0, 'Blank record'),),
                                 widget=forms.Select(attrs={'class': 'form-control'}))
 
     theme_license = forms.CharField(label='Лицензия', required=False,
                                     widget=CustomTextArea((3, 0)))
 
-    tags = forms.CharField(label='Теги',required=False,
+    tags = forms.CharField(label='Теги', required=False,
                            widget=CustomTextInput())
 
     comments = forms.CharField(label='Комментарии', required=False,

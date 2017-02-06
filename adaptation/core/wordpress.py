@@ -12,11 +12,11 @@ def adaptation_wordpress(src_dir, data):
     :param data: data of input form and additional script data
     :return: dict {filename : content} to create on files_layer
     """
-    def check_version(version):
+    def check_version(_version):
         # TODO: check for versions
-        pass
+        return _version
 
-    check_version(1)
+    version = check_version(data['version'])
 
     result = {
         "index.html": "<h1>wordpress</h1>"

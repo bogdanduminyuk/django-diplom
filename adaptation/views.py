@@ -22,7 +22,7 @@ def test(request):
     file = file_name + '.zip'
     example = os.path.join(settings.BASE_DIR, 'examples', 'wp', file)
 
-    form_data = {'name': file_name, 'file': example, 'form': 'WordPress', 'version': 1}
+    form_data = {'name': file_name, 'file': example, 'form': 'WordPress', 'version': 461}
 
     result_href = adapt(form_data)
 
