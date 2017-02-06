@@ -26,5 +26,5 @@ class AdaptationTypeError(CustomException, TypeError):
 
 class AdaptationVersionError(CustomException, ValueError):
     """Raised when got wrong version."""
-    def __init__(self, version):
-        super(AdaptationVersionError, self).__init__('Version "' + version + '" not realized.')
+    def __init__(self, cms_type, version):
+        super(AdaptationVersionError, self).__init__("Version {0} of {1} is not realized".format(version, cms_type))
