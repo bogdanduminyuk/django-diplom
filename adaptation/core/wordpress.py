@@ -34,6 +34,10 @@ def adaptation_wordpress_461(src_dir, data):
     :return: dict {filename : content} to create on files_layer
     """
 
-    return {
+    styles = ""
+
+    result = {
         "index.html": "<h1>wordpress</h1>"
     }
+
+    return result
