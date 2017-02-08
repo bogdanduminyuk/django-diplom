@@ -1,16 +1,16 @@
+import json
 import os
 import shutil
-import json
 
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
+from adaptation import settings as adapt_settings
 from adaptation.core.classes import UserFileNotFoundError, DescriptionKeyNotFoundError, AdaptationTypeError
 from adaptation.core.functions import split_path
-from adaptation.core.joomla import adaptation_joomla
-from adaptation.core.wordpress import functions as wp_func
-from adaptation import settings as adapt_settings
+from adaptation.joomla.joomla import adaptation_joomla
+from adaptation.wordpress import functions as wp_func
 
 
 def adapt(form_data):
