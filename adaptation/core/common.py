@@ -77,7 +77,7 @@ def adaptation_files_layer(src_dir, dst_dir, data):
         Checks if requirements are complied.
 
         :param src_dir: path to the dir of unpacked input file
-        :return: description dict
+        :return: description dict of absolute paths of files in description
         """
         for required_file in adapt_settings.COMMON_REQUIRES_FILES:
             absolute_path = os.path.join(src_dir, required_file)
@@ -90,9 +90,11 @@ def adaptation_files_layer(src_dir, dst_dir, data):
         with open(description_path, 'r', encoding='utf-8') as description_file:
             description = json.loads(description_file.read())
 
-        for key in description.keys():
+        for key, value in description.items():
             if key not in adapt_settings.REQUIRED_DESCRIPTION_KEYS:
                 raise DescriptionKeyNotFoundError(key)
+            else:
+                description[key] = os.path.join(src_dir, value)
 
         return description
 
