@@ -6,8 +6,10 @@ How we adapt, what to adapt and what to do.
 
 # Common definitions
 
+DESCRIPTION_FILE = 'description.json'
+
 COMMON_REQUIRES_FILES = [
-    'description.json',
+    DESCRIPTION_FILE,
 ]
 
 REQUIRED_DESCRIPTION_KEYS = [
