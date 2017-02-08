@@ -36,23 +36,31 @@ def adaptation_wordpress_461(src_dir, data):
     :param data: data of input form and additional script data
     :return: dict {filename : content} to create on files_layer
     """
-    user_description = data['description']
+    def get_wp_styles_content(src_dir, data):
+        """
+        Returns content of style's file.
 
-    name = data['name']
-    author = data.get('author', '')
-    description = data.get('description', '')
-    version = data['version']
-    theme_license = data.get('theme_license', '')
-    tags = data.get('tags', '')
-    comments = data.get('comments', '')
+        :param src_dir: path to the dir of unpacked input file
+        :param data: data of input form and additional script data
+        :return:
+        """
+        src_styles_path = os.path.join(src_dir, data['description']['css'])
+        with open(src_styles_path, 'r', encoding='utf-8') as styles_file:
+            return src_styles_path, adapt_settings.STYLES.format(
+                data['name'],
+                data.get('author', ''),
+                data.get('description', ''),
+                data['version'],
+                data.get('theme_license', ''),
+                data.get('tags', ''),
+                data.get('comments', ''),
+                styles_file.read()
+            )
 
-    styles_css = os.path.join(src_dir, user_description['css'])
-    with open(styles_css, 'r', encoding='utf-8') as styles_file:
-        styles_content = styles_file.read()
-        # TODO: finish it
-        adapt_styles_content = adapt_settings.STYLES.format(name, author, description, version, theme_license, tags, comments, styles_content)
+    css_path, css_content = get_wp_styles_content(src_dir, data)
 
     result = {
+        css_path: get_wp_styles_content(src_dir, data),
         "index.html": "<h1>wordpress</h1>"
     }
 
