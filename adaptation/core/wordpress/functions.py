@@ -1,5 +1,4 @@
 # coding: utf-8
-import os
 
 from adaptation.core.classes import AdaptationVersionError
 from adaptation import settings as adapt_settings
@@ -36,17 +35,16 @@ def adaptation_wordpress_461(src_dir, data):
     :param data: data of input form and additional script data
     :return: dict {filename : content} to create on files_layer
     """
-    def get_wp_styles_content(src_dir, data):
+    def get_wp_styles_content(src_css_path, data):
         """
         Returns content of style's file.
 
-        :param src_dir: path to the dir of unpacked input file
+        :param src_css_path: path to the dir of unpacked input file
         :param data: data of input form and additional script data
         :return:
         """
-        src_styles_path = os.path.join(src_dir, data['description']['css'])
-        with open(src_styles_path, 'r', encoding='utf-8') as styles_file:
-            return src_styles_path, adapt_settings.STYLES.format(
+        with open(src_css_path, 'r', encoding='utf-8') as styles_file:
+            return adapt_settings.STYLES.format(
                 data['name'],
                 data.get('author', ''),
                 data.get('description', ''),
@@ -57,11 +55,14 @@ def adaptation_wordpress_461(src_dir, data):
                 styles_file.read()
             )
 
-    css_path, css_content = get_wp_styles_content(src_dir, data)
+    def handle_index_file(src_index_path, data):
+        pass
+
+    user_description = data['description.json']
 
     result = {
-        css_path: get_wp_styles_content(src_dir, data),
-        "index.html": "<h1>wordpress</h1>"
+        "style.css": get_wp_styles_content(user_description['css'], data),
+        "index.php": handle_index_file(user_description['index'], data)
     }
 
     return result

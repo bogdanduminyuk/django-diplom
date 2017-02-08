@@ -9,7 +9,7 @@ from django.shortcuts import render
 from adaptation.core.classes import UserFileNotFoundError, DescriptionKeyNotFoundError, AdaptationTypeError
 from adaptation.core.functions import split_path
 from adaptation.core.joomla import adaptation_joomla
-from adaptation.core.wordpress import adaptation_wordpress
+from adaptation.core.wordpress import functions as wp_func
 from adaptation import settings as adapt_settings
 
 
@@ -125,7 +125,7 @@ def adaptation_core_layer(src_dir, data):
     form_type = data['form']
 
     if form_type == 'WordPress':
-        call = adaptation_wordpress
+        call = wp_func.adaptation_wordpress
     elif form_type == 'Joomla':
         call = adaptation_joomla
     else:
