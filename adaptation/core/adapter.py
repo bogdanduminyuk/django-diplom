@@ -98,19 +98,22 @@ class Adapter:
         return internal_description
 
     def __get_files__(self, description):
+        """
+        Gets files of custom cms.
 
+        :param description: passed to custom cms adapt method
+        :return: returns dict of files and content
+        """
         if self.data['form'] in adapt_settings.CMS:
             package = self.data['form']
             adapter_shortcut = "adapter"
             adapter_class = self.data['form'] + 'Adapter'
             import_string = 'import adaptation.{0}.{1} as {2}'.format(package, adapter_class, adapter_shortcut)
-            call_string = 'files = {0}.{1}(description, self.data).adapt()'.format(adapter_shortcut, adapter_class)
+            call_string = '{0}.{1}(description, self.data).adapt()'.format(adapter_shortcut, adapter_class)
         else:
             raise AdaptationTypeError(self.data['form'])
 
-        files = {}
-
         exec(import_string)
-        exec(call_string)
+        files = eval(call_string)
 
         return files
