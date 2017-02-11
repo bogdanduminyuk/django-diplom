@@ -4,6 +4,7 @@ from adaptation.core.adapter import BaseAdapter
 
 
 class WordPressAdapter(BaseAdapter):
+    """Class keeps methods for all WordPress adapters"""
     def get_wp_styles(self, source_css_file):
         """
         Gets content of input css remade to wp.

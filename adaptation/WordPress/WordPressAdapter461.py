@@ -3,6 +3,7 @@ from adaptation.WordPress.WordPressAdapter import WordPressAdapter
 
 
 class WordPressAdapter461(WordPressAdapter):
+    """Custom wordpress adapter"""
     def adapt(self):
         files = {}
 

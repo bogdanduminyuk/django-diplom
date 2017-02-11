@@ -11,6 +11,11 @@ from adaptation.core.functions import split_path
 
 
 class Adapter:
+    """
+    Class is used as interface for adaptation.
+
+    Just call adapt-method for make adaptation.
+    """
     def __init__(self, data):
         self.data = data
         self.file = data['file']
