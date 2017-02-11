@@ -1,4 +1,9 @@
 # coding: utf-8
+from bs4 import BeautifulSoup as bs
+
+from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
+
 from adaptation import settings as adapt_settings
 from adaptation.core.adapter import BaseAdapter
 
@@ -25,3 +30,30 @@ class WordPressAdapter(BaseAdapter):
             )
 
             return {adapt_settings.WORDPRESS['STYLE']['FILE']: content}
+
+    @staticmethod
+    def prepare(content):
+        """
+        Prepares content using adapt_settings.
+
+        :param content: page content
+        :return: modified page content
+        """
+        soup = bs(content, 'html.parser')
+
+        for method, attrs in adapt_settings.WORDPRESS['PREPARATION']['RELATIVES'].items():
+            for attr, tags in attrs.items():
+                for tag in tags:
+                    for tag_item in soup.find_all(tag):
+
+                        validator = URLValidator()
+
+                        try:
+                            validator(tag_item.attrs[attr])
+                        except ValidationError:
+                            value = "<?php {0};?>{1}".format(method, tag_item.attrs[attr])
+                            tag_item.attrs[attr] = value
+                        except KeyError:
+                            pass
+
+        return soup.prettify(formatter=None)

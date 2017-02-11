@@ -25,6 +25,15 @@ CMS = ['WordPress', 'Joomla']
 # Wordpress definition
 
 WORDPRESS = {
+    "PREPARATION": {
+        "RELATIVES": {
+            "get_template_directory_uri()": {
+                'href': ['link'],
+                'src': ['script', 'img'],
+            },
+        }
+    },
+
     'INDEX': {
         'HEADER': {
             'SELECTOR': '#page-header',
