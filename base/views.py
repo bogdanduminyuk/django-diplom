@@ -1,11 +1,11 @@
 # coding: utf-8
 import os
 
+from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.conf import settings
 
-from adaptation.core.common import adapt
+from adaptation.core.adapter import Adapter
 
 
 def home(request):
@@ -37,7 +37,8 @@ def result(request):
         del request.session['form_data']
 
         if 'file' in form_data:
-            result_href = adapt(form_data)
+            adapter = Adapter(form_data)
+            result_href = adapter.adapt()
         else:
             # TODO: handle generation
             result_href = 'file'
