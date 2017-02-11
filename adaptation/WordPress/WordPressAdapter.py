@@ -3,6 +3,16 @@ from adaptation import settings as adapt_settings
 
 
 class WordPressAdapter:
+    def __init__(self, description, data):
+        self.description = description
+        self.data = data
+
+    def adapt(self):
+        return {
+            "index.html": "<h1>HelloWorld</h1>",
+            "page.html": "<h2>Page</h2>",
+        }
+
     @staticmethod
     def get_wp_styles(source_css_file, data):
         with open(source_css_file, 'r', encoding='utf-8') as styles_file:

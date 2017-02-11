@@ -104,15 +104,13 @@ class Adapter:
             adapter_shortcut = "adapter"
             adapter_class = self.data['form'] + 'Adapter'
             import_string = 'import adaptation.{0}.{1} as {2}'.format(package, adapter_class, adapter_shortcut)
-            call_string = 'files = {0}.{1}().adapt()'.format(adapter_shortcut, adapter_class)
-
-            exec(import_string)
-            exec(call_string)
-
+            call_string = 'files = {0}.{1}(description, self.data).adapt()'.format(adapter_shortcut, adapter_class)
         else:
             raise AdaptationTypeError(self.data['form'])
 
-        return {
-            "index.html": "<h1>HelloWorld</h1>",
-            "page.html": "<h2>Page</h2>",
-        }
+        files = {}
+
+        exec(import_string)
+        exec(call_string)
+
+        return files
