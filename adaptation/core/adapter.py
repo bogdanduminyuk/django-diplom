@@ -5,12 +5,11 @@ import os
 import shutil
 from django.conf import settings
 from adaptation import settings as adapt_settings
-from adaptation.core.classes import UserFileNotFoundError, DescriptionKeyNotFoundError
+from adaptation.core.classes import UserFileNotFoundError, DescriptionKeyNotFoundError, AdaptationTypeError
 
 from adaptation.core.functions import split_path
 
 
-# TODO: test the class
 class Adapter:
     def __init__(self, data):
         self.data = data
@@ -34,6 +33,13 @@ class Adapter:
                 shutil.rmtree(directory)
 
     def adapt(self):
+        """
+        External adapt function. It means path_layer handling.
+
+        It unpacks input zip, checks requirements and creates files.
+
+        :return: href to result archive
+        """
         shutil.unpack_archive(self.file, self.dirs['src'], 'zip')
 
         description = self.__check_requirements__()
@@ -46,6 +52,15 @@ class Adapter:
         return os.path.join(settings.MEDIA_URL, os.path.basename(archived_abs_path))
 
     def __make_files__(self, description):
+        """
+        Files handling.
+
+        Writes dict{filename : content} to files in dst_dir.
+        The dict is result of __get_files__.
+
+        :param description: json description from zip
+        :return: None
+        """
         files = self.__get_files__(description)
 
         for filename, content in files.items():
@@ -55,6 +70,11 @@ class Adapter:
                 file.write(content)
 
     def __check_requirements__(self):
+        """
+        Checks if requirements are complied.
+
+        :return: description dict of absolute paths of files in description
+        """
         src = self.dirs['src']
 
         for required in adapt_settings.COMMON_REQUIRES_FILES:
@@ -78,6 +98,20 @@ class Adapter:
         return internal_description
 
     def __get_files__(self, description):
+
+        if self.data['form'] in adapt_settings.CMS:
+            package = self.data['form']
+            adapter_shortcut = "adapter"
+            adapter_class = self.data['form'] + 'Adapter'
+            import_string = 'import adaptation.{0}.{1} as {2}'.format(package, adapter_class, adapter_shortcut)
+            call_string = 'files = {0}.{1}().adapt()'.format(adapter_shortcut, adapter_class)
+
+            exec(import_string)
+            exec(call_string)
+
+        else:
+            raise AdaptationTypeError(self.data['form'])
+
         return {
             "index.html": "<h1>HelloWorld</h1>",
             "page.html": "<h2>Page</h2>",
