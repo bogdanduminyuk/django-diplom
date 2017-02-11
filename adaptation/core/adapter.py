@@ -107,7 +107,7 @@ class Adapter:
         if self.data['form'] in adapt_settings.CMS:
             package = self.data['form']
             adapter_shortcut = "adapter"
-            adapter_class = self.data['form'] + 'Adapter'
+            adapter_class = '{0}Adapter{1}'.format(self.data['form'], self.data['version'])
             import_string = 'import adaptation.{0}.{1} as {2}'.format(package, adapter_class, adapter_shortcut)
             call_string = '{0}.{1}(description, self.data).adapt()'.format(adapter_shortcut, adapter_class)
         else:
@@ -117,3 +117,10 @@ class Adapter:
         files = eval(call_string)
 
         return files
+
+
+class BaseAdapter:
+    """The BaseAdapter class is used for realizing common actions of all adapters."""
+    def __init__(self, description, data):
+        self.description = description
+        self.data = data

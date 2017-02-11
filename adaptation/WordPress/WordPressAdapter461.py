@@ -1,8 +1,13 @@
 # coding: utf-8
+from adaptation.WordPress.WordPressAdapter import WordPressAdapter
 
 
-class WordPressAdapter461:
+class WordPressAdapter461(WordPressAdapter):
     def adapt(self):
-        return {
-            "index.html": "<h1>WordPressAdapter461</h1>"
-        }
+        files = {}
+
+        styles = self.get_wp_styles(self.description['css'])
+
+        files.update(styles)
+
+        return files
