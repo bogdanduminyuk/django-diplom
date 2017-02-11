@@ -3,8 +3,9 @@ import os
 from django.conf import settings
 from django.http import HttpResponse
 
+from adaptation.core.adapter import Adapter
+from adaptation.core.common import handle_adapt_request
 from .forms import WpAdaptForm, JoomlaAdaptForm
-from adaptation.core.common import handle_adapt_request, adapt
 
 
 def wordpress_adaptation(request):
@@ -24,6 +25,7 @@ def test(request):
 
     form_data = {'name': file_name, 'file': example, 'form': 'WordPress', 'version': 461}
 
-    result_href = adapt(form_data)
+    adapter = Adapter(form_data)
+    result_href = adapter.adapt()
 
     return HttpResponse('<a href="' + result_href + '">Скачать</a>')
