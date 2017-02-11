@@ -17,6 +17,9 @@ REQUIRED_DESCRIPTION_KEYS = [
     'index',
 ]
 
+# Handled CMS
+
+CMS = ['WordPress', 'Joomla']
 
 # Wordpress definition
 

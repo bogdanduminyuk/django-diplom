@@ -29,7 +29,7 @@ def adaptation_wordpress_461(src_dir, data):
     """
     WordPress 4.6.1 adaptation method.
 
-    Realizes adaptation for wordpress v4.6.1.
+    Realizes adaptation for WordPress v4.6.1.
 
     :param src_dir: path to the dir of unpacked input file
     :param data: data of input form and additional script data
