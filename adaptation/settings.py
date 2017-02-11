@@ -21,44 +21,30 @@ REQUIRED_DESCRIPTION_KEYS = [
 
 CMS = ['WordPress', 'Joomla']
 
+
 # Wordpress definition
 
 WORDPRESS = {
-    
-    'HEADER': {
-        'SELECTOR': '#page-header',
-        'FILE': 'header.php',
-        'METHOD_CALL': 'get_header()',
-    },
-    
-    'FOOTER': {
-        'SELECTOR': '#page-footer',
-        'FILE': 'footer.php',
-        'METHOD_CALL': 'get_footer()',
+    'INDEX': {
+        'HEADER': {
+            'SELECTOR': '#page-header',
+            'FILE': 'header.php',
+            'METHOD_CALL': 'get_header()',
+        },
+
+        'FOOTER': {
+            'SELECTOR': '#page-footer',
+            'FILE': 'footer.php',
+            'METHOD_CALL': 'get_footer()',
+        },
     },
 
     'STYLE': {
         'SELECTOR': False,
         'FILE': 'style.css',
         'METHOD_CALL': False,
+        'CONTENT': "/*Theme Name: {0}\nAuthor: {1}\nDescription: {2}\nVersion: {3}\nLicense: {4}\nTags: {5}\n{6}\n*/\n\n{7}",
     },
-    
+
 }
-
-
-# styles template for str.format
-
-STYLES = """/*
-Theme Name: {0}
-Author: {1}
-Description: {2}
-Version: {3}
-License: {4}
-Tags: {5}
-
-{6}
-*/
-
-{7}
-"""
 
