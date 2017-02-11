@@ -9,27 +9,25 @@ class WordPressAdapter:
 
     def adapt(self):
         src_css = self.description['css']
-        styles = self.get_wp_styles(src_css, self.data)
+        styles = self.get_wp_styles(src_css)
         return {'style.css': styles}
 
-    @staticmethod
-    def get_wp_styles(source_css_file, data):
+    def get_wp_styles(self, source_css_file):
         """
         Gets content of input css remade to wp.
 
         :param source_css_file: path to source css
-        :param data: form data
         :return: wp css content
         """
         with open(source_css_file, 'r', encoding='utf-8') as styles_file:
             return adapt_settings.STYLES.format(
-                data['name'],
-                data.get('author', ''),
-                data.get('description', ''),
-                data['version'],
-                data.get('theme_license', ''),
-                data.get('tags', ''),
-                data.get('comments', ''),
+                self.data['name'],
+                self.data.get('author', ''),
+                self.data.get('description', ''),
+                self.data['version'],
+                self.data.get('theme_license', ''),
+                self.data.get('tags', ''),
+                self.data.get('comments', ''),
                 styles_file.read()
             )
 
