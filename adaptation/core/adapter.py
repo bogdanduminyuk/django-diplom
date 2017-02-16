@@ -48,7 +48,7 @@ class Adapter:
         shutil.unpack_archive(self.file, self.dirs['src'], 'zip')
 
         description = self.__check_requirements__()
-        self.__make_files__(description)
+        self.__make_files__(description, self.dirs['src'], self.dirs['dst'])
 
         archived_abs_path = shutil.make_archive(self.dirs['dst'], 'zip',
                                                 root_dir=settings.MEDIA_ROOT,
@@ -56,7 +56,7 @@ class Adapter:
 
         return os.path.join(settings.MEDIA_URL, os.path.basename(archived_abs_path))
 
-    def __make_files__(self, description):
+    def __make_files__(self, description, src_dir, dst_dir):
         """
         Files handling.
 
@@ -66,6 +66,12 @@ class Adapter:
         :param description: json description from zip
         :return: None
         """
+        for curr_dir in os.listdir(src_dir):
+            src_path = os.path.join(src_dir, curr_dir)
+            dst_path = os.path.join(dst_dir, curr_dir)
+            if os.path.isdir(src_path):
+                shutil.copytree(src_path, dst_path)
+
         files = self.__get_files__(description)
 
         for filename, content in files.items():

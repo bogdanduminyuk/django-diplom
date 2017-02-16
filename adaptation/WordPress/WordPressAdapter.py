@@ -51,7 +51,7 @@ class WordPressAdapter(BaseAdapter):
                         try:
                             validator(tag_item.attrs[attr])
                         except ValidationError:
-                            value = "<?php {0};?>{1}".format(method, tag_item.attrs[attr])
+                            value = "<?php echo {0};?>/{1}".format(method, tag_item.attrs[attr])
                             tag_item.attrs[attr] = value
                         except KeyError:
                             pass

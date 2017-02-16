@@ -25,17 +25,12 @@ class WordPressAdapter461(WordPressAdapter):
         # TODO: add copying of static files
         # TODO: simplify the code below
         with open(self.description['index'], 'r', encoding='utf-8') as index_file:
-            content = index_file.read()
-            content = self.prepare(content)
-
+            content = self.prepare(index_file.read())
             soup = bs(content, 'html.parser')
             compressed_content = str(soup)
 
             for key, option in adapt_settings.WORDPRESS['INDEX'].items():
-                filename = option['FILE']
-                selector = option['SELECTOR']
-
-                sub_content = str(soup.select(selector)[0])
+                sub_content = str(soup.select(option['SELECTOR'])[0])
                 position = compressed_content.find(sub_content)
 
                 if key == 'HEADER':
@@ -44,7 +39,7 @@ class WordPressAdapter461(WordPressAdapter):
                     sub_content += compressed_content[position + len(sub_content):]
 
                 compressed_content = compressed_content.replace(sub_content, "<?php " + option['METHOD_CALL'] + ";?>")
-                files[filename] = sub_content
+                files[option['FILE']] = sub_content
 
             files['index.php'] = compressed_content
 
