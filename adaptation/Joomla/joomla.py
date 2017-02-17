@@ -10,5 +10,5 @@ def adaptation_joomla(src_dir, data):
     """
     # TODO: check for versions
     return {
-        "index.html": "<h1>joomla</h1>"
+        "index.html": "<h1>Joomla</h1>"
     }
