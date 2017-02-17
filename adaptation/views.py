@@ -16,7 +16,7 @@ def joomla_adaptation(request):
     return handle_adapt_request(request, JoomlaAdaptForm, 'Joomla')
 
 
-def test(request):
+def wp_test(request):
     get_dict = request.GET.dict()
 
     file_name = get_dict.get('file', 'snowboarding')
@@ -25,6 +25,20 @@ def test(request):
 
     form_data = {'name': file_name, 'file': example, 'form': 'WordPress', 'version': 461}
 
+    adapter = Adapter(form_data)
+    result_href = adapter.adapt()
+
+    return HttpResponse('<a href="' + result_href + '">Скачать</a>')
+
+
+def joomla_test(request):
+    get_dict = request.GET.dict()
+
+    file_name = get_dict.get('file', 'snowboarding')
+    file = file_name + '.zip'
+    example = os.path.join(settings.BASE_DIR, 'examples', 'wp', file)
+
+    form_data = {'name': file_name, 'file': example, 'form': 'Joomla', 'version': 362}
     adapter = Adapter(form_data)
     result_href = adapter.adapt()
 
