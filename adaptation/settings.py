@@ -32,6 +32,7 @@ CMS = ['WordPress', 'Joomla']
 # Wordpress definition
 
 WORDPRESS = {
+    # TODO: make wp_settings the same like joomla
     "PREPARATION": {
         "TEMPLATE_STRUCTURE": {
             "css/style.css": "{content}",

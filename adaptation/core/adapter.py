@@ -141,7 +141,7 @@ class Adapter:
         files = self.__get_files__(description)
 
         # write all files with format
-        for filename, content in cms_settings["FILES"].items():
+        for filename, content in files.items():
             abs_path = os.path.join(self.dirs['dst'], filename)
             with open(abs_path, "w", encoding='utf-8') as file:
                 file.write(content)
@@ -194,7 +194,6 @@ class Adapter:
         files = eval(call_string)
 
         return files
-
 
 
 class BaseAdapter:

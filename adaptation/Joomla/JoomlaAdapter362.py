@@ -3,6 +3,7 @@ from adaptation.Joomla.JoomlaAdapter import JoomlaAdapter
 
 
 class JoomlaAdapter362(JoomlaAdapter):
+    # TODO: add parse index file
     def adapt(self):
         files = {}
 

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE install PUBLIC "-//Joomla! 2.5//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/1.6/template-install.dtd">
 <extension version="2.5" type="template" client="site">
     <name>{name}</name>
     <creationDate>{creationDate}</creationDate>
@@ -18,10 +17,7 @@
         <folder>language</folder>
         <filename>component.php</filename>
         <filename>error.php</filename>
-        <filename>{favicon}</filename>
         <filename>index.php</filename>
-        <filename>{preview_image}</filename>
-        <filename>{preview_thumbnail}</filename>
         <filename>templateDetails.xml</filename>
     </files>
 

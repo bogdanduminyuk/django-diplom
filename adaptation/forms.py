@@ -11,6 +11,9 @@ class BaseForm(forms.Form):
     name = forms.CharField(label='Название темы *',
                            widget=CustomTextInput(), required=True)
 
+    author = forms.CharField(label='Автор',
+                             widget=CustomTextInput(), required=False)
+
     def is_valid(self):
         valid = super(BaseForm, self).is_valid()
 
@@ -46,9 +49,6 @@ class BaseForm(forms.Form):
 
 
 class WpAdaptForm(BaseForm):
-    author = forms.CharField(label='Автор',
-                             widget=CustomTextInput(), required=False)
-
     description = forms.CharField(label='Описание',
                                   widget=CustomTextArea((3, 0)), required=False)
 
@@ -67,5 +67,21 @@ class WpAdaptForm(BaseForm):
 
 
 class JoomlaAdaptForm(BaseForm):
-    # TODO: realize Joomla adapt form
-    pass
+    authorUrl = forms.URLField(label='URL автора', required=False,
+                               widget=forms.URLInput(attrs={'class': 'form-control'}))
+
+    authorEmail = forms.EmailField(label='Email автора', required=False,
+                                   widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+    language = forms.CharField(label='Язык', widget=CustomTextInput())
+
+    version = forms.ChoiceField(label='Версия *',
+                                choices=((362, '3.6.2'), (0, 'Blank record'),),
+                                widget=forms.Select(attrs={'class': 'form-control'}))
+
+    license = forms.CharField(label='Лицензия', required=False,
+                                    widget=CustomTextArea((3, 0)))
+
+    copyright = forms.CharField(label='Copyright', required=False,
+                                      widget=CustomTextArea((3, 0)))
+
