@@ -18,10 +18,10 @@
         <folder>language</folder>
         <filename>component.php</filename>
         <filename>error.php</filename>
-        <filename>favicon.ico</filename>
+        <filename>{favicon}</filename>
         <filename>index.php</filename>
-        <filename>template_preview.png</filename>
-        <filename>template_thumbnail.png</filename>
+        <filename>{preview_image}</filename>
+        <filename>{preview_thumbnail}</filename>
         <filename>templateDetails.xml</filename>
     </files>
 
