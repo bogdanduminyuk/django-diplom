@@ -1,3 +1,5 @@
+import datetime
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
@@ -32,6 +34,7 @@ def handle_adapt_request(request, form_class, form_name):
             cleaned_data = form.cleaned_data
             cleaned_data['file'] = form.save_file()
             cleaned_data['form'] = form_name
+            cleaned_data['creationDate'] = datetime.datetime.now().strftime("%d-%m-%Y")
 
             redirect = HttpResponseRedirect('/result')
 
