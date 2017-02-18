@@ -1,6 +1,7 @@
 # coding: utf-8
 import json
 import os
+import distutils.dir_util as dir_util
 
 import shutil
 from django.conf import settings
@@ -37,6 +38,61 @@ class Adapter:
                 print('Removing %s' % directory)
                 shutil.rmtree(directory)
 
+    def __create_description__(self, public_data):
+        """
+        Returns dict of full description with settings and additional info.
+
+        Also executes format of FILES-keys using self.data.
+
+        :param public_data: data got by __check_requirements__
+        :return: dict of full system description
+        """
+        adapt_type = self.data['form'].upper()
+        static_cms_root = adapt_settings.STATIC_CMS_ROOT.format(form=self.data['form'])
+        cms_settings = eval("adapt_settings.{}".format(adapt_type))
+        templates = self.__get_templates__(static_cms_root, cms_settings["FILES"])
+
+        # exec format with FILES-keys
+        for key in cms_settings['FILES']:
+            cms_settings['FILES'][key.format(**self.data)] = cms_settings["FILES"].pop(key)
+
+        return {
+            "PUBLIC": public_data,
+            "PRIVATE": {
+                "SETTINGS": cms_settings,
+                "DIRS": self.dirs,
+                "TYPE": adapt_type,
+                "TEMPLATES": templates,
+            }
+        }
+
+    @staticmethod
+    def __get_templates__(static_cms_root, files):
+        """
+        Gets templates for current cms from static folder.
+
+        :param static_cms_root: path to dir of curr cms static files
+        :param files: dict of files from settings
+        :return: dict { template name : template_content }
+        """
+        templates_dict = {}
+        templates_path = os.path.join(static_cms_root, 'tpl')
+
+        for file, content in files.items():
+            if content == "{content}":
+                curr_template_name = file + '.tpl'
+                curr_template_path = os.path.join(templates_path, curr_template_name)
+
+                if os.path.exists(curr_template_path):
+                    with open(curr_template_path, "r", encoding='utf-8') as template_file:
+                        template_content = template_file.read()
+                        templates_dict[curr_template_name] = {
+                            "content": template_content,
+                            "path": curr_template_path
+                        }
+
+        return templates_dict
+
     def adapt(self):
         """
         External adapt function. It means path_layer handling.
@@ -47,8 +103,10 @@ class Adapter:
         """
         shutil.unpack_archive(self.file, self.dirs['src'], 'zip')
 
-        description = self.__check_requirements__()
-        self.__make_files__(description, self.dirs['src'], self.dirs['dst'])
+        public_data = self.__check_requirements__()
+        description = self.__create_description__(public_data)
+
+        self.__make_files__(description, self.dirs['dst'])
 
         archived_abs_path = shutil.make_archive(self.dirs['dst'], 'zip',
                                                 root_dir=settings.MEDIA_ROOT,
@@ -56,9 +114,11 @@ class Adapter:
 
         return os.path.join(settings.MEDIA_URL, os.path.basename(archived_abs_path))
 
-    def __make_files__(self, description, src_dir, dst_dir):
+    def __make_files__(self, description, dst_dir):
         """
         Files handling.
+
+        Gets settings for current adaptation type. Creates tree and writes files.
 
         Writes dict{filename : content} to files in dst_dir.
         The dict is result of __get_files__.
@@ -66,18 +126,24 @@ class Adapter:
         :param description: json description from zip
         :return: None
         """
-        for curr_dir in os.listdir(src_dir):
-            src_path = os.path.join(src_dir, curr_dir)
-            dst_path = os.path.join(dst_dir, curr_dir)
-            if os.path.isdir(src_path):
-                shutil.copytree(src_path, dst_path)
+        cms_settings = description["PRIVATE"]["SETTINGS"]
+
+        dir_util.create_tree(dst_dir, cms_settings["FILES"].keys())
+
+        # copying data from src folders to dst folders
+        for key in description["PUBLIC"]:
+            if key in cms_settings["DIR_NAMES"]:
+                src_path = description["PUBLIC"][key]
+                dst_path = os.path.join(dst_dir, cms_settings['DIR_NAMES'][key])
+
+                dir_util.copy_tree(src_path, dst_path)
 
         files = self.__get_files__(description)
 
-        for filename, content in files.items():
-            path = os.path.join(self.dirs['dst'], filename)
-
-            with open(path, 'w+', encoding='utf-8') as file:
+        # write all files with format
+        for filename, content in cms_settings["FILES"].items():
+            abs_path = os.path.join(self.dirs['dst'], filename)
+            with open(abs_path, "w", encoding='utf-8') as file:
                 file.write(content)
 
     def __check_requirements__(self):
@@ -128,6 +194,7 @@ class Adapter:
         files = eval(call_string)
 
         return files
+
 
 
 class BaseAdapter:

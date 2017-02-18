@@ -3,6 +3,10 @@ Here I keep all settings about adaptation.
 
 How we adapt, what to adapt and what to do.
 """
+import os
+
+from django.conf import settings
+
 
 # Common definitions
 
@@ -13,9 +17,12 @@ COMMON_REQUIRES_FILES = [
 ]
 
 REQUIRED_DESCRIPTION_KEYS = [
+    'images',
     'css',
     'index',
 ]
+
+STATIC_CMS_ROOT = os.path.join(settings.BASE_DIR, 'adaptation', '{form}', 'static')
 
 # Handled CMS
 
@@ -26,6 +33,19 @@ CMS = ['WordPress', 'Joomla']
 
 WORDPRESS = {
     "PREPARATION": {
+        "TEMPLATE_STRUCTURE": {
+            "css/style.css": "{content}",
+
+            "images/index.html": "<!DOCTYPE html><title></title>",
+
+            "js/index.html": "<!DOCTYPE html><title></title>",
+
+            "footer.php": "{content}",
+            "header.php": "{content}",
+            "index.php": "{content}",
+            "style.php": "{content}",
+        },
+
         "RELATIVES": {
             "get_template_directory_uri()": {
                 'href': ['link'],
@@ -57,31 +77,28 @@ WORDPRESS = {
 }
 
 JOOMLA = {
-    "PREPARATION": {
-        "TEMPLATE_STRUCTURE": {
-            "css": {
-                "template.css": "{content}",
-                "index.html": "<!DOCTYPE html><title></title>"
-            },
+    # key - description key, value - CMS folder name
+    "DIR_NAMES": {
+        "images": "images",
+        "css": "css",
+        "js": "js",
+    },
 
-            "images": {
-                "index.html": "<!DOCTYPE html><title></title>"
-            },
+    "FILES": {
+        # with dirs
+        "css/index.html": "<!DOCTYPE html><title></title>",
+        "images/index.html": "<!DOCTYPE html><title></title>",
 
-            "language": {
-                "{language}": {
-                    "{language}.tpl_{theme_name}.ini": "{}",
-                    "{language}.tpl_{theme_name}.sys.ini": "TPL_WHITESQUARE_XML_DESCRIPTION=\"{xml_description}\"",
-                }
-            },
+        "js/index.html": "<!DOCTYPE html><title></title>",
 
-            "files": {
-                "component.php": "{content}",
-                "error.php": "{content}",
-                "index.php": "{content}",
-                "templateDetails.xml": "{content}"
-            },
-        }
+        "language/{language}/{language}.tpl_{name}.ini": "",
+        "language/{language}/{language}.tpl_{name}.sys.ini": 'TPL_WHITESQUARE_XML_DESCRIPTION="{xml_description}"',
+
+        # clear files
+        "component.php": "{content}",
+        "error.php": "{content}",
+        "index.php": "{content}",
+        "templateDetails.xml": "{content}",
     },
 }
 

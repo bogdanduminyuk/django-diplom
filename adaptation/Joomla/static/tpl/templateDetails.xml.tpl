@@ -29,7 +29,7 @@
     </positions>
 
     <languages folder="language">
-        <language tag="{language}">{language}.tpl_{theme_name}.ini</language>
-        <language tag="{language}">{language}.tpl_{theme_name}.sys.ini</language>
+        <language tag="{language}">{language}.tpl_{name}.ini</language>
+        <language tag="{language}">{language}.tpl_{name}.sys.ini</language>
     </languages>
 </extension>
