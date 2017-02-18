@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE install PUBLIC "-//Joomla! 2.5//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/1.6/template-install.dtd">
 <extension version="2.5" type="template" client="site">
-    <name>{theme_name}</name>
+    <name>{name}</name>
     <creationDate>{creationDate}</creationDate>
     <author>{author}</author>
     <authorEmail>{authorEmail}</authorEmail>
