@@ -10,42 +10,43 @@ class WordPressAdapter461(WordPressAdapter):
     def adapt(self):
         files = {}
 
-        styles = self.get_wp_styles(self.description['css'])
+        contents = self.split_index()
+        self.data.update(contents)
 
-        index = self.parse_index_file()
+        for file, file_content in self.settings["FILES"].items():
+            tpl_key = file + '.tpl'
+            if tpl_key in self.templates:
+                content = self.templates[tpl_key]['content'].format(**self.data)
+            else:
+                content = ''
+                for starts, _content in contents.items():
+                    if file.startswith(starts):
+                        content = _content
+                        break
 
-        files.update(styles)
-        files.update(index)
+            files[file] = file_content.format(content=content)
+
+        for file, content in files.items():
+            _content = content.replace('&lt;', '<')
+            _content = _content.replace('&gt;', '>')
+            files[file] = _content
 
         return files
 
-    def parse_index_file(self):
-        files = {}
+    def split_index(self):
+        header = self.page_parts['header']
+        footer = self.page_parts['footer']
+        content = self.index_content
 
-        # TODO: add copying of static files
-        # TODO: simplify the code below
-        with open(self.description['index'], 'r', encoding='utf-8') as index_file:
-            content = self.prepare(index_file.read())
-            soup = bs(content, 'html.parser')
-            compressed_content = str(soup)
+        header_end_pos = content.find(header) + len(header)
+        footer_start_pos = content.find(footer)
 
-            for key, option in adapt_settings.WORDPRESS['INDEX'].items():
-                sub_content = str(soup.select(option['SELECTOR'])[0])
-                position = compressed_content.find(sub_content)
+        header = content[0: header_end_pos]
+        footer = content[footer_start_pos:]
+        content = content[header_end_pos: footer_start_pos]
 
-                if key == 'HEADER':
-                    sub_content = compressed_content[0: position + len(sub_content)]
-                elif key == 'FOOTER':
-                    sub_content += compressed_content[position + len(sub_content):]
-
-                compressed_content = compressed_content.replace(sub_content, "<?php " + option['METHOD_CALL'] + ";?>")
-                files[option['FILE']] = sub_content
-
-            files['index.php'] = compressed_content
-
-            for file, content in files.items():
-                content = content.replace('&lt;', '<')
-                files[file] = content.replace('&gt;', '>')
-
-            return files
-
+        return {
+            "header": header,
+            "index_content": content,
+            "footer": footer,
+        }

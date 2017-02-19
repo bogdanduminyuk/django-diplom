@@ -44,7 +44,7 @@ WORDPRESS = {
         "footer.php": "{content}",
         "header.php": "{content}",
         "index.php": "{content}",
-        "style.php": "{content}",
+        "style.css": "{content}",
     },
 }
 

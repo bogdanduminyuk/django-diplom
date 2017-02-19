@@ -1,3 +1,3 @@
 <?php get_header(); ?>
-{content}
+{index_content}
 <?php get_footer(); ?>

@@ -30,7 +30,7 @@ class WordPressAdapter(BaseAdapter):
         soup = bs(content, "html.parser")
 
         for method, values in methods.items():
-            for attr, tags in method.items():
+            for attr, tags in values.items():
                 for tag in tags:
                     for tag_item in soup.find_all(tag):
 
@@ -44,4 +44,4 @@ class WordPressAdapter(BaseAdapter):
                         except KeyError:
                             pass
 
-        return soup.prettify(formatter=None)
+        return str(soup)
