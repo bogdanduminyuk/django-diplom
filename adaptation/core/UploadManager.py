@@ -7,15 +7,21 @@ from django.conf import settings
 
 class UploadManager:
     def __init__(self, filename, theme_name):
-        self.src = os.path.splitext(filename)[0]
+        self.src = os.path.join(settings.TEMP_DIR, os.path.splitext(os.path.basename(filename))[0])
         self.dst = os.path.join(settings.MEDIA_ROOT, theme_name)
         self.filename = filename
         self.theme_name = theme_name
+
+        print("Src:", self.src)
+        print("Dst:", self.dst)
+        print("Filename:", self.filename)
+        print("Theme name:", self.theme_name)
 
         for directory in [self.src, self.dst]:
             if os.path.exists(directory):
                 print("Removing dir:", directory)
                 shutil.rmtree(directory)
+            print("Creating dir:", directory)
             os.mkdir(directory)
 
     def __del__(self):
