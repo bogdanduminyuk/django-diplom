@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 
 from adaptation import settings as adapt_settings
-from adaptation.core.adapter import BaseAdapter
+from adaptation.core.BaseAdapter import BaseAdapter
 
 
 class WordPressAdapter(BaseAdapter):

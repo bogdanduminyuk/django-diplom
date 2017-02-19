@@ -7,7 +7,7 @@ from django.conf import settings
 
 class UploadManager:
     def __init__(self, filename, theme_name):
-        self.src = os.path.join(settings.TEMP_DIR, filename)
+        self.src = os.path.splitext(filename)[0]
         self.dst = os.path.join(settings.MEDIA_ROOT, theme_name)
         self.filename = filename
         self.theme_name = theme_name
