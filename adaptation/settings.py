@@ -8,24 +8,7 @@ import os
 from django.conf import settings
 
 
-# Common definitions
-
-DESCRIPTION_FILE = 'description.json'
-
-COMMON_REQUIRES_FILES = [
-    DESCRIPTION_FILE,
-]
-
-REQUIRED_DESCRIPTION_KEYS = [
-    'images',
-    'css',
-    'index',
-]
-
 STATIC_CMS_ROOT = os.path.join(settings.BASE_DIR, 'adaptation', '{form}', 'static')
-
-
-# Handled CMS
 
 CMS = ['WordPress', 'Joomla']
 
