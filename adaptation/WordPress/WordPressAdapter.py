@@ -1,48 +1,36 @@
 # coding: utf-8
 from bs4 import BeautifulSoup as bs
-
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 
-from adaptation import settings as adapt_settings
 from adaptation.core.BaseAdapter import BaseAdapter
 
 
 class WordPressAdapter(BaseAdapter):
     """Class keeps methods for all WordPress adapters"""
-    def get_wp_styles(self, source_css_file):
-        """
-        Gets content of input css remade to wp.
+    def __init__(self, process_files, data):
+        super(WordPressAdapter, self).__init__(process_files, data)
 
-        :param source_css_file: path to source css
-        :return: wp css content
-        """
-        with open(source_css_file, 'r', encoding='utf-8') as styles_file:
-            content = adapt_settings.WORDPRESS['STYLE']['CONTENT'].format(
-                self.data['name'],
-                self.data.get('author', ''),
-                self.data.get('description', ''),
-                self.data['version'],
-                self.data.get('theme_license', ''),
-                self.data.get('tags', ''),
-                self.data.get('comments', ''),
-                styles_file.read()
-            )
+        preparation = self.settings.get("PREPARATION", False)
 
-            return {adapt_settings.WORDPRESS['STYLE']['FILE']: content}
+        if preparation:
+            self.index_content = self.__do_preparation__(preparation, self.index_content)
+
+        self.page_parts = self.__get_page_parts__(self.index_content)
 
     @staticmethod
-    def prepare(content):
+    def __do_preparation__(preparation, content):
         """
         Prepares content using adapt_settings.
 
         :param content: page content
         :return: modified page content
         """
-        soup = bs(content, 'html.parser')
+        methods = preparation['METHODS']
+        soup = bs(content, "html.parser")
 
-        for method, attrs in adapt_settings.WORDPRESS['PREPARATION']['RELATIVES'].items():
-            for attr, tags in attrs.items():
+        for method, values in methods.items():
+            for attr, tags in method.items():
                 for tag in tags:
                     for tag_item in soup.find_all(tag):
 

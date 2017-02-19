@@ -1,30 +1,32 @@
 # coding: utf-8
 import os
 
+from bs4 import BeautifulSoup as bs
+
 from adaptation import settings as adapt_settings
 
 
 class BaseAdapter:
     """The BaseAdapter class is used for realizing common actions of all adapters."""
-    def __init__(self, files_to_work, data):
-        self.data = self.__create_full_data__(files_to_work, data)
-
-    def __create_full_data__(self, files_to_work, data):
+    def __init__(self, process_files, data):
         adapt_type = data['form'].upper()
         static_cms_root = adapt_settings.STATIC_CMS_ROOT.format(form=data['form'])
-        cms_settings = eval("adapt_settings.{}".format(adapt_type))
-        templates = self.__get_templates__(static_cms_root)
+
+        self.data = data
+        self.process_files = process_files
+        self.templates = self.__get_templates__(static_cms_root)
+        self.settings = self.__get_settings__(adapt_type, data)
+        self.index_content = self.__get_index_content__(process_files)
+
+    @staticmethod
+    def __get_settings__(adapt_type, data):
+        settings = eval("adapt_settings.{}".format(adapt_type))
 
         # exec format with FILES-keys
-        for key in cms_settings['FILES']:
-            cms_settings['FILES'][key.format(**data)] = cms_settings["FILES"].pop(key)
+        for key in settings['FILES']:
+            settings['FILES'][key.format(**data)] = settings["FILES"].pop(key)
 
-        return {
-            "DATA": data,
-            "SETTINGS": cms_settings,
-            "TEMPLATES": templates,
-            "PROCESS_FILES": files_to_work,
-        }
+        return settings
 
     @staticmethod
     def __get_templates__(static_cms_root):
@@ -40,3 +42,23 @@ class BaseAdapter:
                 }
 
         return templates_dict
+
+    @staticmethod
+    def __get_page_parts__(index_content):
+        parts = {}
+        soup = bs(index_content, 'html.parser')
+
+        for part, values in adapt_settings.PAGE_PARTS.items():
+            selector = values["SELECTOR"]
+            parts[part] = str(soup.select(selector)[0])
+
+        return parts
+
+    @staticmethod
+    def __get_index_content__(process_files):
+        for filename, data in process_files.items():
+            if filename.startswith('index'):
+                with open(data['src'], 'r', encoding='utf-8') as file:
+                    return file.read()
+
+        return None
