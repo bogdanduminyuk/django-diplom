@@ -47,6 +47,11 @@ class UploadManager:
 
         return files
 
-    def download(self):
+    def download(self, files):
+        for path, content in files:
+            abs_path = os.path.join(self.dst, path)
+            with open(abs_path, "w", encoding='utf-8') as file:
+                file.write(content)
+
         path = shutil.make_archive(self.dst, 'zip', root_dir=settings.MEDIA_ROOT, base_dir=self.theme_name)
         return os.path.join(settings.MEDIA_URL, os.path.basename(path))
