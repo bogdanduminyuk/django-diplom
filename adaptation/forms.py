@@ -56,7 +56,7 @@ class WpAdaptForm(BaseForm):
                                 choices=((461, '4.6.1'), (0, 'Blank record'),),
                                 widget=forms.Select(attrs={'class': 'form-control'}))
 
-    theme_license = forms.CharField(label='Лицензия', required=False,
+    license = forms.CharField(label='Лицензия', required=False,
                                     widget=CustomTextArea((3, 0)))
 
     tags = forms.CharField(label='Теги', required=False,

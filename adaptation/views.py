@@ -32,7 +32,7 @@ def wp_test(request):
         'description': '',
         'license': '',
         'tags': '',
-        'comment': '',
+        'comments': '',
     }
 
     adapter = Adapter(form_data)

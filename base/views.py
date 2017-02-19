@@ -37,7 +37,7 @@ def result(request):
         del request.session['form_data']
 
         if 'file' in form_data:
-            adapter = Adapter(form_data)
+            adapter = Adapter(form_data.copy())
             result_href = adapter.adapt()
         else:
             # TODO: handle generation

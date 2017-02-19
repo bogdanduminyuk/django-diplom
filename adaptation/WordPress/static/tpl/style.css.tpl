@@ -6,6 +6,6 @@ Version: {version}
 License: {license}
 Tags: {tags}
 
-{comment}
+{comments}
 */
 
