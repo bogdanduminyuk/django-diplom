@@ -7,19 +7,28 @@ class JoomlaAdapter362(JoomlaAdapter):
     def adapt(self):
         files = {}
 
-        templates = self.description["PRIVATE"]["TEMPLATES"]
-        settings_files = self.description["PRIVATE"]["SETTINGS"]["FILES"]
+        templates = self.templates
+        settings_files = self.settings["FILES"]
 
         for file, content in settings_files.items():
-            if content == "{content}":
-                template_name = file + '.tpl'
-                if template_name in templates.keys():
-                    with open(templates[template_name]['path'], 'r', encoding='utf-8') as template_file:
-                        tpl_content = template_file.read()
-                        file_content = tpl_content.format(**self.data)
-                else:
-                    file_content = ''
+            file_content = ''
+            if file == 'templateDetails.xml':
+                pass
 
-                files[file] = file_content
+            elif content == "{content}":
+                template_name = file + '.tpl'
+
+                # apply data to content-template
+                if template_name in templates.keys():
+                    tpl_content = templates[template_name]["content"]
+                    file_content = tpl_content.format(**self.data)
+            else:
+                file_content = content
+
+            files[file] = file_content
+
+        self.__append_files__(files)
+        pretty_xml_str = self.__get_pretty_xml__(self.xml_element)
+        files['templateDetails.xml'] = pretty_xml_str
 
         return files

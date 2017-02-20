@@ -1,6 +1,7 @@
 # coding: utf-8
 import os
 import shutil
+import distutils.dir_util as dir_util
 
 from django.conf import settings
 
@@ -59,6 +60,7 @@ class UploadManager:
         return files
 
     def download(self, files):
+        dir_util.create_tree(self.dst, files)
         for path, content in files.items():
             abs_path = os.path.join(self.dst, path)
             with open(abs_path, "w", encoding='utf-8') as file:
