@@ -8,15 +8,15 @@ from adaptation import settings as adapt_settings
 
 class BaseAdapter:
     """The BaseAdapter class is used for realizing common actions of all adapters."""
-    def __init__(self, process_files, data):
+    def __init__(self, theme_files, data):
         adapt_type = data['form'].upper()
         static_cms_root = adapt_settings.STATIC_CMS_ROOT.format(form=data['form'])
 
         self.data = data
-        self.process_files = process_files
+        self.theme_files = theme_files
         self.templates = self.__get_templates__(static_cms_root)
         self.settings = self.__get_settings__(adapt_type, data)
-        self.index_content = self.__get_index_content__(process_files)
+        self.index_content = self.__get_index_content__(theme_files["other"])
 
     @staticmethod
     def __get_settings__(adapt_type, data):

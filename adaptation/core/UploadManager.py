@@ -34,7 +34,10 @@ class UploadManager:
         shutil.unpack_archive(self.filename, self.src, 'zip')
 
         listdir = os.listdir(self.src)
-        files = {}
+        files = {
+            "moved": {},
+            "other": {},
+        }
 
         for file in listdir:
             abs_src = os.path.join(self.src, file)
@@ -43,10 +46,12 @@ class UploadManager:
 
             if os.path.isdir(abs_src):
                 shutil.copytree(abs_src, abs_dst)
+                files['moved'][file] = "folder"
             elif ext not in ['.html', '.htm', '.php']:
                 shutil.copyfile(abs_src, abs_dst)
+                files['moved'][file] = "filename"
             else:
-                files[file] = {
+                files['other'][file] = {
                     'src': abs_src,
                     'dst': abs_dst,
                 }
