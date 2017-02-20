@@ -24,7 +24,7 @@ class JoomlaAdapter(BaseAdapter):
         extension.set('type', 'template')
         extension.set('client', 'site')
 
-        # TODO: check filling data in that tags. Found {name}, etc.
+        # TODO: exclude <form>, <file>, etc.
         for element, value in self.data.items():
             sub_element = ET.SubElement(extension, element)
             sub_element.text = str(value)
@@ -38,7 +38,6 @@ class JoomlaAdapter(BaseAdapter):
         languages = ET.SubElement(extension, 'languages')
         languages.set('folder', 'language')
 
-        # TODO: check filling lang data. Found {language}
         for file in adapt_settings.JOOMLA['FILES']:
             if file.startswith('language'):
                 language = ET.SubElement(languages, 'language')
