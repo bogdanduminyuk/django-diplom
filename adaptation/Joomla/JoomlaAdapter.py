@@ -24,10 +24,10 @@ class JoomlaAdapter(BaseAdapter):
         extension.set('type', 'template')
         extension.set('client', 'site')
 
-        # TODO: exclude <form>, <file>, etc.
         for element, value in self.data.items():
-            sub_element = ET.SubElement(extension, element)
-            sub_element.text = str(value)
+            if element not in ["form", "file"]:
+                sub_element = ET.SubElement(extension, element)
+                sub_element.text = str(value)
 
         description = ET.SubElement(extension, 'description')
         description.text = "TPL_WHITESQUARE_XML_DESCRIPTION"

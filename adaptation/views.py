@@ -1,3 +1,4 @@
+import datetime
 import os
 
 from django.conf import settings
@@ -54,7 +55,7 @@ def joomla_test(request):
         'form': 'Joomla',
         'version': 362,
         'language': 'en-GB',
-        'creationDate': '',
+        'creationDate': datetime.datetime.now().strftime("%d-%m-%Y"),
         'author': '',
         'authorEmail': '',
         'copyright': '',

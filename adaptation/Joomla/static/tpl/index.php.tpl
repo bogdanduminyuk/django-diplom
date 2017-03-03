@@ -21,14 +21,5 @@ $is_home_page = $menu->getActive() == $menu->getDefault($lang->getTag());
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 </head>
-<body>
-<div class="wrapper">
-    <header></header>
-    <nav class="main-navigation"></nav>
-    <div class="main-heading"></div>
-    <jdoc:include type="message"/>
-    <jdoc:include type="component"/>
-</div>
-<footer></footer>
-</body>
+{body}
 </html>

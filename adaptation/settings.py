@@ -23,6 +23,10 @@ PAGE_PARTS = {
     "footer": {
         "SELECTOR": "#page-footer",
     },
+
+    "body": {
+        "SELECTOR": "body"
+    }
 }
 
 

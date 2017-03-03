@@ -17,6 +17,7 @@ class BaseAdapter:
         self.templates = self.__get_templates__(static_cms_root)
         self.settings = self.__get_settings__(adapt_type, data)
         self.index_content = self.__get_index_content__(theme_files["other"])
+        self.data.update(self.__get_page_parts__(self.index_content))
 
     @staticmethod
     def __get_settings__(adapt_type, data):

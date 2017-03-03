@@ -3,7 +3,9 @@ from adaptation.Joomla.JoomlaAdapter import JoomlaAdapter
 
 
 class JoomlaAdapter362(JoomlaAdapter):
-    # TODO: add parse index file
+    # TODO: fix hidden slider
+    # TODO: add <?php echo $template_url;?> before images, scripts, etc.
+    # TODO: fix $ is not a function
     def adapt(self):
         files = {}
 
