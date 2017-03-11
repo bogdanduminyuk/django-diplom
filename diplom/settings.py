@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 USER_CONFIG = './user.ini'
 
 # for uploaded filed
-CONTENT_TYPES = ['application/octet-stream']
+CONTENT_TYPES = ['application/octet-stream', 'application/zip']
 
 
 FILE_EXTENSIONS = ['.zip']

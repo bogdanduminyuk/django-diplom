@@ -7,6 +7,8 @@ import os
 
 from django.conf import settings
 
+# TODO: finish joomla
+# TODO: add selectors (common)
 
 STATIC_CMS_ROOT = os.path.join(settings.BASE_DIR, 'adaptation', '{form}', 'static')
 
