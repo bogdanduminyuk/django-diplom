@@ -12,6 +12,7 @@ class JoomlaAdapter(BaseAdapter):
     def __init__(self, process_files, data):
         super(JoomlaAdapter, self).__init__(process_files, data)
         self.xml_element = self.__create_base_xml__()
+        self.__preparation__()
 
     def __create_base_xml__(self):
         """
@@ -69,6 +70,19 @@ class JoomlaAdapter(BaseAdapter):
             if os.path.basename(file) == file:
                 file_element = ET.SubElement(xml_files, 'filename')
                 file_element.text = file
+
+    def __preparation__(self):
+        def build_styles(link_tags, settings):
+            content = ""
+            for link_tag in link_tags:
+                if link_tag.attrs.get("rel", "") == settings["has_rel"]:
+                    content += settings["template"].format(stylesheet=link_tag.attrs["href"]) + "\n"
+
+            return {
+                settings["format_name"]: content
+            }
+
+        preparation = self.settings["PREPARATION"]
 
 
 

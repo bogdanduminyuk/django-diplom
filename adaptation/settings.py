@@ -61,14 +61,21 @@ WORDPRESS = {
 
 JOOMLA = {
     "PREPARATION": {
+        "ATTACHMENT": [
+            {
+                "format_name": "head_styles",
+                "template": "$doc->addStyleSheet($template_url . '{stylesheet}');",
+                "has_rel": "stylesheet"
+            },
+        ],
 
-        "ADD_STYLESHEET": {
-            "template": "$doc->addStyleSheet($template_url . '{stylesheet}');",
-        },
-
-        "REPLACE_PATHS": {
-            "template": "<?php echo $template_url;?>{old_path}"
-        }
+        "TAGS_ATTACHMENT": [
+            {
+                "attribute": "src",
+                "tags": ["script", "img"],
+                "template": "<?php echo $template_url;?>{old_path}",
+            },
+        ],
     },
 
     "FILES": {

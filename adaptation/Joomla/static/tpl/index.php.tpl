@@ -6,9 +6,7 @@ $menu = $app->getMenu();
 $lang = JFactory::getLanguage();
 
 $template_url = $this->baseurl . '/templates/' . $this->template;
-$doc->addStyleSheet($template_url . '/css/template.css');
-$doc->addStyleSheet('http://fonts.googleapis.com/css?family=Oswald:400,300');
-
+{head_styles}
 $is_home_page = $menu->getActive() == $menu->getDefault($lang->getTag());
 ?>
 
