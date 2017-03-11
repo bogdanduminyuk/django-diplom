@@ -67,6 +67,13 @@ class BaseAdapter:
 
     @staticmethod
     def __get_page_elements__(index_content):
+        """
+        Returns a dict of lists those contain tags.
+
+        Tags are described in adapt_settings.PAGE_ELEMENTS.
+        :param index_content: page content where find tags
+        :return: dict of tags lists
+        """
         soup = bs(index_content, "html.parser")
         elements = {}
 
