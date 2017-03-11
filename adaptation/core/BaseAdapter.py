@@ -18,6 +18,7 @@ class BaseAdapter:
         self.settings = self.__get_settings__(adapt_type, data)
         self.index_content = self.__get_index_content__(theme_files["other"])
         self.data.update(self.__get_page_parts__(self.index_content))
+        self.page_elements = self.__get_page_elements__(self.index_content)
 
     @staticmethod
     def __get_settings__(adapt_type, data):
@@ -63,3 +64,16 @@ class BaseAdapter:
                     return file.read()
 
         return None
+
+    @staticmethod
+    def __get_page_elements__(index_content):
+        soup = bs(index_content, "html.parser")
+        elements = {}
+
+        for page_element in adapt_settings.PAGE_ELEMENTS:
+            elements_list = soup.select(page_element)
+            elements[page_element] = elements_list
+
+        return elements
+
+

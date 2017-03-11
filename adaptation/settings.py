@@ -31,6 +31,8 @@ PAGE_PARTS = {
     }
 }
 
+PAGE_ELEMENTS = ["a", "link", "script", "img"]
+
 
 # Wordpress definition
 
@@ -58,6 +60,17 @@ WORDPRESS = {
 # joomla definition
 
 JOOMLA = {
+    "PREPARATION": {
+
+        "ADD_STYLESHEET": {
+            "template": "$doc->addStyleSheet($template_url . '{stylesheet}');",
+        },
+
+        "REPLACE_PATHS": {
+            "template": "<?php echo $template_url;?>{old_path}"
+        }
+    },
+
     "FILES": {
         # with dirs
         "css/index.html": "<!DOCTYPE html><title></title>",
