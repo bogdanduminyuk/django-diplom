@@ -5,6 +5,7 @@ import xml.dom.minidom as minidom
 
 from adaptation import settings as adapt_settings
 from adaptation.core.BaseAdapter import BaseAdapter
+from core import functions
 
 
 class JoomlaAdapter(BaseAdapter):
@@ -26,7 +27,7 @@ class JoomlaAdapter(BaseAdapter):
         extension.set('client', 'site')
 
         for element, value in self.data.items():
-            if element not in ["form", "file"]:
+            if element not in ["form", "file"] + list(adapt_settings.PAGE_PARTS.keys()):
                 sub_element = ET.SubElement(extension, element)
                 sub_element.text = str(value)
 
@@ -75,14 +76,19 @@ class JoomlaAdapter(BaseAdapter):
         def build_styles(link_tags, settings):
             content = ""
             for link_tag in link_tags:
-                if link_tag.attrs.get("rel", "") == settings["has_rel"]:
-                    content += settings["template"].format(stylesheet=link_tag.attrs["href"]) + "\n"
+                if link_tag.attrs["rel"][0] == settings["has_rel"]:
+                    href = link_tag.attrs["href"]
+                    if not functions.is_url(href):
+                        content += settings["template"].format(stylesheet=href) + "\n"
 
             return {
                 settings["format_name"]: content
             }
 
         preparation = self.settings["PREPARATION"]
+        styles = build_styles(self.page_elements["link"], preparation["STYLES"])
+        self.data.update(styles)
+        # print(styles)
 
 
 
