@@ -66,6 +66,7 @@ class BaseAdapter:
         return None
 
     @staticmethod
+    # TODO: it is not used
     def __get_page_elements__(index_content):
         """
         Returns a dict of lists those contain tags.

@@ -71,7 +71,7 @@ JOOMLA = {
             {
                 "attribute": "src",
                 "tags": ["script", "img"],
-                "template": "<?php echo $template_url;?>{old_path}",
+                "template": "<?php echo $template_url;?>/{old_path}",
             },
         ],
     },

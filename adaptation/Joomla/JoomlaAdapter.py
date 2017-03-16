@@ -3,6 +3,8 @@ import os
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
 
+from bs4 import BeautifulSoup as bs
+
 from adaptation import settings as adapt_settings
 from adaptation.core.BaseAdapter import BaseAdapter
 from core import functions
@@ -74,6 +76,13 @@ class JoomlaAdapter(BaseAdapter):
 
     def __preparation__(self):
         def build_styles(link_tags, settings):
+            """
+            Builds head_styles for joomla.
+
+            :param link_tags: list of link tags
+            :param settings:
+            :return: dict <"key": "content">
+            """
             content = ""
             for link_tag in link_tags:
                 if link_tag.attrs["rel"][0] == settings["has_rel"]:
@@ -88,7 +97,19 @@ class JoomlaAdapter(BaseAdapter):
         preparation = self.settings["PREPARATION"]
         styles = build_styles(self.page_elements["link"], preparation["STYLES"])
         self.data.update(styles)
-        # print(styles)
 
+        soup = bs(self.index_content, "html.parser")
+        
+        for attachment in preparation["TAGS_ATTACHMENT"]:
+            attribute = attachment["attribute"]
 
+            for tag in attachment["tags"]:
+                current_tags_list = soup.select(tag)
+                
+                for current_tag in current_tags_list:
+                    old_path = current_tag.attrs.get(attribute, False)
+                    
+                    if old_path and not functions.is_url(old_path):
+                        current_tag.attrs[attribute] = attachment["template"].format(old_path=old_path)
 
+        self.index_content = str(soup)

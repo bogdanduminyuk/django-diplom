@@ -26,7 +26,8 @@ class JoomlaAdapter362(JoomlaAdapter):
                     file_content = tpl_content.format(**self.data)
             else:
                 file_content = content
-
+            # here I see index_content without preparation because **self.data filled before preparation
+            # TODO: fix self.data filling before preparation
             files[file] = file_content
 
         self.__append_files__(files)
