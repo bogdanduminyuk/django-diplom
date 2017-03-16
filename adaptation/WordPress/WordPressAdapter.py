@@ -18,6 +18,7 @@ class WordPressAdapter(BaseAdapter):
 
         self.page_parts = self.__get_page_parts__(self.index_content)
 
+    # TODO: realize redeclaration of parent prepare method
     @staticmethod
     def __do_preparation__(preparation, content):
         """
