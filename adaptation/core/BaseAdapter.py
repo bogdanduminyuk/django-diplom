@@ -22,6 +22,13 @@ class BaseAdapter:
 
     @staticmethod
     def __get_settings__(adapt_type, data):
+        """
+        Gets current settings for current CMS type.
+
+        :param adapt_type: current adapt type eg WordPress, Joomla.
+        :param data: data that came from form
+        :return: settings dict
+        """
         settings = eval("adapt_settings.{}".format(adapt_type))
 
         # exec format with FILES-keys
@@ -32,6 +39,12 @@ class BaseAdapter:
 
     @staticmethod
     def __get_templates__(static_cms_root):
+        """
+        Returns current templates dictionary.
+
+        :param static_cms_root: directory of static template files.
+        :return: dict of templates <filename : content>
+        """
         templates_dict = {}
         templates_path = os.path.join(static_cms_root, 'tpl')
 
@@ -47,6 +60,12 @@ class BaseAdapter:
 
     @staticmethod
     def __get_page_parts__(index_content):
+        """
+        Realizes selection using selectors.
+
+        :param index_content: content where it looks for.
+        :return: dict <page_part : content>
+        """
         parts = {}
         soup = bs(index_content, 'html.parser')
 
@@ -58,6 +77,12 @@ class BaseAdapter:
 
     @staticmethod
     def __get_index_content__(process_files):
+        """
+        Returns content of index file.
+
+        :param process_files: dict of files to process
+        :return: string of index content
+        """
         for filename, data in process_files.items():
             if filename.startswith('index'):
                 with open(data['src'], 'r', encoding='utf-8') as file:
