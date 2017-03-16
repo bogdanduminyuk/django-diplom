@@ -35,7 +35,6 @@ PAGE_ELEMENTS = ["a", "link", "script", "img"]
 
 
 # Wordpress definition
-
 WORDPRESS = {
     "PREPARATION": {
 
@@ -58,7 +57,6 @@ WORDPRESS = {
 
 
 # joomla definition
-
 JOOMLA = {
     "PREPARATION": {
         "STYLES": {
@@ -92,5 +90,24 @@ JOOMLA = {
         "index.php": "{content}",
         "templateDetails.xml": "{content}",
     },
+
+    "XML_DESCRIPTION": {
+        "base": {
+            "name": "extension",
+            "attributes": {"version": "1.0", "type": "template", "client": "site"}
+        },
+
+        "tags": {
+            "description": {"text": "TPL_WHITESQUARE_XML_DESCRIPTION"},
+            "files": "",
+            "positions": "",
+            "languages": {"attributes": {"folder": "language"}},
+        },
+
+        "form_data": {
+            "excluded": ["form", "file"]
+        }
+    }
 }
+
 

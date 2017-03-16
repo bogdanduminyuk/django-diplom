@@ -12,6 +12,7 @@ class BaseAdapter:
         adapt_type = data['form'].upper()
         static_cms_root = adapt_settings.STATIC_CMS_ROOT.format(form=data['form'])
 
+        self.clear_data = data
         self.data = data
         self.theme_files = theme_files
         self.templates = self.__get_templates__(static_cms_root)
