@@ -12,17 +12,19 @@ class BaseAdapter:
         adapt_type = data['form'].upper()
         static_cms_root = adapt_settings.STATIC_CMS_ROOT.format(form=data['form'])
 
-        self.clear_data = data
+        # clear data is used in building xml file in joomla adapter
+        self.clear_data = data.copy()
+
+        # all data for filling format
         self.data = data
+
         self.theme_files = theme_files
         self.templates = self.__get_templates__(static_cms_root)
         self.settings = self.__get_settings__(adapt_type, data)
         self.index_content = self.__get_index_content__(theme_files["other"])
 
-        # self.__custom_preparation__()
-
+        self.__custom_preparation__()
         self.data.update(self.__get_page_parts__(self.index_content))
-        self.page_elements = self.__get_page_elements__(self.index_content)
 
     def __custom_preparation__(self):
         """it is here for redeclaration in children."""

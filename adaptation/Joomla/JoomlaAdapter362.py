@@ -1,10 +1,11 @@
 # coding: utf-8
+import os
+
 from adaptation.Joomla.JoomlaAdapter import JoomlaAdapter
 
 
 class JoomlaAdapter362(JoomlaAdapter):
     # TODO: fix hidden slider
-    # TODO: add <?php echo $template_url;?> before images, scripts, etc.
     # TODO: fix $ is not a function
     def adapt(self):
         files = {}
@@ -26,12 +27,13 @@ class JoomlaAdapter362(JoomlaAdapter):
                     file_content = tpl_content.format(**self.data)
             else:
                 file_content = content
-            # here I see index_content without preparation because **self.data filled before preparation
-            # TODO: fix self.data filling before preparation
-            files[file] = file_content
 
-        self.__append_files__(files)
-        pretty_xml_str = self.__get_pretty_xml__(self.xml_element)
-        files['templateDetails.xml'] = pretty_xml_str
+            files[file] = file_content.replace("&gt;", ">").replace("&lt;", "<")
+
+        for filename in files.keys():
+            if os.path.basename(filename) == filename:
+                self.xml_file.add_child("files", "filename", filename)
+
+        files['templateDetails.xml'] = self.xml_file.prettify()
 
         return files
