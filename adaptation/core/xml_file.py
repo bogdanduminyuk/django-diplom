@@ -20,7 +20,7 @@ class XMLFile:
         """
         parent = self.base_element.find(append_to)
         sub_element = ET.SubElement(parent, name)
-        sub_element.text = text
+        sub_element.text = str(text)
         self.__add_attributes__(sub_element, attributes)
 
     def prettify(self):
