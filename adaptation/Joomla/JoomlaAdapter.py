@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup as bs
 
 from adaptation import settings as adapt_settings
 from adaptation.core.BaseAdapter import BaseAdapter
-from core import functions
-from core.xml_file import XMLFile
+from adaptation.core import functions
+from adaptation.core.xml_file import XMLFile
 
 
 class JoomlaAdapter(BaseAdapter):

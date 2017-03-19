@@ -1,5 +1,6 @@
 # coding: utf-8
 from adaptation.core.UploadManager import UploadManager
+from adaptation.core.getters import Getter
 
 
 class Adapter:
@@ -8,19 +9,15 @@ class Adapter:
 
     Just call adapt-method for make adaptation.
     """
-    def __init__(self, data):
-        self.data = data
-        self.upload_manager = UploadManager(data['file'], data['name'])
+    def __init__(self, request_data):
+        self.request_data = request_data
+        self.upload_manager = UploadManager(request_data['file'], request_data['name'])
 
     def adapt(self):
+        getter = Getter(self.request_data['form'], self.request_data['version'])
+        current_adapter = getter.get_adapter()
         theme_files = self.upload_manager.upload()
 
-        package = self.data['form']
-        adapter_class = '{0}Adapter{1}'.format(self.data['form'], self.data['version'])
-        import_string = 'import adaptation.{0}.{1} as adapter'.format(package, adapter_class)
-        call_string = 'adapter.{0}(theme_files, self.data).adapt()'.format(adapter_class)
-
-        exec(import_string)
-        files = eval(call_string)
+        files = current_adapter(theme_files, self.request_data).adapt()
 
         return self.upload_manager.download(files)
