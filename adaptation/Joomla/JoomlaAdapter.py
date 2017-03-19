@@ -3,15 +3,15 @@
 from bs4 import BeautifulSoup as bs
 
 from adaptation import settings as adapt_settings
-from adaptation.core.BaseAdapter import BaseAdapter
+from adaptation.core.adapters import BaseAdapter
 from adaptation.core import functions
 from adaptation.core.xml_file import XMLFile
 
 
 class JoomlaAdapter(BaseAdapter):
     """Class keeps methods for all Joomla adapters"""
-    def __init__(self, process_files, data):
-        super(JoomlaAdapter, self).__init__(process_files, data)
+    def __init__(self, getter, process_files, data):
+        super(JoomlaAdapter, self).__init__(getter, process_files, data)
         self.xml_file = self.build_xml()
 
     def build_xml(self):
@@ -23,7 +23,7 @@ class JoomlaAdapter(BaseAdapter):
         xml_settings = self.settings["XML_DESCRIPTION"]
         xml_file = XMLFile(xml_settings["base"]["name"], xml_settings["base"]["attributes"])
 
-        for xml_tag, text in self.clear_data.items():
+        for xml_tag, text in self.request_data.items():
             if xml_tag not in xml_settings["form_data"]["excluded"]:
                 xml_file.add_child(".", xml_tag, text)
 
@@ -32,18 +32,18 @@ class JoomlaAdapter(BaseAdapter):
                 xml_content = {}
             xml_file.add_child(".", xml_tag, **xml_content)
 
-        for file, file_type in self.theme_files["moved"].items():
+        for file, file_type in self.uploaded_files["moved"].items():
             xml_file.add_child("files", file_type, file)
 
         for file in adapt_settings.JOOMLA['FILES']:
             if file.startswith('language'):
                 text = file.replace("language", "")
-                attributes = {"tag": self.clear_data["language"]}
+                attributes = {"tag": self.request_data["language"]}
                 xml_file.add_child("languages", "language", text, attributes)
 
         return xml_file
 
-    def __custom_preparation__(self):
+    def preparation(self):
         def build_styles(link_tags, settings):
             """
             Builds head_styles for joomla.
