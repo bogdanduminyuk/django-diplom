@@ -5,7 +5,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from adaptation.core.adapter import Adapter
+from adaptation.core.adapters import Adapter
 
 
 def home(request):
