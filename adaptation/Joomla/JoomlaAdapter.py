@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup as bs
 from adaptation import settings as adapt_settings
 from adaptation.core.adapters import BaseAdapter
 from adaptation.core import functions
-from adaptation.core.xml_file import XMLFile
+from adaptation.core.XMLFile import XMLFile
 
 
 class JoomlaAdapter(BaseAdapter):
