@@ -47,7 +47,9 @@ class JoomlaAdapter(BaseAdapter):
 
         return xml_file
 
-    def preparation(self):
+    # TODO: подумать, как организовать preparation
+    @staticmethod
+    def preparation(content, getter):
         def build_styles(link_tags, settings):
             """
             Builds head_styles for joomla.
@@ -67,10 +69,10 @@ class JoomlaAdapter(BaseAdapter):
                 settings["format_name"]: content
             }
 
-        page_elements = self.__get_page_elements__(self.index_content)
-        preparation = self.settings["PREPARATION"]
+        page_elements = getter.get_page_elements(content)
+        preparation = getter.get_settings()["PREPARATION"]
         styles = build_styles(page_elements["link"], preparation["STYLES"])
-        self.data.update(styles)
+        self.format_data.update(styles)
 
         soup = bs(self.index_content, "html.parser")
         

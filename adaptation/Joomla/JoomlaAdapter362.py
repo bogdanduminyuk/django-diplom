@@ -8,6 +8,7 @@ class JoomlaAdapter362(JoomlaAdapter):
     # TODO: fix hidden slider
     # TODO: fix $ is not a function
     def adapt(self):
+        super(JoomlaAdapter362, self).adapt()
         files = {}
 
         templates = self.templates
