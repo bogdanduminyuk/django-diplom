@@ -12,6 +12,10 @@ class JoomlaAdapter(BaseAdapter):
     """Class keeps methods for all Joomla adapters"""
     def __init__(self, getter, process_files, data):
         super(JoomlaAdapter, self).__init__(getter, process_files, data)
+        self.xml_file = None
+
+    def adapt(self):
+        super(JoomlaAdapter, self).adapt()
         self.xml_file = self.build_xml()
 
     def build_xml(self):

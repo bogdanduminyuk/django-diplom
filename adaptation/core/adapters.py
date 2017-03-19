@@ -24,7 +24,11 @@ class Adapter:
 
 
 class BaseAdapter:
-    """The BaseAdapter class is used for realizing common actions of all adapters."""
+    """
+    The BaseAdapter class is used for realizing common actions of all adapters.
+
+    It is a base module for all adapter modules.
+    """
     def __init__(self, getter, uploaded_files, request_data):
         self.getter = getter
         self.uploaded_files = uploaded_files
