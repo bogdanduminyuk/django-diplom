@@ -47,9 +47,8 @@ class JoomlaAdapter(BaseAdapter):
 
         return xml_file
 
-    # TODO: подумать, как организовать preparation
     @staticmethod
-    def preparation(content, getter):
+    def preparation(content, **kwargs):
         def build_styles(link_tags, settings):
             """
             Builds head_styles for joomla.
@@ -58,25 +57,31 @@ class JoomlaAdapter(BaseAdapter):
             :param settings:
             :return: dict <"key": "content">
             """
-            content = ""
+            page_content = ""
             for link_tag in link_tags:
                 if link_tag.attrs["rel"][0] == settings["has_rel"]:
                     href = link_tag.attrs["href"]
                     if not functions.is_url(href):
-                        content += settings["template"].format(stylesheet=href) + "\n"
+                        page_content += settings["template"].format(stylesheet=href) + "\n"
 
             return {
-                settings["format_name"]: content
+                settings["format_name"]: page_content
             }
 
-        page_elements = getter.get_page_elements(content)
-        preparation = getter.get_settings()["PREPARATION"]
-        styles = build_styles(page_elements["link"], preparation["STYLES"])
-        self.format_data.update(styles)
+        result = {
+            "format_update": {},
+            "updated_content": "",
+        }
 
-        soup = bs(self.index_content, "html.parser")
+        elements = kwargs["elements"]
+        preparation_settings = kwargs["settings"]
+
+        styles = build_styles(elements["link"], preparation_settings["STYLES"])
+        result["format_update"].update(styles)
+
+        soup = bs(content, "html.parser")
         
-        for attachment in preparation["TAGS_ATTACHMENT"]:
+        for attachment in preparation_settings["TAGS_ATTACHMENT"]:
             attribute = attachment["attribute"]
 
             for tag in attachment["tags"]:
@@ -88,4 +93,5 @@ class JoomlaAdapter(BaseAdapter):
                     if old_path and not functions.is_url(old_path):
                         current_tag.attrs[attribute] = attachment["template"].format(old_path=old_path)
 
-        self.index_content = str(soup)
+        result["updated_content"] = str(soup)
+        return result

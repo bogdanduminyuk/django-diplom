@@ -69,11 +69,16 @@ class Getter:
         return parts
 
     @staticmethod
-    def get_file_content(filename, preparation_method, preparation_params):
+    def get_file_content(filename, preparation_method, preparation_settings):
         """Returns content of file with given filename using preparation method."""
         with open(filename, "r", encoding="utf-8") as file:
             content = file.read()
-            return preparation_method(content, *preparation_params)
+            kwargs = {
+                "elements": Getter.get_page_elements(content),
+                "settings": preparation_settings,
+            }
+
+            return preparation_method(content, **kwargs)
 
     @staticmethod
     def get_page_elements(content):
