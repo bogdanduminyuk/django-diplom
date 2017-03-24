@@ -18,7 +18,7 @@ class Adapter:
         current_adapter = self.getter.get_adapter()
         uploaded_files = self.upload_manager.upload()
 
-        files = current_adapter(uploaded_files, self.request_data).adapt()
+        files = current_adapter(self.getter, uploaded_files, self.request_data).adapt()
 
         return self.upload_manager.download(files)
 
