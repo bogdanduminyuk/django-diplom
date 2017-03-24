@@ -38,7 +38,7 @@ class BaseAdapter:
         self.templates = None
         self.settings = None
 
-        self.format_data = {}
+        self.format_data = self.request_data.copy()
 
     def adapt(self):
         self.static_path = self.getter.get_static_path()
@@ -46,4 +46,5 @@ class BaseAdapter:
         self.settings = self.getter.get_settings(self.request_data)
 
         filename = self.uploaded_files['other']['index.html']['src']
-        prepared_content = self.getter.get_file_content(filename, self.preparation, self.settings["PREPARATION"])
+        preparation_result = self.getter.get_file_content(filename, self.preparation, self.settings["PREPARATION"])
+        self.format_data.update(preparation_result["format_update"])

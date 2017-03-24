@@ -25,7 +25,7 @@ class JoomlaAdapter362(JoomlaAdapter):
                 # apply data to content-template
                 if template_name in templates.keys():
                     tpl_content = templates[template_name]["content"]
-                    file_content = tpl_content.format(**self.data)
+                    file_content = tpl_content.format(**self.format_data)
             else:
                 file_content = content
 
