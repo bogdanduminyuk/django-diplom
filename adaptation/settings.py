@@ -37,20 +37,24 @@ PAGE_ELEMENTS = ["a", "link", "script", "img"]
 # Wordpress definition
 WORDPRESS = {
     "PREPARATION": {
-
-        "METHODS": {
-            "get_template_directory_uri()": {
-                # attr : tags of attr
-                "href": ['link'],
-                "src": ["script", "img"]
+        "TAGS_ATTACHMENT": [
+            {
+                "attribute": "src",
+                "tags": ["script", "img"],
+                "template": "<?php echo get_template_directory_uri();?>/{old_path}",
             },
-        },
+            {
+                "attribute": "href",
+                "tags": ["link"],
+                "template": "<?php echo get_template_directory_uri();?>/{old_path}"
+            },
+        ],
     },
 
     "FILES": {
-        "footer.php": "{content}",
-        "header.php": "{content}",
-        "index.php": "{content}",
+        "footer.php": "{footer}",
+        "header.php": "{header}",
+        "index.php": "{wp_index}",
         "style.css": "{content}",
     },
 }
