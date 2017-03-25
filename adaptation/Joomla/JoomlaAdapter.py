@@ -1,11 +1,9 @@
 # coding: utf-8
 
-from bs4 import BeautifulSoup as bs
-
 from adaptation import settings as adapt_settings
-from adaptation.core.adapters import BaseAdapter
 from adaptation.core import functions
 from adaptation.core.XMLFile import XMLFile
+from adaptation.core.adapters import BaseAdapter
 
 
 class JoomlaAdapter(BaseAdapter):
@@ -49,49 +47,18 @@ class JoomlaAdapter(BaseAdapter):
 
     @staticmethod
     def preparation(content, **kwargs):
-        def build_styles(link_tags, settings):
-            """
-            Builds head_styles for joomla.
+        result = super(JoomlaAdapter, JoomlaAdapter).preparation(content, **kwargs)
 
-            :param link_tags: list of link tags
-            :param settings:
-            :return: dict <"key": "content">
-            """
-            page_content = ""
-            for link_tag in link_tags:
-                if link_tag.attrs["rel"][0] == settings["has_rel"]:
-                    href = link_tag.attrs["href"]
-                    if not functions.is_url(href):
-                        page_content += settings["template"].format(stylesheet=href) + "\n"
+        joomla_styles_settings = kwargs["settings"]["STYLES"]
+        sub_content = ""
+        for link_tag in kwargs["elements"]["link"]:
+            if link_tag.attrs["rel"][0] == joomla_styles_settings["has_rel"]:
+                href = link_tag.attrs["href"]
+                if not functions.is_url(href):
+                    sub_content += joomla_styles_settings["template"].format(stylesheet=href) + "\n"
 
-            return {
-                settings["format_name"]: page_content
-            }
-
-        result = {
-            "format_update": {},
-            "updated_content": "",
+        result["format_update"] = {
+            joomla_styles_settings["format_name"]: sub_content
         }
 
-        elements = kwargs["elements"]
-        preparation_settings = kwargs["settings"]
-
-        styles = build_styles(elements["link"], preparation_settings["STYLES"])
-        result["format_update"].update(styles)
-
-        soup = bs(content, "html.parser")
-        
-        for attachment in preparation_settings["TAGS_ATTACHMENT"]:
-            attribute = attachment["attribute"]
-
-            for tag in attachment["tags"]:
-                current_tags_list = soup.select(tag)
-                
-                for current_tag in current_tags_list:
-                    old_path = current_tag.attrs.get(attribute, False)
-                    
-                    if old_path and not functions.is_url(old_path):
-                        current_tag.attrs[attribute] = attachment["template"].format(old_path=old_path)
-
-        result["updated_content"] = str(soup)
         return result
