@@ -78,10 +78,7 @@ class Getter:
                 "settings": preparation_settings,
             }
 
-            preparation_result = preparation_method(content, **kwargs)
-            page_parts = Getter.get_page_parts(preparation_result["updated_content"])
-            preparation_result["format_update"].update(page_parts)
-            return preparation_result
+            return preparation_method(content, **kwargs)
 
     @staticmethod
     def get_page_elements(content):
