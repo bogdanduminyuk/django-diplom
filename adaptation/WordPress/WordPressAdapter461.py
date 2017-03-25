@@ -8,15 +8,16 @@ from adaptation import settings as adapt_settings
 class WordPressAdapter461(WordPressAdapter):
     """Custom wordpress adapter"""
     def adapt(self):
+        super(WordPressAdapter461, self).adapt()
         files = {}
 
         contents = self.split_index()
-        self.data.update(contents)
+        self.format_data.update(contents)
 
         for file, file_content in self.settings["FILES"].items():
             tpl_key = file + '.tpl'
             if tpl_key in self.templates:
-                content = self.templates[tpl_key]['content'].format(**self.data)
+                content = self.templates[tpl_key]['content'].format(**self.format_data)
             else:
                 content = ''
                 for starts, _content in contents.items():
@@ -24,29 +25,6 @@ class WordPressAdapter461(WordPressAdapter):
                         content = _content
                         break
 
-            files[file] = file_content.format(content=content)
-
-        for file, content in files.items():
-            _content = content.replace('&lt;', '<')
-            _content = _content.replace('&gt;', '>')
-            files[file] = _content
+            files[file] = file_content.format(**self.format_data)
 
         return files
-
-    def split_index(self):
-        header = self.page_parts['header']
-        footer = self.page_parts['footer']
-        content = self.index_content
-
-        header_end_pos = content.find(header) + len(header)
-        footer_start_pos = content.find(footer)
-
-        header = content[0: header_end_pos]
-        footer = content[footer_start_pos:]
-        content = content[header_end_pos: footer_start_pos]
-
-        return {
-            "header": header,
-            "index_content": content,
-            "footer": footer,
-        }

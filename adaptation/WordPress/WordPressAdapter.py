@@ -1,48 +1,38 @@
 # coding: utf-8
-from bs4 import BeautifulSoup as bs
-from django.core.exceptions import ValidationError
-from django.core.validators import URLValidator
 
-from adaptation.core.BaseAdapter import BaseAdapter
+from adaptation.core.adapters import BaseAdapter
 
 
 class WordPressAdapter(BaseAdapter):
     """Class keeps methods for all WordPress adapters"""
-    def __init__(self, process_files, data):
-        super(WordPressAdapter, self).__init__(process_files, data)
+    def __init__(self, getter, uploaded_files, request_data):
+        super(WordPressAdapter, self).__init__(getter, uploaded_files, request_data)
 
-        preparation = self.settings.get("PREPARATION", False)
-
-        if preparation:
-            self.index_content = self.__do_preparation__(preparation, self.index_content)
-
-        self.page_parts = self.__get_page_parts__(self.index_content)
-
-    # TODO: realize redeclaration of parent prepare method
     @staticmethod
-    def __do_preparation__(preparation, content):
-        """
-        Prepares content using adapt_settings.
+    def preparation(content, **kwargs):
+        result = super(WordPressAdapter, WordPressAdapter).preparation(content, **kwargs)
+        content = self.prepared_files["index"]["content"]
+        header = self.format_data['header']
+        footer = self.format_data['footer']
 
-        :param content: page content
-        :return: modified page content
-        """
-        methods = preparation['METHODS']
-        soup = bs(content, "html.parser")
+        header_end_pos = content.find(header) + len(header)
+        footer_start_pos = content.find(footer)
 
-        for method, values in methods.items():
-            for attr, tags in values.items():
-                for tag in tags:
-                    for tag_item in soup.find_all(tag):
+        header = content[0: header_end_pos]
+        footer = content[footer_start_pos:]
+        content = content[header_end_pos: footer_start_pos]
+        return result
 
-                        validator = URLValidator()
+    def split_index(self):
+        content = self.prepared_files["index"]["content"]
+        header = self.format_data['header']
+        footer = self.format_data['footer']
 
-                        try:
-                            validator(tag_item.attrs[attr])
-                        except ValidationError:
-                            value = "<?php echo {0};?>/{1}".format(method, tag_item.attrs[attr])
-                            tag_item.attrs[attr] = value
-                        except KeyError:
-                            pass
+        header_end_pos = content.find(header) + len(header)
+        footer_start_pos = content.find(footer)
 
-        return str(soup)
+        header = content[0: header_end_pos]
+        footer = content[footer_start_pos:]
+        content = content[header_end_pos: footer_start_pos]
+
+        self.format_data.update({"header": header, "index_content": content, "footer": footer})

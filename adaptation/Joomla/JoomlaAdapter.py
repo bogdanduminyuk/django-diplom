@@ -50,15 +50,15 @@ class JoomlaAdapter(BaseAdapter):
         result = super(JoomlaAdapter, JoomlaAdapter).preparation(content, **kwargs)
 
         joomla_styles_settings = kwargs["settings"]["STYLES"]
-        sub_content = ""
+        styles = ""
         for link_tag in kwargs["elements"]["link"]:
             if link_tag.attrs["rel"][0] == joomla_styles_settings["has_rel"]:
                 href = link_tag.attrs["href"]
                 if not functions.is_url(href):
-                    sub_content += joomla_styles_settings["template"].format(stylesheet=href) + "\n"
+                    styles += joomla_styles_settings["template"].format(stylesheet=href) + "\n"
 
         result["format_update"] = {
-            joomla_styles_settings["format_name"]: sub_content
+            joomla_styles_settings["format_name"]: styles
         }
 
         return result

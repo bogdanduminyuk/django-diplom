@@ -29,7 +29,7 @@ class JoomlaAdapter362(JoomlaAdapter):
             else:
                 file_content = content
 
-            files[file] = file_content.replace("&gt;", ">").replace("&lt;", "<")
+            files[file] = file_content
 
         for filename in files.keys():
             if os.path.basename(filename) == filename:
