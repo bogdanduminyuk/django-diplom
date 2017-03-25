@@ -23,6 +23,11 @@ class Adapter:
 
         files = current_adapter(self.getter, uploaded_files, self.request_data).adapt()
 
+        for file, content in files.items():
+            _content = content.replace('&lt;', '<')
+            _content = _content.replace('&gt;', '>')
+            files[file] = _content
+
         return self.upload_manager.download(files)
 
 
@@ -34,23 +39,33 @@ class BaseAdapter:
     """
     def __init__(self, getter, uploaded_files, request_data):
         self.getter = getter
-        self.uploaded_files = uploaded_files
         self.request_data = request_data
+        self.format_data = self.request_data.copy()
+
+        self.uploaded_files = uploaded_files
+        self.prepared_files = {}
 
         self.static_path = None
         self.templates = None
         self.settings = None
-
-        self.format_data = self.request_data.copy()
 
     def adapt(self):
         self.static_path = self.getter.get_static_path()
         self.templates = self.getter.get_templates()
         self.settings = self.getter.get_settings(self.request_data)
 
+        # Todo: oops! static code...
         filename = self.uploaded_files['other']['index.html']['src']
-        preparation_result = self.getter.get_file_content(filename, self.preparation, self.settings["PREPARATION"])
-        self.format_data.update(preparation_result["format_update"])
+
+        prepared = self.getter.get_file_content(filename, self.preparation, self.settings["PREPARATION"])
+        prepared_page_parts = self.getter.get_page_parts(prepared["content"])
+
+        self.prepared_files["index"] = {
+            "content": prepared["content"],
+            "page_parts": prepared_page_parts
+        }
+
+        self.update_format_data(prepared["format_update"], prepared_page_parts)
 
     @staticmethod
     def preparation(content, **kwargs):
@@ -76,5 +91,11 @@ class BaseAdapter:
                         current_tag.attrs[attribute] = attachment["template"].format(old_path=old_path)
 
         return {
-            "updated_content": str(soup)
+            "format_update": {},
+            "content": str(soup),
         }
+
+    def update_format_data(self, *args):
+        """Updates self.format data using list of args"""
+        for arg in args:
+            self.format_data.update(arg)
