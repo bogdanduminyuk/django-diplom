@@ -1,8 +1,6 @@
 # coding: utf-8
 import os
 
-from bs4 import BeautifulSoup as bs
-
 from adaptation import settings as adapt_settings
 
 
@@ -50,52 +48,3 @@ class Getter:
                 }
 
         return templates_dict
-
-    @staticmethod
-    def get_page_parts(content):
-        """
-        Realizes selection using selectors.
-
-        :param content: content where it looks for.
-        :return: dict <page_part : content>
-        """
-        parts = {}
-        soup = bs(content, 'html.parser')
-
-        for part, values in adapt_settings.PAGE_PARTS.items():
-            selector = values["SELECTOR"]
-            parts[part] = str(soup.select(selector)[0])
-
-        return parts
-
-    @staticmethod
-    def get_file_content(filename, preparation_method, preparation_settings):
-        """Returns content of file with given filename using preparation method."""
-        with open(filename, "r", encoding="utf-8") as file:
-            content = file.read()
-            kwargs = {
-                "elements": Getter.get_page_elements(content),
-                "settings": preparation_settings,
-            }
-
-            return preparation_method(content, **kwargs)
-
-    @staticmethod
-    def get_page_elements(content):
-        """
-        Returns a dict of lists those contain tags.
-
-        Tags are described in adapt_settings.PAGE_ELEMENTS.
-        :param content: page content where find tags
-        :return: dict of tags lists
-        """
-        soup = bs(content, "html.parser")
-        elements = {}
-
-        for page_element in adapt_settings.PAGE_ELEMENTS:
-            elements_list = soup.select(page_element)
-            elements[page_element] = elements_list
-
-        return elements
-
-
