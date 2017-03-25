@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup as bs
 
 from adaptation.core.UploadManager import UploadManager
 from adaptation.core.getters import Getter
-from core import functions
+from adaptation.core import functions
 
 
 class Adapter:
