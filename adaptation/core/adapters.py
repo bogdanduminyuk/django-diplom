@@ -48,3 +48,7 @@ class BaseAdapter:
         filename = self.uploaded_files['other']['index.html']['src']
         preparation_result = self.getter.get_file_content(filename, self.preparation, self.settings["PREPARATION"])
         self.format_data.update(preparation_result["format_update"])
+
+    @staticmethod
+    def preparation(content, **kwargs):
+        pass
