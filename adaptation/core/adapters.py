@@ -50,7 +50,7 @@ class BaseAdapter:
         self.settings = None
 
     def adapt(self):
-        self.static_path = self.getter.get_static_path()
+        self.static_path = self.getter.get_static_root()
         self.templates = self.getter.get_templates()
         self.settings = self.getter.get_settings(self.request_data)
 

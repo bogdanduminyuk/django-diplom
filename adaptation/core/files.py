@@ -86,11 +86,10 @@ class ThemeFile(ReadableWritableFile):
         :param method: method that will be applied
         :return: structure that method returns
         """
-        prepared = method(self.content, settings=settings)
+        self.prepared = method(self.content, settings=settings)
         self.soup = bs(self.content, "html.parser")
         self.content = self.get_content()
-        self.prepared = True
-        return prepared
+        return self.prepared
 
     def get_page_parts(self):
         """

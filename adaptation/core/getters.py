@@ -30,14 +30,19 @@ class Getter:
 
         return settings
 
-    def get_static_path(self):
+    def get_static_root(self):
         """Returns path to CMS static files."""
         return adapt_settings.STATIC_CMS_ROOT.format(package=self.adapt_type)
 
+    def get_templates_root(self):
+        """Returns path to CMS templates files."""
+        return adapt_settings.TEMPLATES_ROOT.format(package=self.adapt_type)
+
     def get_templates(self):
         """Returns current templates dictionary."""
+        # TODO: remake it to return TemplateFile
         templates_dict = {}
-        templates_path = os.path.join(self.get_static_path(), 'tpl')
+        templates_path = self.get_templates_root()
 
         for template in os.listdir(templates_path):
             abs_path = os.path.join(templates_path, template)
