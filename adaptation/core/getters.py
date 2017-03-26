@@ -2,6 +2,7 @@
 import os
 
 from adaptation import settings as adapt_settings
+from adaptation.core.files import TemplateFile
 
 
 class Getter:
@@ -40,16 +41,11 @@ class Getter:
 
     def get_templates(self):
         """Returns current templates dictionary."""
-        # TODO: remake it to return TemplateFile
         templates_dict = {}
         templates_path = self.get_templates_root()
 
         for template in os.listdir(templates_path):
             abs_path = os.path.join(templates_path, template)
-            with open(abs_path, 'r', encoding='utf-8') as template_file:
-                templates_dict[template] = {
-                    "content": template_file.read(),
-                    "path": abs_path
-                }
+            templates_dict[template] = TemplateFile(abs_path)
 
         return templates_dict
