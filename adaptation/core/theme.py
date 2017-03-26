@@ -2,9 +2,11 @@
 import os
 from abc import ABCMeta, abstractmethod
 
+import shutil
 from bs4 import BeautifulSoup as bs
 
 from adaptation import settings as adapt_settings
+from diplom import settings
 
 
 class ReadableFile(metaclass=ABCMeta):
@@ -77,15 +79,15 @@ class ThemeFile(ReadableWritableFile):
         """Returns content converted from soup"""
         return str(self.soup).replace('&lt;', '<').replace('&gt;', '>')
 
-    def prepare(self, method, settings):
+    def prepare(self, method, preparation_settings):
         """
         Realizes applying of the method with getter as kwarg.
 
-        :param settings: dict described preparation settings
+        :param preparation_settings: dict described preparation settings
         :param method: method that will be applied
         :return: structure that method returns
         """
-        self.prepared = method(self.content, settings=settings)
+        self.prepared = method(self.content, settings=preparation_settings)
         self.soup = bs(self.content, "html.parser")
         self.content = self.get_content()
         return self.prepared
@@ -124,6 +126,54 @@ class ThemeFile(ReadableWritableFile):
             elements[page_element] = elements_list
 
         return elements
+
+
+class Theme:
+    def __init__(self, src_zip, src_dir, dst_dir, name):
+        self.src_zip = src_zip
+        self.src_dir = src_dir
+        self.dst_dir = dst_dir
+        self.name = name
+        self.is_unpacked = False
+        self.is_written = False
+        self.files = None
+
+    def unpack(self):
+        """Realizes unpacking of the theme archive to src_dir folder."""
+        shutil.unpack_archive(self.src_zip, self.src_dir, 'zip')
+        self.is_unpacked = True
+        return self.src_dir
+
+    def pack(self):
+        """Realizes packing of the dst_dir folder."""
+        if not self.is_written:
+            self.write_files()
+
+        path = shutil.make_archive(self.dst_dir, 'zip', root_dir=settings.MEDIA_ROOT, base_dir=self.name)
+        return os.path.join(settings.MEDIA_URL, os.path.basename(path))
+
+    def remove(self):
+        """Removes theme files."""
+        for directory in [self.src_dir, self.dst_dir]:
+            try:
+                shutil.rmtree(directory)
+                print("removed", directory)
+            except FileNotFoundError:
+                pass
+
+    def read_files(self):
+        """Reads files from disk (from self.src) into File Objects."""
+        if not self.is_unpacked:
+            return
+
+    def write_files(self):
+        """Writes File Objects to files in self.dst dir."""
+        if not self.is_unpacked:
+            return
+
+    def get_file(self, filename):
+        return self.files[filename]
+
 
 if __name__ == "__main__":
     classes = [ReadableFile, WritableFile, ReadableWritableFile, TemplateFile, ThemeFile]
@@ -164,4 +214,21 @@ if __name__ == "__main__":
     theme_file.read()
     theme_file.write()
 
-
+    src = r"E:\git-workspace\diplom\tmp\snowboarding"
+    dst = r"E:\git-workspace\diplom\tmp\uploads\snowboarding"
+    request_data = {
+        'name': 'test',
+        'file': 'test',
+        'form': 'Joomla',
+        'version': 362,
+        'language': 'en-GB',
+        'creationDate': '',
+        'author': '',
+        'authorEmail': '',
+        'copyright': '',
+        'license': '',
+        'authorUrl': '',
+    }
+    # getter = Getter("Joomla", 362)
+    # theme = Theme(src, dst, request_data, getter)
+    # theme.remove()
