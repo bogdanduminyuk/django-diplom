@@ -5,7 +5,7 @@ from django.conf import settings
 from django.http import HttpResponse
 
 from adaptation.core.adapters import Adapter
-from adaptation.core.common import handle_adapt_request
+from adaptation.core.functions import handle_adapt_request
 from .forms import WpAdaptForm, JoomlaAdaptForm
 
 
