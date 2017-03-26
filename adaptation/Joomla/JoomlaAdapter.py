@@ -2,18 +2,18 @@
 
 from adaptation import settings as adapt_settings
 from adaptation.core import functions
-from adaptation.core.XMLFile import XMLFile
+from adaptation.core.theme import XMLFile
 from adaptation.core.adapters import BaseAdapter
 
 
 class JoomlaAdapter(BaseAdapter):
     """Class keeps methods for all Joomla adapters"""
-    def __init__(self, getter, process_files, data):
-        super(JoomlaAdapter, self).__init__(getter, process_files, data)
+    def __init__(self, theme):
+        super(JoomlaAdapter, self).__init__(theme)
         self.xml_file = None
 
-    def adapt(self):
-        super(JoomlaAdapter, self).adapt()
+    def adapt(self, settings, templates, **kwargs):
+        super(JoomlaAdapter, self).adapt(settings, templates, **kwargs)
         self.xml_file = self.build_xml()
 
     def build_xml(self):

@@ -7,14 +7,11 @@ from adaptation.Joomla.JoomlaAdapter import JoomlaAdapter
 class JoomlaAdapter362(JoomlaAdapter):
     # TODO: fix hidden slider
     # TODO: fix $ is not a function
-    def adapt(self):
-        super(JoomlaAdapter362, self).adapt()
+    def adapt(self, settings, templates, **kwargs):
+        super(JoomlaAdapter362, self).adapt(settings, templates, **kwargs)
         files = {}
 
-        templates = self.templates
-        settings_files = self.settings["FILES"]
-
-        for file, content in settings_files.items():
+        for file, content in settings["FILES"].items():
             file_content = ''
             if file == 'templateDetails.xml':
                 pass

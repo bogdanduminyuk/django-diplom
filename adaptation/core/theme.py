@@ -180,6 +180,7 @@ class ThemeFile(ReadableWritableFile):
         return elements
 
 
+
 class Theme:
     def __init__(self, src_zip, src_dir, dst_dir, name):
         self.src_zip = src_zip
@@ -213,6 +214,8 @@ class Theme:
             except FileNotFoundError:
                 pass
 
+    # TODO: realize it adding smth like 'moved' and 'other' to use it in build_xml
+    # or TODO: add flag 'ready' that mean "FILE IS READY TO WRITE"
     def read_files(self):
         """Reads files from disk (from self.src) into File Objects."""
         if not self.is_unpacked:
