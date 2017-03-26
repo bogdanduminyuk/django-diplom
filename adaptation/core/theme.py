@@ -1,8 +1,10 @@
 # coding: utf-8
 import os
+import shutil
+import xml.dom.minidom as minidom
+import xml.etree.ElementTree as ET
 from abc import ABCMeta, abstractmethod
 
-import shutil
 from bs4 import BeautifulSoup as bs
 
 from adaptation import settings as adapt_settings
@@ -29,7 +31,6 @@ class WritableFile(metaclass=ABCMeta):
     def __init__(self, wpath):
         self.wpath = wpath
 
-    @abstractmethod
     def write(self, content):
         """Writes content to wpath"""
         with open(self.wpath, "w", encoding="utf-8") as file:
@@ -63,6 +64,57 @@ class TemplateFile(ReadableFile):
     def get_content(self, **kwargs):
         """Realizes applying template keys to its content."""
         return self.read().format(**kwargs) if kwargs else self.read()
+
+
+class XMLFile(WritableFile):
+    """Realizes working with xml files. Represents one xml file."""
+
+    def __init__(self, wpath, main_element_name, attributes=None):
+        super(XMLFile, self).__init__(wpath)
+        self.base_element = ET.Element(main_element_name)
+        self.__add_attributes__(self.base_element, attributes)
+
+    def write(self, content=""):
+        if not content:
+            content = self.prettify()
+        super().write(content)
+
+    def add_child(self, append_to, name, text="", attributes=None):
+        """
+        Creates and append child to append_to_element.
+
+        :param append_to: xpath for element where to append
+        :param name: name of new element
+        :param text: text of new element
+        :param attributes: attributes of new element
+        :return: None
+        """
+        parent = self.base_element.find(append_to)
+        sub_element = ET.SubElement(parent, name)
+        sub_element.text = str(text)
+        self.__add_attributes__(sub_element, attributes)
+
+    def prettify(self):
+        """
+        Returns pretty xml of self.base_element.
+
+        :return: pretty xml string
+        """
+        rough_string = ET.tostring(self.base_element, encoding='utf-8', method='xml')
+        re_parsed = minidom.parseString(rough_string)
+        return re_parsed.toprettyxml(indent=4 * ' ', encoding='utf-8').decode('utf-8')
+
+    @staticmethod
+    def __add_attributes__(element, attributes):
+        """
+        Adds attributes to the element.
+
+        :param element: XML-element
+        :param attributes: dict of attributes <attr : value>
+        """
+        if attributes is not None:
+            for attribute, value in attributes.items():
+                element.set(attribute, str(value))
 
 
 class ThemeFile(ReadableWritableFile):

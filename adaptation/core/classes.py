@@ -1,6 +1,6 @@
 # coding: utf-8
-import os
 
+import os
 import shutil
 
 from adaptation import settings as adapt_settings
