@@ -2,7 +2,32 @@
 import os
 
 from adaptation import settings as adapt_settings
-from adaptation.core.files import TemplateFile
+from adaptation.core.theme import TemplateFile, Theme
+from diplom import settings
+
+
+class Uploader:
+    def __init__(self):
+        self.theme = None
+
+    def upload(self, src_zip, theme_name):
+        """
+        Creates theme.
+
+        :param src_zip: uploaded zip archive
+        :param theme_name: theme name from request data
+        :return: Theme object
+        """
+        src_dir = os.path.join(settings.TEMP_DIR, os.path.splitext(os.path.basename(src_zip))[0])
+        dst_dir = os.path.join(settings.MEDIA_ROOT, theme_name)
+
+        self.theme = Theme(src_zip, src_dir, dst_dir, theme_name)
+        self.theme.unpack()
+        return self.theme
+
+    def download(self):
+        """Returns link to packed theme."""
+        return self.theme.pack()
 
 
 class Getter:
@@ -23,13 +48,13 @@ class Getter:
 
     def get_settings(self, request_data):
         """Returns current settings dict."""
-        settings = eval("adapt_settings.{}".format(self.adapt_type.upper()))
+        cms_settings = eval("adapt_settings.{}".format(self.adapt_type.upper()))
 
         # exec format with FILES-keys
-        for key in settings['FILES']:
-            settings['FILES'][key.format(**request_data)] = settings["FILES"].pop(key)
+        for key in cms_settings['FILES']:
+            cms_settings['FILES'][key.format(**request_data)] = cms_settings["FILES"].pop(key)
 
-        return settings
+        return cms_settings
 
     def get_static_root(self):
         """Returns path to CMS static files."""
