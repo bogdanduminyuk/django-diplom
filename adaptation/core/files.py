@@ -4,8 +4,7 @@ from abc import ABCMeta, abstractmethod
 
 from bs4 import BeautifulSoup as bs
 
-# TODO: uncomment after testing
-# from adaptation import settings as adapt_settings
+from adaptation import settings as adapt_settings
 
 
 class ReadableFile(metaclass=ABCMeta):
@@ -61,7 +60,7 @@ class TemplateFile(ReadableFile):
 
     def get_content(self, **kwargs):
         """Realizes applying template keys to its content."""
-        return self.read().format(**kwargs)
+        return self.read().format(**kwargs) if kwargs else self.read()
 
 
 class ThemeFile(ReadableWritableFile):
@@ -103,9 +102,9 @@ class ThemeFile(ReadableWritableFile):
         content = self.get_content()
         soup = bs(content, 'html.parser')
 
-        # for part, values in adapt_settings.PAGE_PARTS.items():
-        #    selector = values["SELECTOR"]
-        #    parts[part] = str(soup.select(selector)[0])
+        for part, values in adapt_settings.PAGE_PARTS.items():
+            selector = values["SELECTOR"]
+            parts[part] = str(soup.select(selector)[0])
 
         return parts
 
@@ -120,14 +119,49 @@ class ThemeFile(ReadableWritableFile):
         soup = bs(self.content, "html.parser")
         elements = {}
 
-        # for page_element in adapt_settings.PAGE_ELEMENTS:
-        #    elements_list = soup.select(page_element)
-        #    elements[page_element] = elements_list
+        for page_element in adapt_settings.PAGE_ELEMENTS:
+            elements_list = soup.select(page_element)
+            elements[page_element] = elements_list
 
         return elements
 
 if __name__ == "__main__":
-    # TODO: test file structure above
-    w = ReadableWritableFile("rpath", "wpath")
-    print(w.rpath)
-    print(w.wpath)
+    classes = [ReadableFile, WritableFile, ReadableWritableFile, TemplateFile, ThemeFile]
+    params = [
+        ("rpath",),
+        ("wpath",),
+        ("rpath", "wpath"),
+        ("rpath",),
+        ("rpath", "wpath"),
+    ]
+
+    for CreateClass, parameters in zip(classes, params):
+        try:
+            var = CreateClass(*parameters)
+        except TypeError as e:
+            print(e)
+        else:
+            try:
+                print(var.rpath)
+            except AttributeError as e:
+                print(e)
+
+            try:
+                print(var.wpath)
+            except AttributeError as e:
+                print(e)
+
+    tpl_file = TemplateFile(r"E:\git-workspace\diplom\adaptation\WordPress\static\tpl\style.css.tpl")
+    print(tpl_file.get_content())
+    try:
+        print(tpl_file.get_content(name="name"))
+    except KeyError as e:
+        print("Key does not exist:", e)
+    print("tpl_file name:", tpl_file.name)
+
+    theme_file = ThemeFile(r"E:\git-workspace\diplom\tmp\snowboarding\index.html",
+                           r"E:\git-workspace\diplom\tmp\uploads\snowboarding\index.html")
+    theme_file.read()
+    theme_file.write()
+
+
