@@ -1,6 +1,8 @@
 # coding: utf-8
 import os
 
+import shutil
+
 from adaptation import settings as adapt_settings
 from adaptation.core.theme import TemplateFile, Theme
 from diplom import settings
@@ -21,6 +23,8 @@ class Uploader:
         src_dir = os.path.join(settings.TEMP_DIR, os.path.splitext(os.path.basename(src_zip))[0])
         dst_dir = os.path.join(settings.MEDIA_ROOT, theme_name)
 
+        self.make_dirs(src_dir, dst_dir)
+
         self.theme = Theme(src_zip, src_dir, dst_dir, theme_name)
         self.theme.unpack()
         return self.theme
@@ -28,6 +32,13 @@ class Uploader:
     def download(self):
         """Returns link to packed theme."""
         return self.theme.pack()
+
+    @staticmethod
+    def make_dirs(*directories):
+        for directory in directories:
+            if os.path.exists(directory):
+                shutil.rmtree(directory)
+            os.mkdir(directory)
 
 
 class Getter:
