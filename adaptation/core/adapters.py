@@ -19,7 +19,10 @@ class Adapter:
 
     def adapt(self):
         self.uploader.upload(self.request_data["file"], self.request_data["name"])
-        self.adapter(self.uploader.theme).adapt(self.settings, self.templates)
+        try:
+            self.adapter(self.uploader.theme).adapt(self.settings, self.templates)
+        finally:
+            self.uploader.theme.remove()
         return self.uploader.download()
 
 

@@ -180,7 +180,6 @@ class ThemeFile(ReadableWritableFile):
         return elements
 
 
-
 class Theme:
     def __init__(self, src_zip, src_dir, dst_dir, name):
         self.src_zip = src_zip
@@ -231,39 +230,6 @@ class Theme:
 
 
 if __name__ == "__main__":
-    classes = [ReadableFile, WritableFile, ReadableWritableFile, TemplateFile, ThemeFile]
-    params = [
-        ("rpath",),
-        ("wpath",),
-        ("rpath", "wpath"),
-        ("rpath",),
-        ("rpath", "wpath"),
-    ]
-
-    for CreateClass, parameters in zip(classes, params):
-        try:
-            var = CreateClass(*parameters)
-        except TypeError as e:
-            print(e)
-        else:
-            try:
-                print(var.rpath)
-            except AttributeError as e:
-                print(e)
-
-            try:
-                print(var.wpath)
-            except AttributeError as e:
-                print(e)
-
-    tpl_file = TemplateFile(r"E:\git-workspace\diplom\adaptation\WordPress\static\tpl\style.css.tpl")
-    print(tpl_file.get_content())
-    try:
-        print(tpl_file.get_content(name="name"))
-    except KeyError as e:
-        print("Key does not exist:", e)
-    print("tpl_file name:", tpl_file.name)
-
     theme_file = ThemeFile(r"E:\git-workspace\diplom\tmp\snowboarding\index.html",
                            r"E:\git-workspace\diplom\tmp\uploads\snowboarding\index.html")
     theme_file.read()
