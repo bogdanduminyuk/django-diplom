@@ -246,7 +246,8 @@ class Theme:
             return
 
         for file in self.files["theme"]:
-            file.write()
+            if file.ready:
+                file.write()
 
     def get_file(self, filename):
         file = self.files.get(filename, None)

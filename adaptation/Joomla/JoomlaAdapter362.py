@@ -7,11 +7,11 @@ from adaptation.Joomla.JoomlaAdapter import JoomlaAdapter
 class JoomlaAdapter362(JoomlaAdapter):
     # TODO: fix hidden slider
     # TODO: fix $ is not a function
-    def adapt(self, settings, templates, **kwargs):
-        super(JoomlaAdapter362, self).adapt(settings, templates, **kwargs)
+    def adapt(self, **kwargs):
+        super(JoomlaAdapter362, self).adapt(**kwargs)
         files = {}
 
-        for file, content in settings["FILES"].items():
+        for file, content in self.settings["FILES"].items():
             file_content = ''
             if file == 'templateDetails.xml':
                 pass
@@ -20,8 +20,8 @@ class JoomlaAdapter362(JoomlaAdapter):
                 template_name = file + '.tpl'
 
                 # apply data to content-template
-                if template_name in templates.keys():
-                    tpl_content = templates[template_name]["content"]
+                if template_name in self.templates.keys():
+                    tpl_content = self.templates[template_name]["content"]
                     file_content = tpl_content.format(**self.format_data)
             else:
                 file_content = content

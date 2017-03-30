@@ -8,12 +8,12 @@ from adaptation.core.adapters import BaseAdapter
 
 class JoomlaAdapter(BaseAdapter):
     """Class keeps methods for all Joomla adapters"""
-    def __init__(self, theme):
-        super(JoomlaAdapter, self).__init__(theme)
+    def __init__(self, theme, settings, templates, request_data):
+        super(JoomlaAdapter, self).__init__(theme, settings, templates, request_data)
         self.xml_file = None
 
-    def adapt(self, settings, templates, **kwargs):
-        super(JoomlaAdapter, self).adapt(settings, templates, **kwargs)
+    def adapt(self, **kwargs):
+        super(JoomlaAdapter, self).adapt(**kwargs)
         self.xml_file = self.build_xml()
 
     def build_xml(self):
@@ -34,8 +34,8 @@ class JoomlaAdapter(BaseAdapter):
                 xml_content = {}
             xml_file.add_child(".", xml_tag, **xml_content)
 
-        for file, file_type in self.uploaded_files["moved"].items():
-            xml_file.add_child("files", file_type, file)
+        # for file, file_type in self.uploaded_files["moved"].items():
+        #    xml_file.add_child("files", file_type, file)
 
         for file in adapt_settings.JOOMLA['FILES']:
             if file.startswith('language'):
