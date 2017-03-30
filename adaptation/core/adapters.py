@@ -19,6 +19,7 @@ class Adapter:
 
     def adapt(self):
         self.uploader.upload(self.request_data["file"], self.request_data["name"])
+        self.uploader.theme.read_files()
         try:
             self.adapter(self.uploader.theme).adapt(self.settings, self.templates)
         finally:

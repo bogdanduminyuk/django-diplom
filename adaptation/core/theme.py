@@ -122,6 +122,7 @@ class ThemeFile(ReadableWritableFile):
         super().__init__(old_path, new_path)
         self.soup = None
         self.prepared = False
+        self.ready = False
 
     def read(self):
         super().read()
@@ -188,7 +189,12 @@ class Theme:
         self.name = name
         self.is_unpacked = False
         self.is_written = False
-        self.files = None
+
+        self.dirs = []
+        self.files = {
+            "theme": [],
+            "other": [],
+        }
 
     def unpack(self):
         """Realizes unpacking of the theme archive to src_dir folder."""
@@ -220,13 +226,31 @@ class Theme:
         if not self.is_unpacked:
             return
 
+        listdir = os.listdir(self.src_dir)
+        for file in listdir:
+            abs_src = os.path.join(self.src_dir, file)
+            abs_dst = os.path.join(self.dst_dir, file)
+            name, ext = os.path.splitext(file)
+
+            if os.path.isdir(abs_src):
+                shutil.copytree(abs_src, abs_dst)
+                self.dirs.append(abs_dst)
+            elif ext not in ['.html', '.htm', '.php']:
+                shutil.copyfile(abs_src, abs_dst)
+                self.files['other'].append(abs_dst)
+            else:
+                self.files['theme'].append(ThemeFile(abs_src, abs_dst))
+
     def write_files(self):
         """Writes File Objects to files in self.dst dir."""
         if not self.is_unpacked:
             return
 
+        for file in self.files["theme"]:
+            file.write()
+
     def get_file(self, filename):
-        return self.files[filename]
+        return self.files["theme"][filename]
 
 
 if __name__ == "__main__":
