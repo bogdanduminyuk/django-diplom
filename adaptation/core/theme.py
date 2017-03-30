@@ -194,6 +194,7 @@ class Theme:
 
         self.dirs = []
         self.files = {}
+        self.writable_files = []
 
     def unpack(self):
         """Realizes unpacking of the theme archive to src_dir folder."""
@@ -245,9 +246,12 @@ class Theme:
         if not self.is_unpacked:
             return
 
-        for file in self.files["theme"]:
+        for file in self.files.values():
             if file.ready:
                 file.write()
+
+        for writable_file in self.writable_files:
+            writable_file.write()
 
     def get_file(self, filename):
         file = self.files.get(filename, None)
@@ -256,6 +260,9 @@ class Theme:
             file.read()
 
         return file
+
+    def add_writable_file(self, file):
+        self.writable_files.append(file)
 
 
 if __name__ == "__main__":
