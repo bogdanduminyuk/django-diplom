@@ -2,7 +2,9 @@
 import os
 
 from adaptation.Joomla.JoomlaAdapter import JoomlaAdapter
+from adaptation.core.theme import ReadableWritableFile
 
+# TODO: fix that file
 
 class JoomlaAdapter362(JoomlaAdapter):
     # TODO: fix hidden slider
@@ -11,13 +13,17 @@ class JoomlaAdapter362(JoomlaAdapter):
         super(JoomlaAdapter362, self).adapt(**kwargs)
         files = {}
 
-        for file, content in self.settings["FILES"].items():
-            file_content = ''
-            if file == 'templateDetails.xml':
-                pass
+        for filename, content in self.settings["FILES"].items():
+            basename = os.path.basename(filename)
+            file = self.theme.get_file(basename)
 
+            if file is None:
+                if file is not 'templateDetails.xml':
+                    file = ReadableWritableFile("", os.path.join(self.theme.dst_dir, filename))
+                    file.content = content
+                    self.theme.add_writable_file(file)
             elif content == "{content}":
-                template_name = file + '.tpl'
+                template_name = basename + ".tpl"
 
                 # apply data to content-template
                 if template_name in self.templates.keys():
@@ -26,7 +32,7 @@ class JoomlaAdapter362(JoomlaAdapter):
             else:
                 file_content = content
 
-            files[file] = file_content
+            files[filename] = file_content
 
         for filename in files.keys():
             if os.path.basename(filename) == filename:

@@ -3,7 +3,6 @@ import os
 import shutil
 import xml.dom.minidom as minidom
 import xml.etree.ElementTree as ET
-from abc import ABCMeta, abstractmethod
 
 from bs4 import BeautifulSoup as bs
 
@@ -11,73 +10,57 @@ from adaptation import settings as adapt_settings
 from diplom import settings
 
 
-class ReadableFile(metaclass=ABCMeta):
-    """Abstract class for Readable files. It used in File-object inheritance."""
-    def __init__(self, rpath):
-        self.rpath = rpath
-
-    def read(self):
-        """Get content from file using rpath"""
-        with open(self.rpath, "r", encoding="utf-8") as file:
-            return file.read()
-
-    @abstractmethod
-    def get_content(self, **kwargs):
-        pass
-
-
-class WritableFile(metaclass=ABCMeta):
-    """Abstract class for Writable files. It used in File-object inheritance."""
-    def __init__(self, wpath):
-        self.wpath = wpath
-
-    def write(self, content):
-        """Writes content to wpath"""
-        with open(self.wpath, "w", encoding="utf-8") as file:
-            file.write(content)
-
-
-class ReadableWritableFile(ReadableFile, WritableFile, metaclass=ABCMeta):
-    """Abstract class for ReadableWritable files. It used in File-object inheritance."""
+class FileObject:
+    """Global file object used as base file"""
     def __init__(self, rpath, wpath):
-        ReadableFile.__init__(self, rpath)
-        WritableFile.__init__(self, wpath)
-        self.content = None
+        self.rpath = rpath
+        self.wpath = wpath
+        self.content = ""
 
     def read(self):
-        """Keeps content in class property"""
-        self.content = super().read()
+        """Simple file reading."""
+        if self.rpath:
+            with open(self.rpath, "r", encoding="utf-8") as file:
+                self.content = file.read()
+                return self.content
 
-    def write(self, content=""):
-        """Writes content to wpath. Uses object property if it is not given."""
-        if not content:
-            content = self.get_content()
-        super().write(content)
+    def write(self):
+        """Simple file writting."""
+        if self.wpath:
+            with open(self.wpath, "w", encoding="utf-8") as file:
+                file.write(self.content)
+
+    def get_content(self, **kwargs):
+        return self.content
 
 
-class TemplateFile(ReadableFile):
+class TemplateFile(FileObject):
     """Class realizes TemplateFile that used with adapters."""
     def __init__(self, template_path):
-        super(TemplateFile, self).__init__(template_path)
-        self.name = os.path.basename(template_path)
+        super(TemplateFile, self).__init__(template_path, "")
 
     def get_content(self, **kwargs):
         """Realizes applying template keys to its content."""
         return self.read().format(**kwargs) if kwargs else self.read()
 
 
-class XMLFile(WritableFile):
+class XMLFile(FileObject):
     """Realizes working with xml files. Represents one xml file."""
-
-    def __init__(self, wpath, main_element_name, attributes=None):
-        super(XMLFile, self).__init__(wpath)
+    def __init__(self, rpath, wpath, main_element_name, attributes=None):
+        super(XMLFile, self).__init__(rpath, wpath)
         self.base_element = ET.Element(main_element_name)
         self.__add_attributes__(self.base_element, attributes)
 
-    def write(self, content=""):
-        if not content:
-            content = self.prettify()
-        super().write(content)
+    def read(self):
+        """Reads xml content from file."""
+        tree = ET.parse(self.rpath)
+        self.base_element = tree.getroot()
+
+    def write(self):
+        """Writes xml to file."""
+        if not self.content:
+            self.content = self.get_content()
+        super().write()
 
     def add_child(self, append_to, name, text="", attributes=None):
         """
@@ -94,7 +77,7 @@ class XMLFile(WritableFile):
         sub_element.text = str(text)
         self.__add_attributes__(sub_element, attributes)
 
-    def prettify(self):
+    def get_content(self, **kwargs):
         """
         Returns pretty xml of self.base_element.
 
@@ -117,35 +100,53 @@ class XMLFile(WritableFile):
                 element.set(attribute, str(value))
 
 
-class ThemeFile(ReadableWritableFile):
+class ThemeFile(FileObject):
+    """Base theme file."""
     def __init__(self, old_path, new_path):
         super().__init__(old_path, new_path)
-        self.soup = None
-        self.prepared = False
+        self.filename = os.path.basename(old_path)
         self.ready = False
 
+
+class SimpleThemeFile(ThemeFile):
+    """
+    Simple file than should not be parsed.
+
+    It should be just moved.
+    """
+    def __init__(self, old_path, new_path):
+        super().__init__(old_path, new_path)
+        self.ready = True
+
+
+class ParsedThemeFile(ThemeFile):
+    """
+    Class of parsed theme files.
+
+    Uses all files that should be parsed from src dir.
+    """
+    def __init__(self, old_path, new_path):
+        super().__init__(old_path, new_path)
+        self.prepared = False
+        self.soup = None
+
     def read(self):
+        """Initializes soup as file content."""
         super().read()
         self.soup = bs(self.content, "html.parser")
 
-    def get_content(self):
-        """Returns content converted from soup"""
+    def write(self):
+        self.content = self.get_content()
+        super().write()
+
+    def get_content(self, **kwargs):
+        """Returns content converted from soup."""
         return str(self.soup).replace('&lt;', '<').replace('&gt;', '>')
 
-    def prepare(self, method, preparation_settings):
-        """
-        Realizes applying of the method with getter as kwarg.
-
-        :param preparation_settings: dict described preparation settings
-        :param method: method that will be applied
-        :return: structure that method returns
-        """
-        self.prepared = method(self.content,
-                               settings=preparation_settings,
-                               elements=self.get_page_elements())
-        self.soup = bs(self.content, "html.parser")
+    def set_content(self, content):
+        """Sets content param as current content."""
+        self.soup = bs(content, "html.parser")
         self.content = self.get_content()
-        return self.prepared
 
     def get_page_parts(self):
         """
@@ -182,7 +183,24 @@ class ThemeFile(ReadableWritableFile):
 
         return elements
 
+    # TODO: move prepare method to base adapter
+    def prepare(self, method, preparation_settings):
+        """
+        Realizes applying of the method with getter as kwarg.
 
+        :param preparation_settings: dict described preparation settings
+        :param method: method that will be applied
+        :return: structure that method returns
+        """
+        self.prepared = method(self.content,
+                               settings=preparation_settings,
+                               elements=self.get_page_elements())
+        self.soup = bs(self.content, "html.parser")
+        self.content = self.get_content()
+        return self.prepared
+
+
+# TODO: check theme with new file structure
 class Theme:
     def __init__(self, src_zip, src_dir, dst_dir, name):
         self.src_zip = src_zip
