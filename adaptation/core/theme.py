@@ -140,7 +140,9 @@ class ThemeFile(ReadableWritableFile):
         :param method: method that will be applied
         :return: structure that method returns
         """
-        self.prepared = method(self.content, settings=preparation_settings)
+        self.prepared = method(self.content,
+                               settings=preparation_settings,
+                               elements=self.get_page_elements())
         self.soup = bs(self.content, "html.parser")
         self.content = self.get_content()
         return self.prepared
@@ -247,7 +249,9 @@ class Theme:
             file.write()
 
     def get_file(self, filename):
-        return self.files["theme"][filename]
+        file = self.files.get(filename, None)
+        file.read()
+        return file
 
 
 if __name__ == "__main__":
