@@ -191,10 +191,7 @@ class Theme:
         self.is_written = False
 
         self.dirs = []
-        self.files = {
-            "theme": [],
-            "other": [],
-        }
+        self.files = {}
 
     def unpack(self):
         """Realizes unpacking of the theme archive to src_dir folder."""
@@ -237,9 +234,9 @@ class Theme:
                 self.dirs.append(abs_dst)
             elif ext not in ['.html', '.htm', '.php']:
                 shutil.copyfile(abs_src, abs_dst)
-                self.files['other'].append(abs_dst)
             else:
-                self.files['theme'].append(ThemeFile(abs_src, abs_dst))
+                key = os.path.basename(abs_src)
+                self.files[key] = ThemeFile(abs_src, abs_dst)
 
     def write_files(self):
         """Writes File Objects to files in self.dst dir."""
