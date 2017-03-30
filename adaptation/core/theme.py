@@ -251,7 +251,10 @@ class Theme:
 
     def get_file(self, filename):
         file = self.files.get(filename, None)
-        file.read()
+
+        if file is not None:
+            file.read()
+
         return file
 
 
