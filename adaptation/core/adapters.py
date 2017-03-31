@@ -48,6 +48,34 @@ class BaseAdapter:
         index_file.prepare(self.preparation, self.settings["PREPARATION"])
 
     @staticmethod
+    def prepare(file, **kwargs):
+        """
+        Realizes replacing in settings[tags_attachment]
+
+        :param file: ParsedThemeFile
+        :param kwargs: additional args
+        :return: None
+        """
+        soup = bs(file.get_content(), "html.parser")
+        for attachment in kwargs["settings"]["TAGS_ATTACHMENT"]:
+            attribute = attachment["attribute"]
+
+            for tag in attachment["tags"]:
+                current_tags_list = soup.select(tag)
+
+                for current_tag in current_tags_list:
+                    old_path = current_tag.attrs.get(attribute, False)
+
+                    if old_path and not functions.is_url(old_path):
+                        current_tag.attrs[attribute] = attachment["template"].format(old_path=old_path)
+
+        # todo: None return File is modified by ref
+        return {
+            "format_update": {},
+            "content": str(soup),
+        }
+
+    @staticmethod
     def preparation(content, **kwargs):
         """
         Realizes replacing in settings[tags_attachment]
