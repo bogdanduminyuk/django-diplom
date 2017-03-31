@@ -4,6 +4,8 @@ import os
 from adaptation.Joomla.JoomlaAdapter import JoomlaAdapter
 
 # TODO: fix that file
+from core.theme import SimpleThemeFile
+
 
 class JoomlaAdapter362(JoomlaAdapter):
     # TODO: fix hidden slider
@@ -18,9 +20,9 @@ class JoomlaAdapter362(JoomlaAdapter):
 
             if file is None:
                 if file is not 'templateDetails.xml':
-                    file = ReadableWritableFile("", os.path.join(self.theme.dst_dir, filename))
+                    file = SimpleThemeFile("", os.path.join(self.theme.dst_dir, filename))
                     file.content = content
-                    self.theme.add_writable_file(file)
+                    self.theme.add_file(file)
             elif content == "{content}":
                 template_name = basename + ".tpl"
 

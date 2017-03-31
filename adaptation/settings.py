@@ -93,10 +93,10 @@ JOOMLA = {
         "component.php": "{content}",
         "error.php": "{content}",
         "index.php": "{content}",
-        "templateDetails.xml": "{content}",
     },
 
     "XML_DESCRIPTION": {
+        "path": "templateDetails.xml",
         "base": {
             "name": "extension",
             "attributes": {"version": "1.0", "type": "template", "client": "site"}

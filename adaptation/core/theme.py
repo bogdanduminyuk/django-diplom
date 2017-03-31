@@ -198,8 +198,8 @@ class Theme:
         self.is_written = False
 
         self.dirs = []
-        self.theme_files = {}
-        self.additional_files = []
+        self.src_files = {}
+        self.dst_files = []
 
     def unpack(self):
         """Realizes unpacking of the theme archive to src_dir folder."""
@@ -240,27 +240,24 @@ class Theme:
                 self.dirs.append(abs_dst)
             elif ext not in ['.html', '.htm', '.php']:
                 shutil.copyfile(abs_src, abs_dst)
-                self.additional_files.append(SimpleThemeFile(abs_src, abs_dst))
+                self.dst_files.append(SimpleThemeFile(abs_src, abs_dst))
             else:
                 key = os.path.basename(abs_src)
-                self.theme_files[key] = ParsedThemeFile(abs_src, abs_dst)
+                self.src_files[key] = ParsedThemeFile(abs_src, abs_dst)
 
     def write_files(self):
         """Writes File Objects to files in self.dst dir."""
         if not self.is_unpacked:
             return
 
-        for file in self.theme_files.values():
+        for file in self.dst_files:
             if file.ready:
                 file.write()
-
-        for writable_file in self.additional_files:
-            writable_file.write()
 
         self.is_written = True
 
     def get_file(self, filename):
-        file = self.theme_files.get(filename, None)
+        file = self.src_files.get(filename, None)
 
         if file is not None:
             file.read()
@@ -268,7 +265,7 @@ class Theme:
         return file
 
     def add_file(self, file):
-        self.additional_files.append(file)
+        self.dst_files.append(file)
 
 
 if __name__ == "__main__":

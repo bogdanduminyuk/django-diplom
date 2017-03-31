@@ -1,4 +1,5 @@
 # coding: utf-8
+import os
 
 from adaptation import settings as adapt_settings
 from adaptation.core import functions
@@ -23,7 +24,10 @@ class JoomlaAdapter(BaseAdapter):
         :return: XMLFile object
         """
         xml_settings = self.settings["XML_DESCRIPTION"]
-        xml_file = XMLFile(xml_settings["base"]["name"], xml_settings["base"]["attributes"])
+        xml_file = XMLFile(rpath="",
+                           wpath=os.path.join(self.theme.dst_dir, xml_settings["path"]),
+                           main_element_name=xml_settings["base"]["name"],
+                           attributes=xml_settings["base"]["attributes"])
 
         for xml_tag, text in self.request_data.items():
             if xml_tag not in xml_settings["form_data"]["excluded"]:
