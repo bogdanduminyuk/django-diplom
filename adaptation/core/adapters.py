@@ -70,31 +70,3 @@ class BaseAdapter:
                         current_tag.attrs[attribute] = attachment["template"].format(old_path=old_path)
 
         file.set_content(str(soup))
-
-    @staticmethod
-    def preparation(content, **kwargs):
-        """
-        Realizes replacing in settings[tags_attachment]
-
-        :param content: page content
-        :param kwargs: dict of settings and necessary data
-        :return: dict with one key "updated_content"
-        """
-        soup = bs(content, "html.parser")
-
-        for attachment in kwargs["settings"]["TAGS_ATTACHMENT"]:
-            attribute = attachment["attribute"]
-
-            for tag in attachment["tags"]:
-                current_tags_list = soup.select(tag)
-
-                for current_tag in current_tags_list:
-                    old_path = current_tag.attrs.get(attribute, False)
-
-                    if old_path and not functions.is_url(old_path):
-                        current_tag.attrs[attribute] = attachment["template"].format(old_path=old_path)
-
-        return {
-            "format_update": {},
-            "content": str(soup),
-        }
