@@ -1,5 +1,9 @@
 # coding: utf-8
 import os
+
+# TODO: remove after testing
+os.environ['DJANGO_SETTINGS_MODULE'] = 'diplom.settings'
+
 import shutil
 import xml.dom.minidom as minidom
 import xml.etree.ElementTree as ET
@@ -183,24 +187,7 @@ class ParsedThemeFile(ThemeFile):
 
         return elements
 
-    # TODO: move prepare method to base adapter
-    def prepare(self, method, preparation_settings):
-        """
-        Realizes applying of the method with getter as kwarg.
 
-        :param preparation_settings: dict described preparation settings
-        :param method: method that will be applied
-        :return: structure that method returns
-        """
-        self.prepared = method(self.content,
-                               settings=preparation_settings,
-                               elements=self.get_page_elements())
-        self.soup = bs(self.content, "html.parser")
-        self.content = self.get_content()
-        return self.prepared
-
-
-# TODO: check theme with new file structure
 class Theme:
     def __init__(self, src_zip, src_dir, dst_dir, name):
         self.src_zip = src_zip
@@ -211,8 +198,8 @@ class Theme:
         self.is_written = False
 
         self.dirs = []
-        self.files = {}
-        self.writable_files = []
+        self.theme_files = {}
+        self.additional_files = []
 
     def unpack(self):
         """Realizes unpacking of the theme archive to src_dir folder."""
@@ -237,8 +224,6 @@ class Theme:
             except FileNotFoundError:
                 pass
 
-    # TODO: realize it adding smth like 'moved' and 'other' to use it in build_xml
-    # or TODO: add flag 'ready' that mean "FILE IS READY TO WRITE"
     def read_files(self):
         """Reads files from disk (from self.src) into File Objects."""
         if not self.is_unpacked:
@@ -257,38 +242,35 @@ class Theme:
                 shutil.copyfile(abs_src, abs_dst)
             else:
                 key = os.path.basename(abs_src)
-                self.files[key] = ThemeFile(abs_src, abs_dst)
+                self.theme_files[key] = ThemeFile(abs_src, abs_dst)
 
     def write_files(self):
         """Writes File Objects to files in self.dst dir."""
         if not self.is_unpacked:
             return
 
-        for file in self.files.values():
+        for file in self.theme_files.values():
             if file.ready:
                 file.write()
 
-        for writable_file in self.writable_files:
+        for writable_file in self.additional_files:
             writable_file.write()
 
+        self.is_written = True
+
     def get_file(self, filename):
-        file = self.files.get(filename, None)
+        file = self.theme_files.get(filename, None)
 
         if file is not None:
             file.read()
 
         return file
 
-    def add_writable_file(self, file):
-        self.writable_files.append(file)
+    def add_file(self, file):
+        self.additional_files.append(file)
 
 
 if __name__ == "__main__":
-    theme_file = ThemeFile(r"E:\git-workspace\diplom\tmp\snowboarding\index.html",
-                           r"E:\git-workspace\diplom\tmp\uploads\snowboarding\index.html")
-    theme_file.read()
-    theme_file.write()
-
     src = r"E:\git-workspace\diplom\tmp\snowboarding"
     dst = r"E:\git-workspace\diplom\tmp\uploads\snowboarding"
     request_data = {
