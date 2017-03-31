@@ -44,8 +44,8 @@ class BaseAdapter:
 
     def adapt(self, **kwargs):
         index_file = self.theme.get_file("index.html")
-        # index_file.read()
-        index_file.prepare(self.preparation, self.settings["PREPARATION"])
+        self.prepare(index_file, settings=self.settings["PREPARATION"])
+        # index_file.prepare(self.preparation, self.settings["PREPARATION"])
 
     @staticmethod
     def prepare(file, **kwargs):
@@ -69,11 +69,7 @@ class BaseAdapter:
                     if old_path and not functions.is_url(old_path):
                         current_tag.attrs[attribute] = attachment["template"].format(old_path=old_path)
 
-        # todo: None return File is modified by ref
-        return {
-            "format_update": {},
-            "content": str(soup),
-        }
+        file.set_content(str(soup))
 
     @staticmethod
     def preparation(content, **kwargs):

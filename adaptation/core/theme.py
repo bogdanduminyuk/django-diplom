@@ -240,9 +240,10 @@ class Theme:
                 self.dirs.append(abs_dst)
             elif ext not in ['.html', '.htm', '.php']:
                 shutil.copyfile(abs_src, abs_dst)
+                self.additional_files.append(SimpleThemeFile(abs_src, abs_dst))
             else:
                 key = os.path.basename(abs_src)
-                self.theme_files[key] = ThemeFile(abs_src, abs_dst)
+                self.theme_files[key] = ParsedThemeFile(abs_src, abs_dst)
 
     def write_files(self):
         """Writes File Objects to files in self.dst dir."""

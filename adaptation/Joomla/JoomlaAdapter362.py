@@ -2,7 +2,6 @@
 import os
 
 from adaptation.Joomla.JoomlaAdapter import JoomlaAdapter
-from adaptation.core.theme import ReadableWritableFile
 
 # TODO: fix that file
 
