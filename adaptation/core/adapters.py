@@ -77,12 +77,9 @@ class BaseAdapter:
         file.set_content(str(soup))
         kwargs["template_data"].update(file.get_page_parts())
 
-    def template_exists(self, filename):
-        """
-        Checks if templates with given filename exists.
-
-        :param filename: filename or path to file
-        :return: True if template exists and False otherwise
-        """
+    def get_template(self, filename):
+        """Returns template for given filename if it exists or None otherwise."""
         template_name = os.path.basename(filename) + ".tpl"
-        return template_name in self.templates.keys()
+
+        if template_name in self.templates.keys():
+            return self.templates[template_name]
