@@ -20,7 +20,7 @@ class FileSystemObject:
     def __init__(self, rpath, wpath):
         self.rpath = rpath
         self.wpath = wpath
-        self.basename = os.path.basename(rpath)
+        self.basename = os.path.basename(rpath) if rpath else os.path.basename(wpath)
 
     def copy(self):
         pass
@@ -158,6 +158,7 @@ class ParsableThemeFile(FileObject):
         """Sets content param as current content."""
         self.soup = bs(content, "html.parser")
         self.content = self.get_content()
+        self.prepared = True
 
     def get_page_parts(self):
         """
@@ -274,10 +275,15 @@ class Theme:
         return file
 
     def add_file(self, wpath, content):
-        """Append FileObject to dst theme files"""
+        """Appends FileObject to dst theme files"""
         file = FileObject("", wpath)
         file.content = content
         self.dst_files.append(file)
+
+    def get_root_files(self):
+        """Returns list of files that will be placed in theme root dir."""
+        files = self.other_files + self.dst_files
+        return [file for file in files if os.path.relpath(self.dst_dir, file.wpath) == ".."]
 
 
 if __name__ == "__main__":
