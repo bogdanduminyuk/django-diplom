@@ -1,0 +1,22 @@
+{% extends 'base/input_form.html' %}
+
+{% block form_content %}
+    {% if form %}
+        <div class="row">
+        {% include "base/form_snippet.html" %}
+        </div>
+    {% else %}
+        <h1>Empty form</h1>
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+<script type='text/javascript'>
+    $(document).ready(function () {
+        $('.page-alert .close').click(function(e) {
+            e.preventDefault();
+            $(this).closest('.page-alert').slideUp();
+        });
+    });
+</script>
+{% endblock script %}

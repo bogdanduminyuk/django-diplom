@@ -1,0 +1,80 @@
+{% extends 'base/index.html' %}
+
+{% block content %}
+<div class="row">
+    <div id="result-container" class="col-lg-12">
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-3"></div>
+            <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12">
+                <div class="result-image"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-3"></div>
+            <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12">
+                <a id="result-btn" href="#" class="btn btn-primary disabled">Ожидайте</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block script %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        function ajaxQuery() {
+            if ( ! document.referrer ) {
+                $('.result-image').empty();
+                setLinkBtn('btn-danger', 'На главную', '/');
+                $('.page-header').text('Ошибка');
+                return;
+            }
+
+            function setLinkBtn(addition_class, text, href) {
+                var btn = $('#result-btn');
+                btn.removeClass('btn-primary disabled');
+                btn.addClass('btn-lg');
+                btn.addClass(addition_class);
+                btn.text(text);
+                btn.attr('href', href);
+            }
+
+            function ajaxSuccess(data) {
+                var container = $("#result-container");
+
+                container.find('.result-image img').attr('src', data.image);
+
+                if ( data.status === 'True' ) {
+                    setLinkBtn('btn-success', 'Скачать', data.href);
+                    $('.page-header').text('Успех');
+                }
+                else {
+                    setLinkBtn('btn-danger', 'На главную', "{% url 'home' %}");
+                    $('.page-header').text('Ошибка');
+                }
+            }
+
+            $.ajax({
+                url: '/result',
+                type: 'GET',
+                dataType: 'json',
+                async: true,
+                cache: false,
+                data: {loading: 1},
+
+                beforeSend: function () {
+                    $('<img src="{{ image }}">').appendTo('.result-image');
+                },
+
+                success: ajaxSuccess
+            });
+        }
+
+        ajaxQuery();
+
+    })
+</script>
+{% endblock script %}
+
+
