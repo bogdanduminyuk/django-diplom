@@ -1,8 +1,8 @@
 # coding: utf-8
 from bs4 import BeautifulSoup as bs
 
-from adaptation.core.classes import Getter, Uploader
 from adaptation.core import functions
+from adaptation.core.classes import Getter, Uploader
 
 
 class Adapter:
@@ -23,11 +23,12 @@ class Adapter:
     def adapt(self):
         self.uploader.upload(self.request_data["file"], self.request_data["name"])
         self.uploader.theme.read_files()
+
         try:
             self.adapter(self.uploader.theme, self.settings, self.templates, self.request_data).adapt()
+            return self.uploader.download()
         finally:
             self.uploader.theme.remove()
-        return self.uploader.download()
 
 
 class BaseAdapter:
@@ -41,10 +42,14 @@ class BaseAdapter:
         self.settings = settings
         self.templates = templates
         self.request_data = request_data
+        self.template_data = request_data.copy()
 
     def adapt(self, **kwargs):
         index_file = self.theme.get_file("index.html")
-        self.prepare(index_file, settings=self.settings["PREPARATION"])
+        self.template_data.update(index_file.get_page_parts())
+        self.prepare(index_file,
+                     settings=self.settings["PREPARATION"],
+                     templates_data=self.template_data)
         # index_file.prepare(self.preparation, self.settings["PREPARATION"])
 
     @staticmethod
