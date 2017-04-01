@@ -1,4 +1,5 @@
 # coding: utf-8
+import distutils.dir_util as dir_util
 import os
 
 # TODO: remove after testing
@@ -19,13 +20,17 @@ class FileSystemObject:
     def __init__(self, rpath, wpath):
         self.rpath = rpath
         self.wpath = wpath
+        self.basename = os.path.basename(rpath)
+
+    def copy(self):
+        pass
 
 
 class DirectoryObject(FileSystemObject):
     """Class is base for directories"""
     def copy(self):
         """Copies directory from rpath to wpath"""
-        shutil.copytree(self.rpath, self.wpath)
+        dir_util.copy_tree(self.rpath, self.wpath)
 
 
 class FileObject(FileSystemObject):
@@ -33,6 +38,7 @@ class FileObject(FileSystemObject):
     def __init__(self, rpath, wpath):
         super().__init__(rpath, wpath)
         self.content = ""
+        self.dirname = os.path.dirname(wpath)
 
     def read(self):
         """Simple file reading."""
@@ -42,13 +48,20 @@ class FileObject(FileSystemObject):
                 return self.content
 
     def write(self):
-        """Simple file writting."""
+        """Simple file writing."""
         if self.wpath:
+            if not os.path.exists(self.dirname):
+                os.makedirs(self.dirname)
+
             with open(self.wpath, "w", encoding="utf-8") as file:
                 file.write(self.content)
 
     def get_content(self, **kwargs):
         return self.content
+
+    def copy(self):
+        """Copies file from rpath to wpath"""
+        shutil.copyfile(self.rpath, self.wpath)
 
 
 class TemplateFile(FileObject):
@@ -117,25 +130,7 @@ class XMLFile(FileObject):
                 element.set(attribute, str(value))
 
 
-class ThemeFile(FileObject):
-    """Base theme file."""
-    def __init__(self, old_path, new_path):
-        super().__init__(old_path, new_path)
-        self.filename = os.path.basename(old_path)
-
-
-class NewThemeFile(ThemeFile):
-    """
-    Simple file than should not be parsed.
-
-    It should be just moved.
-    """
-    def __init__(self, new_path):
-        super().__init__("", new_path)
-        del self.rpath
-
-
-class ParsedThemeFile(ThemeFile):
+class ParsableThemeFile(FileObject):
     """
     Class of parsed theme files.
 
@@ -209,9 +204,10 @@ class Theme:
         self.is_unpacked = False
         self.is_written = False
 
-        self.dirs = []
-        self.src_files = {}
+        self.other_files = []
+        self.directories = []
         self.dst_files = []
+        self.src_parsable_files = {}
 
     def unpack(self):
         """Realizes unpacking of the theme archive to src_dir folder."""
@@ -248,28 +244,29 @@ class Theme:
             name, ext = os.path.splitext(file)
 
             if os.path.isdir(abs_src):
-                shutil.copytree(abs_src, abs_dst)
-                self.dirs.append(abs_dst)
+                self.directories.append(DirectoryObject(abs_src, abs_dst))
             elif ext not in ['.html', '.htm', '.php']:
-                shutil.copyfile(abs_src, abs_dst)
-                self.dst_files.append(SimpleThemeFile(abs_src, abs_dst))
+                self.other_files.append(FileObject(abs_src, abs_dst))
             else:
-                key = os.path.basename(abs_src)
-                self.src_files[key] = ParsedThemeFile(abs_src, abs_dst)
+                file = ParsableThemeFile(abs_src, abs_dst)
+                self.src_parsable_files[file.basename] = file
 
     def write_files(self):
         """Writes File Objects to files in self.dst dir."""
         if not self.is_unpacked:
             return
 
+        for obj in self.directories + self.other_files:
+            obj.copy()
+
         for file in self.dst_files:
-            if file.ready:
-                file.write()
+            file.write()
 
         self.is_written = True
 
     def get_file(self, filename):
-        file = self.src_files.get(filename, None)
+        """Returns ParsableFile and read it."""
+        file = self.src_parsable_files.get(filename, None)
 
         if file is not None:
             file.read()
@@ -277,7 +274,8 @@ class Theme:
         return file
 
     def add_file(self, wpath, content):
-        file = NewThemeFile(wpath)
+        """Append FileObject to dst theme files"""
+        file = FileObject("", wpath)
         file.content = content
         self.dst_files.append(file)
 
