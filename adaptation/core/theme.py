@@ -275,6 +275,7 @@ class Theme:
 
     def add_file(self, wpath, content):
         """Appends FileObject to dst theme files"""
+        wpath = os.path.join(self.dst_dir, wpath)
         file = FileObject("", wpath)
         file.content = content
         self.dst_files.append(file)
@@ -286,21 +287,4 @@ class Theme:
 
 
 if __name__ == "__main__":
-    src = r"E:\git-workspace\diplom\tmp\snowboarding"
-    dst = r"E:\git-workspace\diplom\tmp\uploads\snowboarding"
-    request_data = {
-        'name': 'test',
-        'file': 'test',
-        'form': 'Joomla',
-        'version': 362,
-        'language': 'en-GB',
-        'creationDate': '',
-        'author': '',
-        'authorEmail': '',
-        'copyright': '',
-        'license': '',
-        'authorUrl': '',
-    }
-    # getter = Getter("Joomla", 362)
-    # theme = Theme(src, dst, request_data, getter)
-    # theme.remove()
+    pass
