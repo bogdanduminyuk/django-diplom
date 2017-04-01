@@ -14,11 +14,24 @@ from adaptation import settings as adapt_settings
 from diplom import settings
 
 
-class FileObject:
-    """Global file object used as base file"""
+class FileSystemObject:
+    """Class is base for objects of file system (files, directories)."""
     def __init__(self, rpath, wpath):
         self.rpath = rpath
         self.wpath = wpath
+
+
+class DirectoryObject(FileSystemObject):
+    """Class is base for directories"""
+    def copy(self):
+        """Copies directory from rpath to wpath"""
+        shutil.copytree(self.rpath, self.wpath)
+
+
+class FileObject(FileSystemObject):
+    """Global file object used as base file"""
+    def __init__(self, rpath, wpath):
+        super().__init__(rpath, wpath)
         self.content = ""
 
     def read(self):
@@ -109,18 +122,17 @@ class ThemeFile(FileObject):
     def __init__(self, old_path, new_path):
         super().__init__(old_path, new_path)
         self.filename = os.path.basename(old_path)
-        self.ready = False
 
 
-class SimpleThemeFile(ThemeFile):
+class NewThemeFile(ThemeFile):
     """
     Simple file than should not be parsed.
 
     It should be just moved.
     """
-    def __init__(self, old_path, new_path):
-        super().__init__(old_path, new_path)
-        self.ready = True
+    def __init__(self, new_path):
+        super().__init__("", new_path)
+        del self.rpath
 
 
 class ParsedThemeFile(ThemeFile):
@@ -264,7 +276,9 @@ class Theme:
 
         return file
 
-    def add_file(self, file):
+    def add_file(self, wpath, content):
+        file = NewThemeFile(wpath)
+        file.content = content
         self.dst_files.append(file)
 
 
