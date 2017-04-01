@@ -49,7 +49,6 @@ class BaseAdapter:
         self.prepare(index_file,
                      settings=self.settings["PREPARATION"],
                      template_data=self.template_data)
-        # index_file.prepare(self.preparation, self.settings["PREPARATION"])
 
     @staticmethod
     def prepare(file, **kwargs):

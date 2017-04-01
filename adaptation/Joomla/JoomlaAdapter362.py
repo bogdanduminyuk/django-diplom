@@ -3,15 +3,12 @@ import os
 
 from adaptation.Joomla.JoomlaAdapter import JoomlaAdapter
 
-# TODO: fix that file
-
 
 class JoomlaAdapter362(JoomlaAdapter):
     # TODO: fix hidden slider
     # TODO: fix $ is not a function
     def adapt(self, **kwargs):
         super(JoomlaAdapter362, self).adapt(**kwargs)
-        # files = {}
 
         for filename, content in self.settings["FILES"].items():
             if content == "{content}":
