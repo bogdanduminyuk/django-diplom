@@ -1,4 +1,6 @@
 # coding: utf-8
+import os
+
 from bs4 import BeautifulSoup as bs
 
 from adaptation.core import functions
@@ -74,3 +76,13 @@ class BaseAdapter:
 
         file.set_content(str(soup))
         kwargs["template_data"].update(file.get_page_parts())
+
+    def template_exists(self, filename):
+        """
+        Checks if templates with given filename exists.
+
+        :param filename: filename or path to file
+        :return: True if template exists and False otherwise
+        """
+        template_name = os.path.basename(filename) + ".tpl"
+        return template_name in self.templates.keys()
