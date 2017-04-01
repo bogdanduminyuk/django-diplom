@@ -46,10 +46,9 @@ class BaseAdapter:
 
     def adapt(self, **kwargs):
         index_file = self.theme.get_file("index.html")
-        self.template_data.update(index_file.get_page_parts())
         self.prepare(index_file,
                      settings=self.settings["PREPARATION"],
-                     templates_data=self.template_data)
+                     template_data=self.template_data)
         # index_file.prepare(self.preparation, self.settings["PREPARATION"])
 
     @staticmethod
@@ -75,3 +74,4 @@ class BaseAdapter:
                         current_tag.attrs[attribute] = attachment["template"].format(old_path=old_path)
 
         file.set_content(str(soup))
+        kwargs["template_data"].update(file.get_page_parts())

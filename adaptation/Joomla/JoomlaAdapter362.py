@@ -24,12 +24,3 @@ class JoomlaAdapter362(JoomlaAdapter):
 
         xml_file = self.build_xml()
         self.theme.add_file(xml_file.wpath, xml_file.get_content())
-
-            # files[filename] = file_content
-
-        #for filename in files.keys():
-        #    if os.path.basename(filename) == filename:
-        #        self.xml_file.add_child("files", "filename", filename)
-
-        #files['templateDetails.xml'] = self.xml_file.prettify()
-
