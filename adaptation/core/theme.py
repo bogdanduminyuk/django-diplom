@@ -1,5 +1,4 @@
 # coding: utf-8
-import distutils.dir_util as dir_util
 import os
 
 # TODO: remove after testing
@@ -30,7 +29,7 @@ class DirectoryObject(FileSystemObject):
     """Class is base for directories"""
     def copy(self):
         """Copies directory from rpath to wpath"""
-        dir_util.copy_tree(self.rpath, self.wpath)
+        shutil.copytree(self.rpath, self.wpath)
 
 
 class FileObject(FileSystemObject):
@@ -174,7 +173,7 @@ class ParsableThemeFile(FileObject):
 
         for part, values in adapt_settings.PAGE_PARTS.items():
             selector = values["SELECTOR"]
-            parts[part] = str(soup.select(selector)[0])
+            parts[part] = str(soup.select(selector)[0]).replace('&lt;', '<').replace('&gt;', '>')
 
         return parts
 
