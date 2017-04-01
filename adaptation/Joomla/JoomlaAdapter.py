@@ -47,22 +47,26 @@ class JoomlaAdapter(BaseAdapter):
                 attributes = {"tag": self.request_data["language"]}
                 xml_file.add_child("languages", "language", text, attributes)
 
+        for directory in self.theme.directories:
+            xml_file.add_child("files", "folder", directory.basename)
+        for file in self.theme.dst_files:
+            xml_file.add_child("files", "filename", file.basename)
+
         return xml_file
 
     @staticmethod
-    def preparation(content, **kwargs):
-        result = super(JoomlaAdapter, JoomlaAdapter).preparation(content, **kwargs)
+    def prepare(file, **kwargs):
+        super(JoomlaAdapter, JoomlaAdapter).prepare(file, **kwargs)
 
         joomla_styles_settings = kwargs["settings"]["STYLES"]
         styles = ""
-        for link_tag in kwargs["elements"]["link"]:
+        elements = file.get_page_elements()
+        for link_tag in elements["link"]:
             if link_tag.attrs["rel"][0] == joomla_styles_settings["has_rel"]:
                 href = link_tag.attrs["href"]
                 if not functions.is_url(href):
                     styles += joomla_styles_settings["template"].format(stylesheet=href) + "\n"
 
-        result["format_update"] = {
+        kwargs["templates_data"].update({
             joomla_styles_settings["format_name"]: styles
-        }
-
-        return result
+        })

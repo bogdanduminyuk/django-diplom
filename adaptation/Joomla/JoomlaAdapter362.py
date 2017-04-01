@@ -4,7 +4,6 @@ import os
 from adaptation.Joomla.JoomlaAdapter import JoomlaAdapter
 
 # TODO: fix that file
-from core.theme import SimpleThemeFile
 
 
 class JoomlaAdapter362(JoomlaAdapter):
@@ -15,23 +14,16 @@ class JoomlaAdapter362(JoomlaAdapter):
         # files = {}
 
         for filename, content in self.settings["FILES"].items():
-            basename = os.path.basename(filename)
-            file = self.theme.get_file(basename)
+            if content == "{content}":
+                template_name = os.path.basename(filename) + ".tpl"
 
-            if file is None:
-                if content == "{content}":
-                    template_name = basename + ".tpl"
-                    if template_name in self.templates.keys():
-                        content = self.templates[template_name].get_content()
-                        # apply content
-                        # tpl_content = self.templates[template_name]["content"]
-                        # file_content = tpl_content.format(**self.format_data)
+                if template_name in self.templates.keys():
+                    content = self.templates[template_name].get_content(**self.template_data)
 
-                file = SimpleThemeFile("", os.path.join(self.theme.dst_dir, filename))
-                file.content = content
-                self.theme.add_file(file)
-            else:
-                file_content = content
+            self.theme.add_file(os.path.join(self.theme.dst_dir, filename), content)
+
+        xml_file = self.build_xml()
+        self.theme.add_file(xml_file.wpath, xml_file.get_content())
 
             # files[filename] = file_content
 
@@ -41,4 +33,3 @@ class JoomlaAdapter362(JoomlaAdapter):
 
         #files['templateDetails.xml'] = self.xml_file.prettify()
 
-        # return files
