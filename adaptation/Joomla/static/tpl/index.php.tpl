@@ -7,6 +7,7 @@ $lang = JFactory::getLanguage();
 
 $template_url = $this->baseurl . '/templates/' . $this->template;
 {head_styles}
+{head_scripts}
 $is_home_page = $menu->getActive() == $menu->getDefault($lang->getTag());
 ?>
 

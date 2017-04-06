@@ -82,6 +82,11 @@ JOOMLA = {
             "has_rel": "stylesheet"
         },
 
+        "SCRIPTS": {
+            "format_name": "head_scripts",
+            "template": "$doc->addScript($template_urf . '/{script}');"
+        },
+
         "TAGS_ATTACHMENT": [
             {
                 "attribute": "src",

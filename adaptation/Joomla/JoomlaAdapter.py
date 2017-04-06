@@ -58,6 +58,14 @@ class JoomlaAdapter(BaseAdapter):
                 if not functions.is_url(href):
                     styles += joomla_styles_settings["template"].format(stylesheet=href) + "\n"
 
+        # TODO: fix /<?php echo template dir url... in page with scripts
+        scripts = ''
+        for script_tag in elements["script"]:
+            src = script_tag.attrs.get("src", '')
+            if src and not functions.is_url(src):
+                scripts += kwargs["settings"]["SCRIPTS"]["template"].format(script=src)
+
         kwargs["template_data"].update({
-            joomla_styles_settings["format_name"]: styles
+            joomla_styles_settings["format_name"]: styles,
+            kwargs["settings"]["SCRIPTS"]["format_name"]: scripts
         })
