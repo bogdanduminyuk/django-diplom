@@ -161,7 +161,7 @@ class ParsableThemeFile(FileObject):
 
     def get_page_parts(self):
         """
-        Realizes selection using selectors.
+        Returns dict of all page parts.
 
         Uses PAGE_PARTS selectors.
 
@@ -179,7 +179,8 @@ class ParsableThemeFile(FileObject):
 
     def get_page_part(self, key):
         """
-        Returns dict with content and page-part settings
+        Returns dict with content and page-part settings with given key.
+
         :param key: key of page part
         :return: dict <content:, part:>
         """
