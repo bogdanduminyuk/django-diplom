@@ -46,27 +46,40 @@ class JoomlaAdapter(BaseAdapter):
 
     @staticmethod
     def prepare(file, **kwargs):
-        # TODO: add script scanning and adding
+        """
+        Realizes Joomla preparation.
+
+        :param file: ParsableThemeFile to prepare
+        :param kwargs: dict of additional arguments
+        :return: None
+        """
+        def get_additional(collection, attribute, template):
+            """
+            Realizes creation of addStylesheet or addScript.
+
+            :param collection: list of tags
+            :param attribute: tag attribute where it search for value
+            :param template: string that used as format template
+            :return: string
+            """
+            joomla_add_string = ""
+
+            for tag in collection:
+                attr_value = tag.attrs.get(attribute, "")
+                if attr_value and not functions.is_url(attr_value):
+                    joomla_add_string += template.format(attr_value) + "\n"
+
+            return joomla_add_string
+
         super(JoomlaAdapter, JoomlaAdapter).prepare(file, **kwargs)
 
-        joomla_styles_settings = kwargs["settings"]["STYLES"]
-        styles = ""
-        elements = file.get_page_elements()
-        for link_tag in elements["link"]:
-            if link_tag.attrs["rel"][0] == joomla_styles_settings["has_rel"]:
-                href = link_tag.attrs["href"]
-                if not functions.is_url(href):
-                    styles += joomla_styles_settings["template"].format(stylesheet=href) + "\n"
+        styles_template = kwargs["settings"]["STYLES"]["template"]
+        scripts_template = kwargs["settings"]["SCRIPTS"]["template"]
 
-        scripts = ''
-        for script_tag in file.soup.select("head script"):
-            src = script_tag.attrs.get("src", '')
-            if src and not functions.is_url(src):
-                scripts += kwargs["settings"]["SCRIPTS"]["template"].format(script=src) + "\n"
-
-
+        styles = get_additional(file.get_page_elements()['link'], 'href', styles_template)
+        scripts = get_additional(file.soup.select("head script"), 'src', scripts_template)
 
         kwargs["template_data"].update({
-            joomla_styles_settings["format_name"]: styles,
+            kwargs["settings"]["STYLES"]["format_name"]: styles,
             kwargs["settings"]["SCRIPTS"]["format_name"]: scripts
         })

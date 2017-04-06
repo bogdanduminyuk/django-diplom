@@ -78,13 +78,13 @@ JOOMLA = {
     "PREPARATION": {
         "STYLES": {
             "format_name": "head_styles",
-            "template": "$doc->addStyleSheet($template_url . '/{stylesheet}');",
+            "template": "$doc->addStyleSheet($template_url . '/{}');",
             "has_rel": "stylesheet"
         },
 
         "SCRIPTS": {
             "format_name": "head_scripts",
-            "template": "$doc->addScript($template_url . '/{script}');"
+            "template": "$doc->addScript($template_url . '/{}');"
         },
 
         "TAGS_ATTACHMENT": [
