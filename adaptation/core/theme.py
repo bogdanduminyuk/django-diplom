@@ -177,6 +177,19 @@ class ParsableThemeFile(FileObject):
 
         return parts
 
+    def get_page_part(self, key):
+        """
+        Returns dict with content and page-part settings
+        :param key: key of page part
+        :return: dict <content:, part:>
+        """
+        part = adapt_settings.PAGE_PARTS[key]
+        selector = part["SELECTOR"]
+        return {
+            "content": str(self.soup.select(selector)[0]).replace('&lt;', '<').replace('&gt;', '>'),
+            "part": part
+        }
+
     def get_page_elements(self):
         """
         Returns a dict of lists those contain tags.
