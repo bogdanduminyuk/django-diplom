@@ -84,13 +84,13 @@ JOOMLA = {
 
         "SCRIPTS": {
             "format_name": "head_scripts",
-            "template": "$doc->addScript($template_urf . '/{script}');"
+            "template": "$doc->addScript($template_url . '/{script}');"
         },
 
         "TAGS_ATTACHMENT": [
             {
                 "attribute": "src",
-                "tags": ["script", "img"],
+                "tags": ["img", "body script"],
                 "template": "<?php echo $template_url;?>/{old_path}",
             },
         ],
