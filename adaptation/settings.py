@@ -59,7 +59,7 @@ WORDPRESS = {
             {
                 "page-part": "nav",
                 "params": "['menu'=>'{menu_name}', 'menu_class'=>'{menu_class}', 'menu_id'=>'{menu_id}']",
-                "template": "<php? echo wp_nav_menu({params}); ?>"
+                "template": "<?php echo wp_nav_menu({params}); ?>"
             },
         ],
     },
