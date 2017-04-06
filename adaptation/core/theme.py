@@ -1,9 +1,5 @@
 # coding: utf-8
 import os
-
-# TODO: remove after testing
-os.environ['DJANGO_SETTINGS_MODULE'] = 'diplom.settings'
-
 import shutil
 import xml.dom.minidom as minidom
 import xml.etree.ElementTree as ET

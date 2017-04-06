@@ -5,8 +5,6 @@ from adaptation.Joomla.JoomlaAdapter import JoomlaAdapter
 
 
 class JoomlaAdapter362(JoomlaAdapter):
-    # TODO: fix hidden slider
-    # TODO: fix $ is not a function
     def adapt(self, **kwargs):
         super(JoomlaAdapter362, self).adapt(**kwargs)
 
