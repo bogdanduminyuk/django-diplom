@@ -46,6 +46,7 @@ class JoomlaAdapter(BaseAdapter):
 
     @staticmethod
     def prepare(file, **kwargs):
+        # TODO: add script scanning and adding
         super(JoomlaAdapter, JoomlaAdapter).prepare(file, **kwargs)
 
         joomla_styles_settings = kwargs["settings"]["STYLES"]
