@@ -29,6 +29,10 @@ PAGE_PARTS = {
 
     "body": {
         "SELECTOR": "body"
+    },
+
+    "nav": {
+        "SELECTOR": "#page-nav"
     }
 }
 
@@ -48,6 +52,14 @@ WORDPRESS = {
                 "attribute": "href",
                 "tags": ["link"],
                 "template": "<?php echo get_template_directory_uri();?>/{old_path}"
+            },
+        ],
+
+        "REPLACEMENT": [
+            {
+                "page-part": "nav",
+                "params": "['menu'=>'{menu_name}', 'menu_class'=>'{menu_class}', 'menu_id'=>'{menu_id}']",
+                "template": "<php? echo wp_nav_menu({params}); ?>"
             },
         ],
     },
