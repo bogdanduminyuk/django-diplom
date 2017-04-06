@@ -1,5 +1,5 @@
 # coding: utf-8
-
+from bs4 import BeautifulSoup as bs
 from adaptation.core.adapters import BaseAdapter
 
 
@@ -10,11 +10,19 @@ class WordPressAdapter(BaseAdapter):
     def prepare(file, **kwargs):
         super(WordPressAdapter, WordPressAdapter).prepare(file, **kwargs)
 
-        content = file.get_content()
-        page_parts = file.get_page_parts()
+        for replacement in kwargs['settings']['REPLACEMENT']:
+            part = file.get_page_part(replacement["page-part"])
+            attrs = bs(part['content'], 'html.parser').contents[0].attrs
+            params = replacement["params"].format(**{
+                "menu_name": attrs["name"],
+                "menu_class": ' '.join(attrs["class"]),
+                "menu_id": attrs["id"]
+            })
+            file.replace(replacement["page-part"], replacement["template"].format(params=params))
 
-        header = page_parts['header']
-        footer = page_parts['footer']
+        content = file.get_content()
+        header = file.get_page_part('header')["content"]
+        footer = file.get_page_part('footer')["content"]
 
         header_end_pos = content.find(header) + len(header)
         footer_start_pos = content.find(footer)

@@ -188,7 +188,7 @@ class ParsableThemeFile(FileObject):
         selector = part["SELECTOR"]
         return {
             "content": str(self.soup.select(selector)[0]).replace('&lt;', '<').replace('&gt;', '>'),
-            "part": part
+            "settings": part
         }
 
     def get_page_elements(self):
@@ -207,6 +207,12 @@ class ParsableThemeFile(FileObject):
             elements[page_element] = elements_list
 
         return elements
+
+    def replace(self, page_part_key, template):
+        part = self.get_page_part(page_part_key)
+        selector = part["settings"]["SELECTOR"]
+        selection = self.soup.select(selector)[0]
+        selection.replace_with(template)
 
 
 class Theme:
