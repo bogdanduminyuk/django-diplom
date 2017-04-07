@@ -205,8 +205,7 @@ class ParsableThemeFile(FileObject):
         }
 
     def replace(self, page_part_key, template):
-        part = self.get_page_parts(page_part_key)
-        selector = part["settings"]["SELECTOR"]
+        selector = adapt_settings.PAGE_PARTS[page_part_key]["SELECTOR"]
         selection = self.soup.select(selector)[0]
         selection.replace_with(template)
 

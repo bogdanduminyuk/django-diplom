@@ -11,8 +11,8 @@ class WordPressAdapter(BaseAdapter):
         super(WordPressAdapter, WordPressAdapter).prepare(file, **kwargs)
 
         for replacement in kwargs['settings']['REPLACEMENT']:
-            part = file.get_page_part(replacement["page-part"])
-            attrs = bs(part['content'], 'html.parser').contents[0].attrs
+            part = file.get_page_parts(replacement["page-part"], as_string=False)
+            attrs = part[replacement["page-part"]][0].attrs
             params = replacement["params"].format(**{
                 "menu_name": attrs["name"],
                 "menu_class": ' '.join(attrs["class"]),
@@ -21,8 +21,9 @@ class WordPressAdapter(BaseAdapter):
             file.replace(replacement["page-part"], replacement["template"].format(params=params))
 
         content = file.get_content()
-        header = file.get_page_part('header')["content"]
-        footer = file.get_page_part('footer')["content"]
+        parts = file.get_page_parts('header', 'footer')
+        header = parts["header"][0]
+        footer = parts["footer"][0]
 
         header_end_pos = content.find(header) + len(header)
         footer_start_pos = content.find(footer)
