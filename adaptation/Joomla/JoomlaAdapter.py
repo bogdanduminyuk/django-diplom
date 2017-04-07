@@ -53,7 +53,7 @@ class JoomlaAdapter(BaseAdapter):
         :param kwargs: dict of additional arguments
         :return: None
         """
-        def get_additional(collection, attribute, template):
+        def get_additional(collection, template):
             """
             Realizes creation of addStylesheet or addScript.
 
@@ -63,8 +63,9 @@ class JoomlaAdapter(BaseAdapter):
             :return: string
             """
             joomla_add_string = ""
+            attribute = collection['info']['attribute']
 
-            for tag in collection:
+            for tag in collection["selection"]:
                 attr_value = tag.attrs.get(attribute, "")
                 if attr_value and not functions.is_url(attr_value):
                     joomla_add_string += template.format(attr_value) + "\n"
@@ -76,8 +77,8 @@ class JoomlaAdapter(BaseAdapter):
         styles_template = kwargs["settings"]["STYLES"]["template"]
         scripts_template = kwargs["settings"]["SCRIPTS"]["template"]
 
-        styles = get_additional(file.get_page_elements()['link'], 'href', styles_template)
-        scripts = get_additional(file.soup.select("head script"), 'src', scripts_template)
+        styles = get_additional(file.get_page_tags('link', parent='head')['link'], styles_template)
+        scripts = get_additional(file.get_page_tags("script", parent='head')['script'], scripts_template)
 
         kwargs["template_data"].update({
             kwargs["settings"]["STYLES"]["format_name"]: styles,
