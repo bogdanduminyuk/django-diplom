@@ -1,6 +1,5 @@
 # coding: utf-8
 import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'diplom.settings'
 import shutil
 import xml.dom.minidom as minidom
 import xml.etree.ElementTree as ET
@@ -205,6 +204,13 @@ class ParsableThemeFile(FileObject):
         }
 
     def replace(self, page_part_key, template):
+        """
+        Realizes soup replacement of page part to template.
+
+        :param page_part_key: key of page part
+        :param template: template to replace
+        :return: None
+        """
         selector = adapt_settings.PAGE_PARTS[page_part_key]["SELECTOR"]
         selection = self.soup.select(selector)[0]
         selection.replace_with(template)
@@ -302,7 +308,4 @@ class Theme:
 
 
 if __name__ == "__main__":
-    file = ParsableThemeFile(r"E:\git-workspace\diplom\tmp\uploads\snowboarding\index.php", "")
-    file.read()
-    import pprint
-    pprint.pprint(file.get_page_tags("link", "script", "qwerty", parent="body"))
+    pass
