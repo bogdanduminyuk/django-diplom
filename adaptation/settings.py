@@ -88,8 +88,8 @@ JOOMLA = {
 
         "TAGS_ATTACHMENT": [
             {
-                "attribute": "src",
-                "tags": ["img", "body script"],
+                "parent": "body",
+                "tags": ["img", "script"],
                 "template": "<?php echo $template_url;?>/{old_path}",
             },
         ],
