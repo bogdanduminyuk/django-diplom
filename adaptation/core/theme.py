@@ -162,24 +162,25 @@ class ParsableThemeFile(FileObject):
         selection = self.soup.select(selector)
         return [str(i).replace('&lt;', '<').replace('&gt;', '>') for i in selection] if as_string else selection
 
-    def get_page_parts(self, *parts):
+    def get_page_parts(self, *parts, as_string=True):
         """
         Returns dict of <page_part: selection> by given keys.
 
         If keys is False returns  the same dict constructed from all page parts.
 
-        :param keys: tuple of string keys
+        :param parts: tuple of string keys
+        :param as_string: bool parameter means to return tags as string or BS.tags
         :return: dict
         """
         intersection = set(parts) & adapt_settings.PAGE_PARTS.keys()
         keys = intersection if intersection else adapt_settings.PAGE_PARTS.keys()
 
         return {
-            key: self.get_selection(value["SELECTOR"], True)
+            key: self.get_selection(value["SELECTOR"], as_string)
             for key, value in adapt_settings.PAGE_PARTS.items() if key in keys
         }
 
-    def get_page_tags(self, *tags, parent=""):
+    def get_page_tags(self, *tags, parent="", as_string=False):
         """
         Realizes getting tags info and selection.
 
@@ -189,6 +190,7 @@ class ParsableThemeFile(FileObject):
 
         :param tags: tuple of tags
         :param parent: parent selector e.g. 'body script'
+        :param as_string: bool parameter means to return tags as string or BS.tags
         :return: dict <tag_name: <"selection":selection, "info":info> >
         """
         intersection = set(tags) & base_settings.TAGS.keys()
@@ -196,7 +198,7 @@ class ParsableThemeFile(FileObject):
 
         return {
             tag_name: {
-                "selection": self.get_selection(parent + " " + tag_name if parent else tag_name),
+                "selection": self.get_selection(parent + " " + tag_name if parent else tag_name, as_string),
                 "info": data
             }
             for tag_name, data in base_settings.TAGS.items() if tag_name in keys
