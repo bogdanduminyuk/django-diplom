@@ -7,7 +7,6 @@ import os
 
 from django.conf import settings
 
-# TODO: finish joomla
 # TODO: add selectors (common)
 
 STATIC_CMS_ROOT = os.path.join(settings.BASE_DIR, 'adaptation', '{package}', 'static')
@@ -29,6 +28,10 @@ PAGE_PARTS = {
 
     "body": {
         "SELECTOR": "body"
+    },
+
+    "nav": {
+        "SELECTOR": "#page-nav"
     }
 }
 
@@ -50,6 +53,14 @@ WORDPRESS = {
                 "template": "<?php echo get_template_directory_uri();?>/{old_path}"
             },
         ],
+
+        "REPLACEMENT": [
+            {
+                "page-part": "nav",
+                "params": "['menu'=>'{menu_name}', 'menu_class'=>'{menu_class}', 'menu_id'=>'{menu_id}']",
+                "template": "<?php echo wp_nav_menu({params}); ?>"
+            },
+        ],
     },
 
     "FILES": {
@@ -66,14 +77,19 @@ JOOMLA = {
     "PREPARATION": {
         "STYLES": {
             "format_name": "head_styles",
-            "template": "$doc->addStyleSheet($template_url . '/{stylesheet}');",
+            "template": "$doc->addStyleSheet($template_url . '/{}');",
             "has_rel": "stylesheet"
+        },
+
+        "SCRIPTS": {
+            "format_name": "head_scripts",
+            "template": "$doc->addScript($template_url . '/{}');"
         },
 
         "TAGS_ATTACHMENT": [
             {
-                "attribute": "src",
-                "tags": ["script", "img"],
+                "parent": "body",
+                "tags": ["img", "script"],
                 "template": "<?php echo $template_url;?>/{old_path}",
             },
         ],

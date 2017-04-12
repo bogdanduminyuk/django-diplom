@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup as bs
 
 from adaptation.core import functions
 from adaptation.core.classes import Getter, Uploader
+from base import settings as base_settings
 
 
 class Adapter:
@@ -61,21 +62,21 @@ class BaseAdapter:
         :param kwargs: additional args
         :return: None
         """
-        soup = bs(file.get_content(), "html.parser")
         for attachment in kwargs["settings"]["TAGS_ATTACHMENT"]:
-            attribute = attachment["attribute"]
+            tags_dict = file.get_page_tags(*attachment["tags"], parent=attachment.get("parent", ""))
 
-            for tag in attachment["tags"]:
-                current_tags_list = soup.select(tag)
+            for description in tags_dict.values():
+                attribute = description["info"]["attribute"]
 
-                for current_tag in current_tags_list:
-                    old_path = current_tag.attrs.get(attribute, False)
-
+                for tag_element in description["selection"]:
+                    old_path = tag_element.attrs.get(attribute, False)
                     if old_path and not functions.is_url(old_path):
-                        current_tag.attrs[attribute] = attachment["template"].format(old_path=old_path)
+                        tag_element.attrs[attribute] = attachment["template"].format(old_path=old_path)
 
-        file.set_content(str(soup))
-        kwargs["template_data"].update(file.get_page_parts())
+        kwargs["template_data"].update({
+            page_part: selection[0]
+            for page_part, selection in file.get_page_parts().items()
+        })
 
     def get_template(self, filename):
         """Returns template for given filename if it exists or None otherwise."""

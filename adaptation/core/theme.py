@@ -1,9 +1,5 @@
 # coding: utf-8
 import os
-
-# TODO: remove after testing
-os.environ['DJANGO_SETTINGS_MODULE'] = 'diplom.settings'
-
 import shutil
 import xml.dom.minidom as minidom
 import xml.etree.ElementTree as ET
@@ -12,6 +8,7 @@ from bs4 import BeautifulSoup as bs
 
 from adaptation import settings as adapt_settings
 from diplom import settings
+from base import settings as base_settings
 
 
 class FileSystemObject:
@@ -159,40 +156,64 @@ class ParsableThemeFile(FileObject):
         self.content = self.get_content()
         self.prepared = True
 
-    def get_page_parts(self):
+    def get_selection(self, selector, as_string=False):
+        """Realizes simple selection by selector."""
+        selection = self.soup.select(selector)
+        return [str(i).replace('&lt;', '<').replace('&gt;', '>') for i in selection] if as_string else selection
+
+    def get_page_parts(self, *parts, as_string=True):
         """
-        Realizes selection using selectors.
+        Returns dict of <page_part: selection> by given keys.
 
-        Uses PAGE_PARTS selectors.
+        If keys is False returns  the same dict constructed from all page parts.
 
-        :return: dict <page_part : content>
+        :param parts: tuple of string keys
+        :param as_string: bool parameter means to return tags as string or BS.tags
+        :return: dict
         """
-        parts = {}
-        content = self.get_content()
-        soup = bs(content, 'html.parser')
+        intersection = set(parts) & adapt_settings.PAGE_PARTS.keys()
+        keys = intersection if intersection else adapt_settings.PAGE_PARTS.keys()
 
-        for part, values in adapt_settings.PAGE_PARTS.items():
-            selector = values["SELECTOR"]
-            parts[part] = str(soup.select(selector)[0]).replace('&lt;', '<').replace('&gt;', '>')
+        return {
+            key: self.get_selection(value["SELECTOR"], as_string)
+            for key, value in adapt_settings.PAGE_PARTS.items() if key in keys
+        }
 
-        return parts
-
-    def get_page_elements(self):
+    def get_page_tags(self, *tags, parent="", as_string=False):
         """
-        Returns a dict of lists those contain tags.
+        Realizes getting tags info and selection.
 
-        Tags are described in adapt_settings.PAGE_ELEMENTS.
+        If tags does not given then method uses all tags the system knows.
 
-        :return: dict of tags lists
+        If parent does not given the selection search globally otherwise it uses 'parent tag_name' selector.
+
+        :param tags: tuple of tags
+        :param parent: parent selector e.g. 'body script'
+        :param as_string: bool parameter means to return tags as string or BS.tags
+        :return: dict <tag_name: <"selection":selection, "info":info> >
         """
-        soup = bs(self.content, "html.parser")
-        elements = {}
+        intersection = set(tags) & base_settings.TAGS.keys()
+        keys = intersection if intersection else base_settings.TAGS.keys()
 
-        for page_element in adapt_settings.PAGE_ELEMENTS:
-            elements_list = soup.select(page_element)
-            elements[page_element] = elements_list
+        return {
+            tag_name: {
+                "selection": self.get_selection(parent + " " + tag_name if parent else tag_name, as_string),
+                "info": data
+            }
+            for tag_name, data in base_settings.TAGS.items() if tag_name in keys
+        }
 
-        return elements
+    def replace(self, page_part_key, template):
+        """
+        Realizes soup replacement of page part to template.
+
+        :param page_part_key: key of page part
+        :param template: template to replace
+        :return: None
+        """
+        selector = adapt_settings.PAGE_PARTS[page_part_key]["SELECTOR"]
+        selection = self.soup.select(selector)[0]
+        selection.replace_with(template)
 
 
 class Theme:

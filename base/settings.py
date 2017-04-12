@@ -15,5 +15,23 @@ SELECTORS = {
     'right': '#page-right',
 }
 
+TAGS = {
+    "a": {
+        "attribute": "href",
+    },
+
+    "link": {
+        "attribute": "href",
+    },
+
+    "script": {
+        "attribute": "src",
+    },
+
+    "img": {
+        "attribute": "src",
+    },
+}
+
 
 

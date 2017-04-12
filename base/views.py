@@ -9,7 +9,7 @@ from adaptation.core.adapters import Adapter
 
 
 def home(request):
-    return render(request, 'base/index.html', {
+    return render(request, 'base/main_page.html', {
         'title': 'Сервис помощи Web-разработчику',
         'page_header': 'Главная страница'
     })
