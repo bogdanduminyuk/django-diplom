@@ -44,3 +44,7 @@ textarea {
         text-align: center;
     }
 }
+
+.main_page img {
+    width: 100%;
+}
