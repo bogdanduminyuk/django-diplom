@@ -47,4 +47,18 @@ textarea {
 
 .main_page img {
     width: 100%;
+    margin: 25px auto;
+    display: block;
+}
+
+.main_page p {
+    font-size: 1.3em;
+}
+
+.main_page .small_img {
+    width: 80%;
+}
+
+.main_page .images {
+
 }
