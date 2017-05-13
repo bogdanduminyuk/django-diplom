@@ -68,6 +68,7 @@ WORDPRESS = {
         "header.php": "{header}",
         "index.php": "{wp_index}",
         "style.css": "{content}",
+        "page.php": "{page.php.tpl}"
     },
 }
 
