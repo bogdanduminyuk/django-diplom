@@ -1,0 +1,6 @@
+{
+    "CONFLICTS": {
+        "wordpress_url": "http://wordpress.local/",
+        "joomla_url": "http://joomla.local/"
+    }
+}

@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # ---------------------------------------------------------------------
 
 # relative path to file with user options
-USER_CONFIG = os.path.join(BASE_DIR, 'user.ini')
+USER_CONFIG = os.path.join(BASE_DIR, 'user.json')
 
 # for uploaded filed
 CONTENT_TYPES = ['application/octet-stream', 'application/zip']
