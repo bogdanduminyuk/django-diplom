@@ -1,12 +1,15 @@
 import datetime
 import os
 
+from selenium import webdriver
 from django.conf import settings
 from django.http import HttpResponse
+from django.shortcuts import render
 
 from adaptation.core.adapters import Adapter
 from adaptation.core.functions import handle_adapt_request
-from .forms import WpAdaptForm, JoomlaAdaptForm
+from conflicts.conflict_settings import ConflictSettings
+from .forms import WpAdaptForm, JoomlaAdaptForm, ConflictsForm
 
 
 def wordpress_adaptation(request):
@@ -67,3 +70,42 @@ def joomla_test(request):
     result_href = adapter.adapt()
 
     return HttpResponse('<a href="' + result_href + '">Скачать</a>')
+
+
+def conflicts(request):
+    if request.method == 'POST':
+        script = ConflictSettings.get_script()
+        result = {}
+
+        if request.POST.get('use_defaults', '') == 'on':
+            cfg = ConflictSettings.get_user_cfg()
+        else:
+            cfg = {
+                'wordpress_url': request.POST['wordpress_url'],
+                'joomla_url': request.POST['joomla_url']
+            }
+
+        driver = webdriver.PhantomJS()
+
+        for key, url in cfg.items():
+            driver.get(url)
+            functions_list = driver.execute_script(script)
+            functions_list.remove('callPhantom')
+            result[key] = functions_list
+
+        driver.quit()
+
+        return HttpResponse(str(result))
+
+    else:
+        return render(request, 'base/conflicts.html', {
+            'title': "Поиск конфликтов",
+            "page_header": "Поиск конфликтов",
+            'panel_heading': 'Проверьте данные проверки конфликтов',
+            'panel_type': 'panel-info',
+            'submit_btn_type': 'btn-outline btn-warning',
+            'submit_value': 'Проверить',
+            'form_action': '#',
+            'hidden': 'conflict',
+            'form': ConflictsForm
+        })
