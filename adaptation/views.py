@@ -9,6 +9,7 @@ from django.shortcuts import render
 from adaptation.core.adapters import Adapter
 from adaptation.core.functions import handle_adapt_request
 from conflicts.conflict_settings import ConflictSettings
+from core.classes import Getter
 from .forms import WpAdaptForm, JoomlaAdaptForm, ConflictsForm
 
 
@@ -74,11 +75,10 @@ def joomla_test(request):
 
 def conflicts(request):
     if request.method == 'POST':
-        script = ConflictSettings.get_script()
         result = {}
 
         if request.POST.get('use_defaults', '') == 'on':
-            cfg = ConflictSettings.get_user_cfg()
+            cfg = Getter.get_user_cfg()["CONFLICTS"]
         else:
             cfg = {
                 'wordpress_url': request.POST['wordpress_url'],
@@ -89,7 +89,7 @@ def conflicts(request):
 
         for key, url in cfg.items():
             driver.get(url)
-            functions_list = driver.execute_script(script)
+            functions_list = driver.execute_script(cfg["script"])
             functions_list.remove('callPhantom')
             result[key] = functions_list
 
