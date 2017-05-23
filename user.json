@@ -1,7 +1,9 @@
 {
 	"CONFLICTS": {
-		"wordpress_url": "http://wordpress.local/",
-		"joomla_url": "http://joomla.local/",
+		"urls": {
+			"wordpress_url": "http://wordpress.local/",
+			"joomla_url": "http://joomla.local/"
+		},
 		"script": "var functions=[];for(var i in window)\"function\"==typeof window[i]&&null==window[i].toString().match(\/\\[native code\\]\/g)&&functions.push(i);functions.forEach(function(a,b,c){console.log(a,\" | \",window[a])});return functions;"
 	}
 }

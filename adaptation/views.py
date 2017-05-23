@@ -1,7 +1,7 @@
 import datetime
 import os
+import pprint
 
-from selenium import webdriver
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -9,8 +9,7 @@ from django.shortcuts import render
 from adaptation.core.adapters import Adapter
 from adaptation.core.functions import handle_adapt_request
 from conflicts.classes import SeleniumPhantomJSDriver
-from conflicts.conflict_settings import ConflictSettings
-from core.classes import Getter
+from core.classes import Getter, Uploader
 from .forms import WpAdaptForm, JoomlaAdaptForm, ConflictsForm
 
 
@@ -76,6 +75,8 @@ def joomla_test(request):
 
 def conflicts(request):
     if request.method == 'POST':
+        form = ConflictsForm(request.POST, request.FILES)
+        file = form.save_file()
         cfg = Getter.get_user_cfg()["CONFLICTS"]
 
         if request.POST.get('use_defaults', '') != 'on':
@@ -83,12 +84,17 @@ def conflicts(request):
             cfg['joomla_url'] = request.POST['joomla_url']
 
         driver = SeleniumPhantomJSDriver()
+        theme = Uploader().upload(file, 'conflicts')
+        theme.read_files()
+        index_file = theme.get_file('index.html')
         result = {}
 
-        for key, url in cfg.items():
+        for key, url in cfg['urls'].items():
             result[key] = driver.execute_script(url, cfg["script"])
 
-        return HttpResponse(str(result))
+        result['theme'] = driver.execute_script(index_file.rpath, cfg["script"])
+
+        return HttpResponse("<pre>" + pprint.pformat(result) + "</pre>")
 
     else:
         return render(request, 'base/conflicts.html', {

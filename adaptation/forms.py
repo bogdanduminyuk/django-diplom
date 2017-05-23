@@ -86,7 +86,12 @@ class JoomlaAdaptForm(BaseForm):
                                       widget=CustomTextArea((3, 0)))
 
 
-class ConflictsForm(forms.Form):
+class ConflictsForm(BaseForm):
+    def __init__(self, *args, **kwargs):
+        super(ConflictsForm, self).__init__(*args, **kwargs)
+        self.fields.pop('name')
+        self.fields.pop('author')
+
     wordpress_url = forms.URLField(label='URL запроса WordPress',
                                    widget=forms.URLInput(attrs={'class': 'form-control'}))
 
