@@ -25,6 +25,16 @@ def is_url(string):
     return valid
 
 
+def file_to_url(path):
+    """
+    Returns URL representation of local file (for opening in browser)
+     
+    :param path: path to local file
+    :return: file as URL
+    """
+    return 'file:///' + path.replace('\\', '/')
+
+
 def handle_adapt_request(request, form_class, form_name):
     """
     Common method for handling adaptation requests.
