@@ -3,7 +3,7 @@ import os
 import pprint
 
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from adaptation.core.adapters import Adapter
@@ -80,21 +80,25 @@ def conflicts(request):
         cfg = Getter.get_user_cfg()["CONFLICTS"]
 
         if request.POST.get('use_defaults', '') != 'on':
-            cfg['wordpress_url'] = request.POST['wordpress_url']
-            cfg['joomla_url'] = request.POST['joomla_url']
+            cfg['urls']['wordpress_url'] = request.POST['wordpress_url']
+            cfg['urls']['joomla_url'] = request.POST['joomla_url']
 
         driver = SeleniumPhantomJSDriver()
         theme = Uploader().upload(file, 'conflicts')
         theme.read_files()
         index_file = theme.get_file('index.html')
-        result = {}
+        result = {
+            'engines': {},
+            'intersection': {},
+            'theme': driver.execute_script(index_file.rpath, cfg["script"])
+        }
 
         for key, url in cfg['urls'].items():
-            result[key] = driver.execute_script(url, cfg["script"])
+            script_result = driver.execute_script(url, cfg["script"])
+            result['engines'][key] = script_result
+            result['intersection'][key] = list(set(script_result) & set(result['theme']))
 
-        result['theme'] = driver.execute_script(index_file.rpath, cfg["script"])
-
-        return HttpResponse("<pre>" + pprint.pformat(result) + "</pre>")
+        return JsonResponse(result)
 
     else:
         return render(request, 'base/conflicts.html', {
