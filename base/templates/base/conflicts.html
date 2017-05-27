@@ -36,6 +36,12 @@
             else
                 show();
         });
+
+        $("form").submit(function(event) {
+            alert("hello");
+            // TODO: write ajax request here
+            event.preventDefault();
+        });
     });
 </script>
 {% endblock script %}
