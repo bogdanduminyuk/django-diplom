@@ -8,8 +8,8 @@ from django.shortcuts import render
 
 from adaptation.core.adapters import Adapter
 from adaptation.core.functions import handle_adapt_request
-from conflicts.classes import SeleniumPhantomJSDriver
-from core.classes import Getter, Uploader
+from adaptation.conflicts.classes import SeleniumPhantomJSDriver
+from adaptation.core.classes import Getter, Uploader
 from .forms import WpAdaptForm, JoomlaAdaptForm, ConflictsForm
 
 

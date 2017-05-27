@@ -1,6 +1,6 @@
 from selenium import webdriver
 
-from core.functions import is_url, file_to_url
+from adaptation.core.functions import is_url, file_to_url
 
 
 class SeleniumPhantomJSDriver:
