@@ -1,5 +1,5 @@
 # coding: utf-8
-
+import json
 import os
 import shutil
 
@@ -85,3 +85,9 @@ class Getter:
             templates_dict[template] = TemplateFile(abs_path)
 
         return templates_dict
+
+    @staticmethod
+    def get_user_cfg():
+        """Returns dict of user settings from user.json."""
+        with open(settings.USER_CONFIG, 'r', encoding='utf-8') as cfg:
+            return json.loads(cfg.read())

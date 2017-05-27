@@ -85,3 +85,19 @@ class JoomlaAdaptForm(BaseForm):
     copyright = forms.CharField(label='Copyright', required=False,
                                       widget=CustomTextArea((3, 0)))
 
+
+class ConflictsForm(BaseForm):
+    def __init__(self, *args, **kwargs):
+        super(ConflictsForm, self).__init__(*args, **kwargs)
+        self.fields.pop('name')
+        self.fields.pop('author')
+
+    wordpress_url = forms.URLField(label='URL запроса WordPress',
+                                   widget=forms.URLInput(attrs={'class': 'form-control'}))
+
+    joomla_url = forms.URLField(label='URL запроса Joomla',
+                                widget=forms.URLInput(attrs={'class': 'form-control'}))
+
+    use_defaults = forms.BooleanField(label='Использовать URL по умолчанию', required=False)
+
+    use_cache = forms.BooleanField(label='Использовать кэш', required=False)

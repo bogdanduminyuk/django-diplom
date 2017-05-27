@@ -7,10 +7,10 @@ import os
 
 from django.conf import settings
 
-# TODO: add selectors (common)
 
 STATIC_CMS_ROOT = os.path.join(settings.BASE_DIR, 'adaptation', '{package}', 'static')
 TEMPLATES_ROOT = os.path.join(STATIC_CMS_ROOT, 'tpl')
+JS_SCRIPT = os.path.join(settings.BASE_DIR, 'adaptation', 'conflicts', 'get_functions.txt')
 
 CMS = ['WordPress', 'Joomla']
 
@@ -68,6 +68,7 @@ WORDPRESS = {
         "header.php": "{header}",
         "index.php": "{wp_index}",
         "style.css": "{content}",
+        "page.php": "{page.php.tpl}"
     },
 }
 

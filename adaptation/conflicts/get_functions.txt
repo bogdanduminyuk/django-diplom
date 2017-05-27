@@ -1,0 +1,15 @@
+var functions = [];
+
+for ( var i in window )
+{
+    if (typeof window[i] == 'function') {
+        if (window[i].toString().match(/\[native code\]/g) == null)
+            functions.push(i);
+    }
+}
+
+functions.forEach(function(item, i, functions) {
+    console.log(item, "|", window[item]);
+});
+
+return functions;

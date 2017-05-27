@@ -8,5 +8,6 @@ urlpatterns = [
 
     url(r'wordpress_adaptation/test/$', views.wp_test, name='wp_test'),
     url(r'joomla_adaptation/test/$', views.joomla_test, name='joomla_test'),
+    url(r'conflicts/$', views.conflicts, name='conflicts')
 ]
 

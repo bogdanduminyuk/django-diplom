@@ -1,12 +1,16 @@
 import datetime
 import os
+import pprint
 
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
 
 from adaptation.core.adapters import Adapter
 from adaptation.core.functions import handle_adapt_request
-from .forms import WpAdaptForm, JoomlaAdaptForm
+from conflicts.classes import SeleniumPhantomJSDriver
+from core.classes import Getter, Uploader
+from .forms import WpAdaptForm, JoomlaAdaptForm, ConflictsForm
 
 
 def wordpress_adaptation(request):
@@ -67,3 +71,44 @@ def joomla_test(request):
     result_href = adapter.adapt()
 
     return HttpResponse('<a href="' + result_href + '">Скачать</a>')
+
+
+def conflicts(request):
+    if request.method == 'POST':
+        form = ConflictsForm(request.POST, request.FILES)
+        file = form.save_file()
+        cfg = Getter.get_user_cfg()["CONFLICTS"]
+
+        if request.POST.get('use_defaults', '') != 'on':
+            cfg['urls']['wordpress_url'] = request.POST['wordpress_url']
+            cfg['urls']['joomla_url'] = request.POST['joomla_url']
+
+        driver = SeleniumPhantomJSDriver()
+        theme = Uploader().upload(file, 'conflicts')
+        theme.read_files()
+        index_file = theme.get_file('index.html')
+        result = {
+            'engines': {},
+            'intersection': {},
+            'theme': driver.execute_script(index_file.rpath, cfg["script"])
+        }
+
+        for key, url in cfg['urls'].items():
+            script_result = driver.execute_script(url, cfg["script"])
+            result['engines'][key] = script_result
+            result['intersection'][key] = list(set(script_result) & set(result['theme']))
+
+        return JsonResponse(result)
+
+    else:
+        return render(request, 'base/conflicts.html', {
+            'title': "Поиск конфликтов",
+            "page_header": "Поиск конфликтов",
+            'panel_heading': 'Проверьте данные проверки конфликтов',
+            'panel_type': 'panel-info',
+            'submit_btn_type': 'btn-outline btn-warning',
+            'submit_value': 'Проверить',
+            'form_action': '#',
+            'hidden': 'conflict',
+            'form': ConflictsForm
+        })
