@@ -38,7 +38,11 @@ def result(request):
 
         if 'file' in form_data:
             adapter = Adapter(form_data.copy())
-            result_href = adapter.adapt()
+            try:
+                result_href = adapter.adapt()
+            except Exception as e:
+                json['status'] = 'False'
+                json['error'] = str(e)
         else:
             # TODO: handle generation
             result_href = 'file'

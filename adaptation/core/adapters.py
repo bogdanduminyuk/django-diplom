@@ -27,6 +27,9 @@ class Adapter:
         self.uploader.upload(self.request_data["file"], self.request_data["name"])
         self.uploader.theme.read_files()
 
+        if not self.uploader.theme.src_parsable_files:
+            raise Exception("Ошибка инициализации темы. Не найдены файлы для парсинга.")
+
         try:
             self.adapter(self.uploader.theme, self.settings, self.templates, self.request_data).adapt()
             return self.uploader.download()

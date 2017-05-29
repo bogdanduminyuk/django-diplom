@@ -18,7 +18,7 @@ textarea {
     margin-top: 20px;
 }
 
-#result-container .row:nth-child(1){
+#result-container .row:nth-child(2){
     min-height: 250px;
 }
 
