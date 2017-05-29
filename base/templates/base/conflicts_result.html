@@ -1,0 +1,27 @@
+{% extends 'base/index.html' %}
+
+{% block content %}
+    {% for key, value in result.items %}
+        <h1>{{ key }}</h1>
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th>Key</th>
+                <th>Values</th>
+            </tr>
+        {% if key != 'theme' %}
+            {% for subkey, subvalue in value.items %}
+                <tr>
+                    <td>{{ subkey }}</td>
+                    <td>{{ subvalue }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+        {% endif %}
+        </table>
+        <hr>
+    {% endfor %}
+{% endblock %}

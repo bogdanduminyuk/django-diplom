@@ -98,7 +98,12 @@ def conflicts(request):
             result['engines'][key] = script_result
             result['intersection'][key] = list(set(script_result) & set(result['theme']))
 
-        return JsonResponse(result)
+        # return JsonResponse(result)
+        return render(request, 'base/conflicts_result.html', {
+            'result': result,
+            'title': "Поиск конфликтов",
+            'page_header': "Результаты проверки"
+        })
 
     else:
         return render(request, 'base/conflicts.html', {
