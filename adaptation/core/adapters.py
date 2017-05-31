@@ -1,11 +1,9 @@
 # coding: utf-8
 import os
 
-from bs4 import BeautifulSoup as bs
-
 from adaptation.core import functions
-from adaptation.core.classes import Getter, Uploader
-from base import settings as base_settings
+from adaptation.core.classes import Getter
+from core.themes import ThemesManager
 
 
 class Adapter:
@@ -14,24 +12,15 @@ class Adapter:
 
     Just call adapt-method for make adaptation.
     """
-    def __init__(self, request_data):
+    @staticmethod
+    def adapt(request_data):
         getter = Getter(request_data["form"], request_data["version"])
+        settings = getter.get_settings(request_data)
+        templates = getter.get_templates()
+        plugin = getter.get_plugin()
 
-        self.request_data = request_data
-        self.uploader = Uploader()
-        self.settings = getter.get_settings(request_data)
-        self.templates = getter.get_templates()
-        self.adapter = getter.get_adapter()
-
-    def adapt(self):
-        self.uploader.upload(self.request_data["file"], self.request_data["name"])
-        self.uploader.theme.read_files()
-
-        try:
-            self.adapter(self.uploader.theme, self.settings, self.templates, self.request_data).adapt()
-            return self.uploader.download()
-        finally:
-            self.uploader.theme.remove()
+        themes_manager = ThemesManager(request_data, settings, templates)
+        return themes_manager.adapt(plugin)
 
 
 class BaseAdapter:

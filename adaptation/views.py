@@ -1,15 +1,14 @@
 import datetime
 import os
-import pprint
 
 from django.conf import settings
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import render
 
-from adaptation.core.adapters import Adapter
-from adaptation.core.functions import handle_adapt_request
 from adaptation.conflicts.classes import SeleniumPhantomJSDriver
-from adaptation.core.classes import Getter, Uploader
+from adaptation.core.adapters import Adapter
+from adaptation.core.classes import Getter
+from adaptation.core.functions import handle_adapt_request
 from .forms import WpAdaptForm, JoomlaAdaptForm, ConflictsForm
 
 
@@ -40,8 +39,8 @@ def wp_test(request):
         'comments': '',
     }
 
-    adapter = Adapter(form_data)
-    result_href = adapter.adapt()
+    adapter = Adapter()
+    result_href = adapter.adapt(form_data)
 
     return HttpResponse('<a href="' + result_href + '">Скачать</a>')
 
@@ -67,8 +66,8 @@ def joomla_test(request):
         'authorUrl': '',
     }
 
-    adapter = Adapter(form_data)
-    result_href = adapter.adapt()
+    adapter = Adapter()
+    result_href = adapter.adapt(form_data)
 
     return HttpResponse('<a href="' + result_href + '">Скачать</a>')
 
