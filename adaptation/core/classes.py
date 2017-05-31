@@ -17,11 +17,15 @@ class Getter:
         adapt_type = adapt_type if adapt_type else self.adapt_type
         version = version if version else self.version
 
-        adapter_class = adapt_type + "Adapter" + str(version)
-        exec("import adaptation.{package}.{adapter_class} as adapter".format(package=adapt_type,
-                                                                             adapter_class=adapter_class))
-        obj = eval("adapter.{adapter_class}".format(adapter_class=adapter_class))
-        return obj
+        if not version:
+            exec("import adaptation.plugins.{type}.p{version} as plugin".format(type=adapt_type,
+                                                                                version=version))
+            PluginClass = eval("plugin.Plugin")
+        else:
+            exec("import adaptation.plugins.{type} as plugin".format(type=adapt_type))
+            PluginClass = eval("plugin.Base{type}Plugin".format(type=adapt_type))
+
+        return PluginClass
 
     def get_settings(self, request_data):
         """Returns current settings dict."""

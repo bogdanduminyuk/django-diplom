@@ -8,7 +8,7 @@ import os
 from django.conf import settings
 
 
-STATIC_CMS_ROOT = os.path.join(settings.BASE_DIR, 'adaptation', '{package}', 'static')
+STATIC_CMS_ROOT = os.path.join(settings.BASE_DIR, 'adaptation', 'plugins', '{package}', 'static')
 TEMPLATES_ROOT = os.path.join(STATIC_CMS_ROOT, 'tpl')
 JS_SCRIPT = os.path.join(settings.BASE_DIR, 'adaptation', 'conflicts', 'get_functions.txt')
 

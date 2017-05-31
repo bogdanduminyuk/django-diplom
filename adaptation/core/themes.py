@@ -52,6 +52,9 @@ class UploadedTheme(Theme):
                 file = ParsableFile(abs_src)
                 self.parsable_files[file.name] = file
 
+    def get_file(self, filename):
+        return self.parsable_files.get(filename, None)
+
 
 class CMSTheme(Theme):
     def __init__(self, name):
@@ -66,7 +69,6 @@ class CMSTheme(Theme):
         self.files = config["FILES"]
 
         for item in uploaded_theme.directories + uploaded_theme.other_files:
-            name = item.name
             item.copy(self.path)
 
     def compose(self):
@@ -94,13 +96,14 @@ class ThemesManager:
         self.uploaded_theme = UploadedTheme(request_data['file'], name)
         self.cms_theme = CMSTheme(name)
 
-    def adapt(self, plugin):
+    def adapt(self, PluginClass):
         try:
             self.uploaded_theme.unpack()
             self.uploaded_theme.read_files()
             self.cms_theme.init(self.config, self.uploaded_theme)
 
-            # call plugin
+            plugin_object = PluginClass(self.uploaded_theme, self.cms_theme, self.config, self.templates)
+            plugin_object.adapt()
 
             self.cms_theme.write()
             return self.cms_theme.pack()
