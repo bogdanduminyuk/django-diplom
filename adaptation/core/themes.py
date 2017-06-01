@@ -51,6 +51,7 @@ class UploadedTheme(Theme):
             else:
                 file = ParsableFile(abs_src)
                 self.parsable_files[file.name] = file
+                file.read()
 
     def get_file(self, filename):
         return self.parsable_files.get(filename, None)
@@ -63,16 +64,12 @@ class CMSTheme(Theme):
         super().__init__(path, name)
 
         self.files = {}
-        self.template_data = {}
 
     def init(self, config, uploaded_theme):
         self.files = config["FILES"]
 
         for item in uploaded_theme.directories + uploaded_theme.other_files:
             item.copy(self.path)
-
-    def compose(self):
-        pass
 
     def pack(self):
         """Realizes packing of the dst_dir folder."""
@@ -102,7 +99,11 @@ class ThemesManager:
             self.uploaded_theme.read_files()
             self.cms_theme.init(self.config, self.uploaded_theme)
 
-            plugin_object = PluginClass(self.uploaded_theme, self.cms_theme, self.config, self.templates)
+            plugin_object = PluginClass(self.uploaded_theme,
+                                        self.cms_theme,
+                                        self.config,
+                                        self.templates,
+                                        self.request_data)
             plugin_object.adapt()
 
             self.cms_theme.write()

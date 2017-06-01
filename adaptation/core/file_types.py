@@ -54,6 +54,10 @@ class FileObject(FileSystemObject):
 
 class TemplateFile(FileObject):
     """Class realizes TemplateFile that used with adapters."""
+    def __init__(self, path):
+        super().__init__(path)
+        self.template_file_name = os.path.splitext(os.path.basename(path))[0]
+
     def get_template(self, **kwargs):
         """Realizes applying template keys to its content."""
         return self.get_content().format(**kwargs) if kwargs else self.get_content()
@@ -121,23 +125,25 @@ class ParsableFile(FileObject):
 
     def read(self):
         """Initializes soup as file content."""
-        self.soup = BeautifulSoup(self.get_content(), "html.parser")
+        content = super().get_content()
+        self.soup = BeautifulSoup(content, "html.parser")
 
-    def get_content(self, **kwargs):
+    def get_content(self, formatter=None):
         """Returns content converted from soup."""
-        return self.soup.prettify(formatter=None)
+        return self.soup.prettify(formatter=formatter) if formatter != 'str' else str(self.soup)
 
     def select(self, selector, as_string=False):
         """Realizes simple selection from soup."""
         selection = self.soup.select(selector)
-        return [i.prettify(formatter=None) for i in selection] if as_string else selection
+        return [str(i) for i in selection] if as_string else selection
 
-    def get_page_parts(self, *parts):
+    def get_page_parts(self, *parts, as_string=True):
         """
         Returns dict of <page_part: selection> by given keys.
 
         If keys is False returns  the same dict constructed from all page parts.
 
+        :param as_string: 
         :param parts: tuple of string keys
         :return: dict
         """
@@ -145,7 +151,7 @@ class ParsableFile(FileObject):
         keys = intersection if intersection else adapt_settings.PAGE_PARTS.keys()
 
         return {
-            key: self.select(value["SELECTOR"], as_string=True)
+            key: self.select(value["SELECTOR"], as_string=as_string)
             for key, value in adapt_settings.PAGE_PARTS.items() if key in keys
         }
 

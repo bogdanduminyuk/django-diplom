@@ -3,7 +3,7 @@ import json
 import os
 
 from adaptation import settings as adapt_settings
-from adaptation.core.theme import TemplateFile
+from adaptation.core.file_types import TemplateFile
 from diplom import settings
 
 
