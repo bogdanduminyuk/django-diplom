@@ -1,5 +1,5 @@
-from core import functions
-from plugins import BasePlugin
+from adaptation.core import functions
+from adaptation.plugins import BasePlugin
 
 
 class BaseWordPressPlugin(BasePlugin):

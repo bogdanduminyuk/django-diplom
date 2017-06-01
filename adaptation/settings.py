@@ -94,6 +94,13 @@ JOOMLA = {
                 "template": "<?php echo $template_url;?>/{old_path}",
             },
         ],
+
+        "REPLACEMENT": [
+            {
+                "page-part": "nav",
+                "template": "<jdoc:include type=\"modules\" name=\"menu\" id=\"page-nav\"/>"
+            },
+        ],
     },
 
     "FILES": {
@@ -107,9 +114,9 @@ JOOMLA = {
         "language/{language}/{language}.tpl_{name}.sys.ini": 'TPL_WHITESQUARE_XML_DESCRIPTION="{xml_description}"',
 
         # clear files
-        "component.php": "{content}",
-        "error.php": "{content}",
-        "index.php": "{content}",
+        "component.php": "",
+        "error.php": "",
+        "index.php": "",
     },
 
     "XML_DESCRIPTION": {

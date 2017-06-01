@@ -70,7 +70,7 @@ class XMLFile(FileObject):
         self.root = ET.Element(root_name)
         self.__add_attributes__(self.root, attributes)
 
-    def write(self):
+    def put_content(self):
         """Writes xml to file."""
         content = self.get_content()
         super().put_content(content)
@@ -90,7 +90,7 @@ class XMLFile(FileObject):
         sub_element.text = str(text)
         self.__add_attributes__(sub_element, attributes)
 
-    def get_content(self, **kwargs):
+    def get_content(self):
         """
         Returns pretty xml of self.base_element.
 

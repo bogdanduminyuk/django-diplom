@@ -79,6 +79,10 @@ class CMSTheme(Theme):
     def write(self):
         for filename, content in self.files.items():
             file = FileObject(os.path.join(self.path, filename))
+
+            if not os.path.exists(file.directory):
+                os.makedirs(os.path.dirname(file.path))
+
             file.put_content(content)
 
 
