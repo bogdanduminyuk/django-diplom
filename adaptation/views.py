@@ -9,6 +9,7 @@ from adaptation.conflicts.classes import SeleniumPhantomJSDriver
 from adaptation.core.adapters import Adapter
 from adaptation.core.classes import Getter
 from adaptation.core.functions import handle_adapt_request
+from adaptation.core.themes import UploadedTheme
 from .forms import WpAdaptForm, JoomlaAdaptForm, ConflictsForm
 
 
@@ -83,13 +84,14 @@ def conflicts(request):
             cfg['urls']['joomla_url'] = request.POST['joomla_url']
 
         driver = SeleniumPhantomJSDriver()
-        theme = Uploader().upload(file, 'conflicts')
+        theme = UploadedTheme(file, 'conflicts')
+        theme.unpack()
         theme.read_files()
         index_file = theme.get_file('index.html')
         result = {
             'engines': {},
             'intersection': {},
-            'theme': driver.execute_script(index_file.rpath, cfg["script"])
+            'theme': driver.execute_script(index_file.path, cfg["script"])
         }
 
         for key, url in cfg['urls'].items():
