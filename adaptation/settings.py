@@ -8,7 +8,7 @@ import os
 from django.conf import settings
 
 
-STATIC_CMS_ROOT = os.path.join(settings.BASE_DIR, 'adaptation', '{package}', 'static')
+STATIC_CMS_ROOT = os.path.join(settings.BASE_DIR, 'adaptation', 'plugins', '{package}', 'static')
 TEMPLATES_ROOT = os.path.join(STATIC_CMS_ROOT, 'tpl')
 JS_SCRIPT = os.path.join(settings.BASE_DIR, 'adaptation', 'conflicts', 'get_functions.txt')
 
@@ -94,6 +94,13 @@ JOOMLA = {
                 "template": "<?php echo $template_url;?>/{old_path}",
             },
         ],
+
+        "REPLACEMENT": [
+            {
+                "page-part": "nav",
+                "template": "<jdoc:include type=\"modules\" name=\"menu\" id=\"page-nav\"/>"
+            },
+        ],
     },
 
     "FILES": {
@@ -107,9 +114,9 @@ JOOMLA = {
         "language/{language}/{language}.tpl_{name}.sys.ini": 'TPL_WHITESQUARE_XML_DESCRIPTION="{xml_description}"',
 
         # clear files
-        "component.php": "{content}",
-        "error.php": "{content}",
-        "index.php": "{content}",
+        "component.php": "",
+        "error.php": "",
+        "index.php": "",
     },
 
     "XML_DESCRIPTION": {

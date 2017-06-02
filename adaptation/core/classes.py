@@ -1,44 +1,10 @@
 # coding: utf-8
 import json
 import os
-import shutil
 
 from adaptation import settings as adapt_settings
-from adaptation.core.theme import TemplateFile, Theme
+from adaptation.core.file_types import TemplateFile
 from diplom import settings
-
-
-class Uploader:
-    def __init__(self):
-        self.theme = None
-
-    def upload(self, src_zip, theme_name):
-        """
-        Creates theme.
-
-        :param src_zip: uploaded zip archive
-        :param theme_name: theme name from request data
-        :return: Theme object
-        """
-        src_dir = os.path.join(settings.TEMP_DIR, os.path.splitext(os.path.basename(src_zip))[0])
-        dst_dir = os.path.join(settings.MEDIA_ROOT, theme_name)
-
-        self.make_dirs(src_dir, dst_dir)
-
-        self.theme = Theme(src_zip, src_dir, dst_dir, theme_name)
-        self.theme.unpack()
-        return self.theme
-
-    def download(self):
-        """Returns link to packed theme."""
-        return self.theme.pack()
-
-    @staticmethod
-    def make_dirs(*directories):
-        for directory in directories:
-            if os.path.exists(directory):
-                shutil.rmtree(directory)
-            os.mkdir(directory)
 
 
 class Getter:
@@ -46,16 +12,20 @@ class Getter:
         self.adapt_type = adaptation_type
         self.version = cms_version
 
-    def get_adapter(self, adapt_type="", version=""):
+    def get_plugin(self, adapt_type="", version=""):
         """Returns class of current adapter."""
         adapt_type = adapt_type if adapt_type else self.adapt_type
         version = version if version else self.version
 
-        adapter_class = adapt_type + "Adapter" + str(version)
-        exec("import adaptation.{package}.{adapter_class} as adapter".format(package=adapt_type,
-                                                                             adapter_class=adapter_class))
-        obj = eval("adapter.{adapter_class}".format(adapter_class=adapter_class))
-        return obj
+        if not version:
+            exec("import adaptation.plugins.{type}.p{version} as plugin".format(type=adapt_type,
+                                                                                version=version))
+            PluginClass = eval("plugin.Plugin")
+        else:
+            exec("import adaptation.plugins.{type} as plugin".format(type=adapt_type))
+            PluginClass = eval("plugin.Base{type}Plugin".format(type=adapt_type))
+
+        return PluginClass
 
     def get_settings(self, request_data):
         """Returns current settings dict."""
