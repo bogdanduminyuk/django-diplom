@@ -37,9 +37,9 @@ def result(request):
         del request.session['form_data']
 
         if 'file' in form_data:
-            adapter = Adapter(form_data.copy())
+            adapter = Adapter()
             try:
-                result_href = adapter.adapt()
+                result_href = adapter.adapt(form_data.copy())
             except Exception as e:
                 json['status'] = 'False'
                 json['error'] = str(e)
