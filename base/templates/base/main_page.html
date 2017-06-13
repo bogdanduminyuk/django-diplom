@@ -1,0 +1,28 @@
+{% extends 'base/index.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div class="col-lg-12">
+        <div class="main_page">
+            <div class="row">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-10">
+                    <p>Основное <b>назначение</b> этого сервиса - <b>помочь</b> Web-разработчику <b>создать</b> готовый шаблон сайта, который можно впоследствии <b>установить на систему управления содержимым</b>.</p>
+                    <p>Входные данные - HTML файлы, результат - архив с шаблоном.</p>
+
+                    <img class="small_img" src="{% static "img/magic.png" %}">
+
+                    <p>Ускорение разработки будет достигаться за счет различных готовых инструментов, которые объединяет этот сервис, позволяя преобразовать результаты их работы в <b>единый архив</b>.</p>
+
+                    <img src="{% static "img/scheme.png" %}">
+
+                    <p>Адаптация под CMS осуществляется при помощи <b>плагинов</b> (модулей), который может быть написан под любую CMS, включая различные версии одной и той же CMS.</p>
+
+
+                     <img class="small_img" src="{% static "img/plugins.png" %}">
+
+                </div>
+                <div class="col-lg-1"></div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

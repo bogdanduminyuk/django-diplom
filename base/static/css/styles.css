@@ -1,0 +1,64 @@
+/* Here will styles for app */
+.content {
+    position: relative;
+    left: 300px;
+    margin: 0px;
+}
+
+textarea {
+    resize: none;
+}
+
+.input-file  span.btn {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.result-image {
+    margin-top: 20px;
+}
+
+#result-container .row:nth-child(2){
+    min-height: 250px;
+}
+
+.result-image img {
+    width: 200px;
+}
+
+#result-btn {
+    width: 200px;
+}
+
+#accordion .panel {
+    margin-bottom: 0;
+    background-color: inherit;
+    border: inherit;
+    border-radius: inherit;
+    -webkit-box-shadow: 0;
+    box-shadow: 0;
+}
+
+@media screen and (max-width: 768px) {
+    #result-container {
+        text-align: center;
+    }
+}
+
+.main_page img {
+    width: 100%;
+    margin: 25px auto;
+    display: block;
+}
+
+.main_page p {
+    font-size: 1.3em;
+}
+
+.main_page .small_img {
+    width: 80%;
+}
+
+.main_page .images {
+
+}

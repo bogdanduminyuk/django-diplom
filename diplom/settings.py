@@ -15,6 +15,40 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+
+# relative path to file with user options
+USER_CONFIG = os.path.join(BASE_DIR, 'user.json')
+
+# for uploaded filed
+CONTENT_TYPES = ['application/octet-stream', 'application/zip']
+
+
+FILE_EXTENSIONS = ['.zip']
+
+MAX_UPLOAD_FILE_SIZE = 20971520
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+
+
+TEMP_DIR = os.path.join(BASE_DIR, 'tmp')
+SESSION_FILE_PATH = TEMP_DIR
+
+MEDIA_ROOT = os.path.join(TEMP_DIR, 'uploads')
+MEDIA_URL = '/uploads/'
+
+for dir in [TEMP_DIR, SESSION_FILE_PATH, MEDIA_ROOT]:
+    try:
+        os.mkdir(dir)
+    except FileExistsError:
+        pass
+
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -25,12 +59,17 @@ SECRET_KEY = 'dwr8oi+m@2_9$9@j-4n-w9u95-eb-wmui#9c79+7pac1xhaa(_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['bogdanduminyuk.pythonanywhere.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'base',
+    'generation',
+    'adaptation',
+    'help',
+    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

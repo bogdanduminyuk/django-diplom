@@ -1,0 +1,1 @@
+os.environ['DJANGO_SETTINGS_MODULE'] = 'diplom.settings'
