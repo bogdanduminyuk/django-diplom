@@ -1,5 +1,5 @@
 E:
-cd E:\diplom\
+cd E:\git-projects\django-diplom
 call .\env\Scripts\activate.bat
-python manage.py runserver
+call .\env\Scripts\python manage.py runserver
 pause
