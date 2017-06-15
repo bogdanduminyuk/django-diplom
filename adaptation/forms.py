@@ -8,6 +8,9 @@ class BaseForm(forms.Form):
     file = forms.FileField(label='Выберите архив с файлами html *',
                            max_length=60, required=True)
 
+    check_conflicts = forms.BooleanField(label='Проверить на конфликты (ДОЛГО И НЕОБЯЗАТЕЛЬНО)',
+                                         required=False)
+
     name = forms.CharField(label='Название темы *',
                            widget=CustomTextInput(), required=True)
 
@@ -73,7 +76,7 @@ class JoomlaAdaptForm(BaseForm):
     authorEmail = forms.EmailField(label='Email автора', required=False,
                                    widget=forms.EmailInput(attrs={'class': 'form-control'}))
 
-    language = forms.CharField(label='Язык', widget=CustomTextInput())
+    language = forms.CharField(label='Язык *', widget=CustomTextInput())
 
     version = forms.ChoiceField(label='Версия *',
                                 choices=((362, '3.6.2'), (0, 'Blank record'),),
@@ -91,6 +94,7 @@ class ConflictsForm(BaseForm):
         super(ConflictsForm, self).__init__(*args, **kwargs)
         self.fields.pop('name')
         self.fields.pop('author')
+        self.fields.pop('check_conflicts')
 
     wordpress_url = forms.URLField(label='URL запроса WordPress',
                                    widget=forms.URLInput(attrs={'class': 'form-control'}))
