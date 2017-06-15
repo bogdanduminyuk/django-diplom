@@ -103,5 +103,3 @@ class ConflictsForm(BaseForm):
                                 widget=forms.URLInput(attrs={'class': 'form-control'}))
 
     use_defaults = forms.BooleanField(label='Использовать URL по умолчанию', required=False)
-
-    use_cache = forms.BooleanField(label='Использовать кэш', required=False)
