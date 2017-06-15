@@ -2,7 +2,9 @@ import os
 import shutil
 
 from adaptation.core.file_types import DirectoryObject, FileObject, ParsableFile
+from adaptation.core.classes import Getter
 from diplom import settings
+from adaptation.conflicts.classes import ConflictChecker
 
 
 class Theme:
@@ -110,8 +112,18 @@ class ThemesManager:
                                         self.request_data)
             plugin_object.adapt()
 
+            checking_result = ''
+            if self.request_data.get('check_conflicts', ''):
+                checker = ConflictChecker()
+                cfg = Getter.get_user_cfg()["CONFLICTS"]
+                index_file = self.uploaded_theme.get_file('index.html')
+                scripts = {
+                    "functions": cfg.get('functions_script', '')
+                }
+                checking_result = checker.check(index_file.path, scripts, cfg.get('urls'))
+
             self.cms_theme.write()
-            return self.cms_theme.pack()
+            return self.cms_theme.pack(), checking_result
 
         finally:
             self.uploaded_theme.remove()

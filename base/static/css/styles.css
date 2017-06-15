@@ -59,6 +59,7 @@ textarea {
     width: 80%;
 }
 
-.main_page .images {
-
+#modal_btn {
+    margin-top: 20px;
+    width: 200px;
 }

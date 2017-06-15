@@ -36,10 +36,12 @@ def result(request):
     else:
         del request.session['form_data']
 
+        checking_result = ''
+
         if 'file' in form_data:
             adapter = Adapter()
             try:
-                result_href = adapter.adapt(form_data.copy())
+                result_href, checking_result = adapter.adapt(form_data.copy())
             except Exception as e:
                 json['status'] = 'False'
                 json['error'] = str(e)
@@ -50,6 +52,7 @@ def result(request):
         json['href'] = result_href
         json['image'] = 'img/success.jpg'
         json['status'] = 'True'
+        json['checking'] = checking_result
 
     finally:
         json['image'] = os.path.join(settings.STATIC_URL, json['image'])
