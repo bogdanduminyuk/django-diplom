@@ -5,7 +5,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from adaptation.conflicts.classes import SeleniumPhantomJSDriver
+from adaptation.conflicts.classes import ConflictChecker
 from adaptation.core.adapters import Adapter
 from adaptation.core.classes import Getter
 from adaptation.core.functions import handle_adapt_request
@@ -73,6 +73,25 @@ def joomla_test(request):
     return HttpResponse('<a href="' + result_href + '">Скачать</a>')
 
 
+def conflicts_test(request):
+    file = os.path.join(settings.BASE_DIR, 'examples', 'wp', 'snowboarding.zip')
+    cfg = Getter.get_user_cfg()["CONFLICTS"]
+    checker = ConflictChecker()
+    theme = UploadedTheme(file, 'conflicts')
+    theme.unpack()
+    theme.read_files()
+    index_file = theme.get_file('index.html')
+    scripts = {
+        "functions": cfg.get('functions_script', '')
+    }
+
+    return render(request, 'base/conflicts_result.html', {
+        'result': checker.check(index_file.path, scripts, cfg.get('urls')),
+        'title': "Поиск конфликтов",
+        'page_header': "Результаты проверки"
+    })
+
+
 def conflicts(request):
     if request.method == 'POST':
         form = ConflictsForm(request.POST, request.FILES)
@@ -83,23 +102,19 @@ def conflicts(request):
             cfg['urls']['wordpress_url'] = request.POST['wordpress_url']
             cfg['urls']['joomla_url'] = request.POST['joomla_url']
 
-        driver = SeleniumPhantomJSDriver()
+        checker = ConflictChecker()
         theme = UploadedTheme(file, 'conflicts')
         theme.unpack()
         theme.read_files()
         index_file = theme.get_file('index.html')
-        result = {
-            'engines': {},
-            'intersection': {},
-            'theme': driver.execute_script(index_file.path, cfg["script"])
+
+        scripts = {
+            "functions": cfg.get('functions_script', ''),
+            # "styles": cfg.get('styles_script', '')
         }
 
-        for key, url in cfg['urls'].items():
-            script_result = driver.execute_script(url, cfg["script"])
-            result['engines'][key] = script_result
-            result['intersection'][key] = list(set(script_result) & set(result['theme']))
+        result = checker.check(index_file.path, scripts, cfg.get('urls'))
 
-        # return JsonResponse(result)
         return render(request, 'base/conflicts_result.html', {
             'result': result,
             'title': "Поиск конфликтов",
