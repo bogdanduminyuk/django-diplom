@@ -8,7 +8,7 @@ class BaseForm(forms.Form):
     file = forms.FileField(label='Выберите архив с файлами html *',
                            max_length=60, required=True)
 
-    check_conflicts = forms.BooleanField(label='Проверить на конфликты (ДОЛГО И НЕОБЯЗАТЕЛЬНО)',
+    check_conflicts = forms.BooleanField(label='Проверить на конфликты',
                                          required=False)
 
     name = forms.CharField(label='Название темы *',
