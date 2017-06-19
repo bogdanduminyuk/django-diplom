@@ -1,4 +1,4 @@
-from plugins.WordPress import BaseWordPressPlugin
+from adaptation.plugins.WordPress import BaseWordPressPlugin
 
 
 class Plugin(BaseWordPressPlugin):

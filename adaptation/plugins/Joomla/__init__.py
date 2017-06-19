@@ -2,7 +2,7 @@ import os
 
 from adaptation.core import functions
 from adaptation.plugins import BasePlugin
-from core.file_types import XMLFile, FileObject
+from adaptation.core.file_types import XMLFile, FileObject
 
 
 class BaseJoomlaPlugin(BasePlugin):
