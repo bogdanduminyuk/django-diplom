@@ -98,7 +98,7 @@ JOOMLA = {
         "REPLACEMENT": [
             {
                 "page-part": "nav",
-                "template": "<jdoc:include type=\"modules\" name=\"menu\" id=\"page-nav\"/>"
+                "template": "<jdoc:include type=\"modules\" id=\"page-nav\"/>"
             },
         ],
     },

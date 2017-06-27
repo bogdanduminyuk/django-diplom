@@ -13,4 +13,22 @@
             </tr>
         {% endfor %}
     </table>
+    <p id="msg" class="text-danger hidden">Внимание, найдены конфликты. Обратите внимание на совпадение имен функций.</p>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function () {
+    var state = false;
+
+    {% for key, value in result.items %}
+        {% if value.functions %}
+    state = true;
+        {% endif %}
+    {% endfor %}
+
+    if (state)
+        $("#msg").removeClass("hidden");
+}); 
+</script>
 {% endblock %}

@@ -31,6 +31,7 @@ class BaseForm(forms.Form):
 
         if file.content_type not in settings.CONTENT_TYPES:
             self.add_error('file', 'Wrong content-type of uploaded file')
+            print(file.content_type)
             valid = False
 
         name, ext = os.path.splitext(file.name)

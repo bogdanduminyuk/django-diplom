@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 USER_CONFIG = os.path.join(BASE_DIR, 'user.json')
 
 # for uploaded filed
-CONTENT_TYPES = ['application/octet-stream', 'application/zip']
+CONTENT_TYPES = ['application/octet-stream', 'application/zip', 'application/x-zip-compressed']
 
 
 FILE_EXTENSIONS = ['.zip']
